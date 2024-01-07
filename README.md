@@ -2,6 +2,13 @@
 
 Iron Panthers repository for 2024 season code.
 
+## Temporary Git Info
+
+`main` and `dev` branches require a pull request to merge.
+Go wild (reasonably) with feature/integration/etc branches during development but pr them into `dev` when in a stable state.
+Before comp `dev` will be merged into `main` as a "release". Fixes and changes can be made accordingly.
+Subject to change ^
+
 ## Setting up
 
 ### Before working: make sure you have the 2024 tools:
