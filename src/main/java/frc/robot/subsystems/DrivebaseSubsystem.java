@@ -115,8 +115,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   private double targetAngle = 0; // default target angle to zero
 
-  private final TimeOfFlight zappyThing;
-
   private Pair<Double, Double> xyInput = new Pair<>(0d, 0d); // the x and y for using target angles
   /**
    * The Shuffleboard tab which all things related to the drivebase can be put for easy access and
@@ -354,44 +352,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
     this.targetAngle = targetAngle;
     if (mode != Modes.DRIVE_ANGLE) rotController.reset();
     mode = Modes.DRIVE_ANGLE;
-  }
-
-  public double getSensorDistance() {
-    return zappyThing.getRange();
-  }
-
-  public Status getSensorStatus() {
-    return zappyThing.getStatus();
-  }
-
-  public RangingMode getSensorRangingMode() {
-    return zappyThing.getRangingMode();
-  }
-
-  /*
-   * Configure the ranging mode as well as the sample rate of the
-   * time of flight sensor The ranging mode specifies the
-   * trade off between maximum measure distance verses
-   * reliablity in bright situations.
-   * -from docs
-   */
-  public void setSensorRangingMode(RangingMode mode, double sampleTime) {
-    zappyThing.setRangingMode(mode, sampleTime);
-  }
-
-  // makes the sensor flash red and green
-  public void flashSensor() {
-    zappyThing.identifySensor();
-  }
-
-  // is last measurement valid
-  public boolean isSensorRangeValid() {
-    return zappyThing.isRangeValid();
-  }
-
-  public void setSensorRangeOfInterest(
-      int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
-    zappyThing.setRangeOfInterest(topLeftX, topLeftY, bottomRightX, bottomRightY);
   }
 
   /**
