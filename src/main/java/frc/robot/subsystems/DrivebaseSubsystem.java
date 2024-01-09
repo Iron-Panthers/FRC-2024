@@ -213,8 +213,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     zeroGyroscope();
 
-    zappyThing = new TimeOfFlight(Constants.Drive.ZAPPY_THING_PORT);
-
     // tab.addNumber("target angle", () -> targetAngle);
     // tab.addNumber("current angle", () -> getGyroscopeRotation().getDegrees());
     // tab.addNumber(
@@ -224,7 +222,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("pitch", navx::getPitch);
       tab.addDouble("roll", navx::getRoll);
-      tab.addDouble("sensorDistance", this::getSensorDistance);
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
