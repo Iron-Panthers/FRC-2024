@@ -25,7 +25,7 @@ public class LoadMirrorPath {
             maxVelocityMetersPerSecond,
             maxAccelerationMetersPerSecondSq);
 
-    return () -> DriverStation.getAlliance() == Alliance.Red ? redPath : bluePath;
+    return () -> DriverStation.getAlliance().get() == Alliance.Red ? redPath : bluePath;
   }
 
   public static List<Supplier<PathPlannerTrajectory>> loadPathGroup(

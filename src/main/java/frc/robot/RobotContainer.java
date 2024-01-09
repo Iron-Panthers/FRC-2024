@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.server.PathPlannerServer;
+//import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -267,7 +267,7 @@ public class RobotContainer {
    */
   private void setupAutonomousCommands() {
     if (Config.RUN_PATHPLANNER_SERVER) {
-      PathPlannerServer.startServer(5811);
+    //PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
     }
 
     driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);

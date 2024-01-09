@@ -6,7 +6,6 @@ package frc.robot;
 
 import static frc.util.MacUtil.IS_COMP_BOT;
 
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -73,8 +72,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6380.0 // falcon 500 free speed rpm
             / 60.0
-            * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-            * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+    //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
+    //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally

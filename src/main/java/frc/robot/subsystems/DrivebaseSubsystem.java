@@ -10,8 +10,6 @@ import com.kauailabs.navx.frc.AHRS;
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 import com.playingwithfusion.TimeOfFlight.Status;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
@@ -43,6 +41,7 @@ import frc.util.AdvancedSwerveTrajectoryFollower;
 import frc.util.Util;
 import java.util.Optional;
 
+//FIXME I got rid of all the errors, still have to delete all sds code and start fresh with phoe 6
 public class DrivebaseSubsystem extends SubsystemBase {
   private final AdvancedSwerveTrajectoryFollower follower =
       new AdvancedSwerveTrajectoryFollower(
@@ -72,6 +71,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * by a ChassisSpeeds object) and our actual drive outputs (what speeds and angles we apply to
    * each module)
    */
+  //FIXME check if its correct for season
   private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           // Front right
@@ -109,7 +109,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private Field2d field = new Field2d();
 
   /** Contains each swerve module. Order: FR, FL, BL, BR. Or in Quadrants: I, II, III, IV */
-  private final SwerveModule[] swerveModules;
+//sds ->  private final SwerveModule[] swerveModules;
 
   private final PIDController rotController;
 
@@ -122,77 +122,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
    */
   private final ShuffleboardTab tab = Shuffleboard.getTab("Drivebase");
 
-  /**
-   * Initialize a falcon with a shuffleboard tab, and mk4 default gear ratio
-   *
-   * @param tab the shuffleboard tab to use
-   * @param title the shuffleboard title
-   * @param pos the shuffleboard x position, which is <b>multiplied by 2</b>
-   * @param drive the drive motor port const
-   * @param steer the steer motor port const
-   * @param encoder the encoder port const
-   * @param offset the steer offset const, found experimentally
-   * @return SDS/swerve-lib SwerveModule object
-   */
-  private SwerveModule createModule(
-      String title, int pos, int drive, int steer, int encoder, double offset) {
-    // NOTE: our team uses the MK4 configuration with L2 gearing and Falcon 500s
-    // if this changes, update the helper/method/GearRatio used, as needed.
-    return Mk4SwerveModuleHelper.createFalcon500(
-        tab.getLayout(title, BuiltInLayouts.kList).withSize(2, 4).withPosition(pos * 2, 0),
-        Mk4SwerveModuleHelper.GearRatio.L2,
-        drive,
-        steer,
-        encoder,
-        offset);
-  }
-
   /** Creates a new DrivebaseSubsystem. */
   public DrivebaseSubsystem(VisionSubsystem visionSubsystem) {
     this.visionSubsystem = visionSubsystem;
 
+    //FIXME determine if this should be kept
     if (!Config.DISABLE_SWERVE_MODULE_INIT) {
-
-      final SwerveModule module1 =
-          createModule(
-              "Module #1",
-              0,
-              Modules.Module1.DRIVE_MOTOR,
-              Modules.Module1.STEER_MOTOR,
-              Modules.Module1.STEER_ENCODER,
-              Modules.Module1.STEER_OFFSET);
-
-      final SwerveModule module2 =
-          createModule(
-              "Module #2",
-              1,
-              Modules.Module2.DRIVE_MOTOR,
-              Modules.Module2.STEER_MOTOR,
-              Modules.Module2.STEER_ENCODER,
-              Modules.Module2.STEER_OFFSET);
-
-      final SwerveModule module3 =
-          createModule(
-              "Module #3",
-              2,
-              Modules.Module3.DRIVE_MOTOR,
-              Modules.Module3.STEER_MOTOR,
-              Modules.Module3.STEER_ENCODER,
-              Modules.Module3.STEER_OFFSET);
-
-      final SwerveModule module4 =
-          createModule(
-              "Module #4",
-              3,
-              Modules.Module4.DRIVE_MOTOR,
-              Modules.Module4.STEER_MOTOR,
-              Modules.Module4.STEER_ENCODER,
-              Modules.Module4.STEER_OFFSET);
-
-      swerveModules = // modules are always initialized and passed in this order
-          new SwerveModule[] {module1, module2, module3, module4};
     } else {
-      swerveModules = null;
     }
 
     rotController = new PIDController(0.03, 0.001, 0.003);
@@ -241,20 +177,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return chassisSpeeds;
   }
 
+  //FIXME placeholder return value
   private SwerveModulePosition[] getSwerveModulePositions() {
-    return Config.DISABLE_SWERVE_MODULE_INIT
-        ? new SwerveModulePosition[] {
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-        }
-        : new SwerveModulePosition[] {
-          swerveModules[0].getPosition(),
-          swerveModules[1].getPosition(),
-          swerveModules[2].getPosition(),
-          swerveModules[3].getPosition()
-        };
+    return new SwerveModulePosition[4];  
   }
 
   private Rotation2d driverGyroOffset = Rotation2d.fromDegrees(0);
@@ -273,7 +198,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
                     .getEstimatedPosition()
                     .getRotation()
                     .plus(
-                        DriverStation.getAlliance() == Alliance.Blue
+                        DriverStation.getAlliance().get() == Alliance.Blue //FIXME temp fix
                             ? new Rotation2d()
                             : Rotation2d.fromDegrees(180)));
   }
@@ -290,7 +215,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         getConsistentGyroscopeRotation()
             .minus(pose.getRotation())
             .plus(
-                DriverStation.getAlliance() == Alliance.Blue
+                DriverStation.getAlliance().get() == Alliance.Blue
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 
@@ -388,13 +313,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private void drivePeriodic() {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-
-    // sets swerve module speeds and angles, for each swerve module, using kinematics
-    for (int i = 0; i < swerveModules.length; i++) {
-      swerveModules[i].set(
-          states[i].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-          states[i].angle.getRadians());
-    }
   }
 
   // called in drive to angle mode
@@ -424,13 +342,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   @SuppressWarnings("java:S1121")
   private void defensePeriodic() {
-    int angle = 45;
-    for (SwerveModule module : swerveModules) {
-      // the *= -1 operation multiplies the current variable by -1, stores it, and also returns
-      // the value. We can use this to alternate between 45 and -45 for each module.
-      module.set(0, angle *= -1);
-    }
-
     // No need to call odometry periodic
   }
 
