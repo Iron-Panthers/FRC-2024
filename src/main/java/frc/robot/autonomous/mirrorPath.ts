@@ -1,5 +1,5 @@
 // read json file at the arg path deno
-
+//FIXME make it mirror correctly (2023 was weird)
 const path = Deno.args[0];
 console.log(path);
 
