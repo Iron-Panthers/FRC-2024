@@ -6,12 +6,13 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Drive.*;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ApplyChassisSpeeds;
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
@@ -24,7 +25,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -38,13 +38,6 @@ import frc.util.Util;
 
 // FIXME I got rid of all the errors, still have to delete all sds code and start fresh with phoe 6
 public class DrivebaseSubsystem extends SubsystemBase {
-
-  // NOTE: I'm still not sure what's the way to profile this ^
-  // Not mission critical as it "technically" drives fine as of now; but I suspect this is a site
-  // for future improvements
-
-  private final AHRS navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
-
   /**
    * The kinematics object allows us to encode our relationship between desired speeds (represented
    * by a ChassisSpeeds object) and our actual drive outputs (what speeds and angles we apply to
@@ -62,6 +55,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
           // Back right
           new Translation2d(-Dims.TRACKWIDTH_METERS / 2.0, -Dims.WHEELBASE_METERS / 2.0));
 
+  /**
+   * Object handles configuration and control of drivetrain. Also contains each swerve module.
+   * Order: FR, FL, BL, BR. Or in Quadrants: I, II, III, IV Handles odometry, but unsure if it's
+   * better to do it ourselves
+   */
   private final SwerveDrivetrain swerveDrivetrain;
 
   /** The SwerveDriveOdometry class allows us to estimate the robot's "pose" over time. */
@@ -77,7 +75,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
   /** The current ChassisSpeeds goal for the drivetrain */
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(); // defaults to zeros
 
+  /* Requests to pass to SwerveDrivetrain objects */
   private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds();
+  private SwerveDriveBrake swerveBrakeRequest = new SwerveDriveBrake();
 
   /** The modes of the drivebase subsystem */
   public enum Modes {
@@ -91,7 +91,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   private Field2d field = new Field2d();
 
-  /** Contains each swerve module. Order: FR, FL, BL, BR. Or in Quadrants: I, II, III, IV */
   private final PIDController rotController;
 
   private double targetAngle = 0; // default target angle to zero
@@ -201,8 +200,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
     //     () -> -Util.relativeAngularDifference(targetAngle, getGyroscopeRotation().getDegrees()));
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("pitch", navx::getPitch);
-      tab.addDouble("roll", navx::getRoll);
+      tab.addDouble("pitch", () -> swerveDrivetrain.getPigeon2().getPitch().getValueAsDouble());
+      tab.addDouble("roll", () -> swerveDrivetrain.getPigeon2().getRoll().getValueAsDouble());
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
@@ -312,7 +311,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   public double getRotVelocity() {
-    return navx.getRate();
+    return swerveDrivetrain.getPigeon2().getRate();
   }
 
   /**
@@ -398,13 +397,14 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   @SuppressWarnings("java:S1121")
   private void defensePeriodic() {
-
+    swerveDrivetrain.setControl(swerveBrakeRequest);
     // No need to call odometry periodic
   }
 
   public record RollPitch(double roll, double pitch) {
-    public static RollPitch fromAHRS(AHRS navx) {
-      return new RollPitch(navx.getRoll(), navx.getPitch());
+    public static RollPitch fromPigeon(Pigeon2 pigeon) {
+      return new RollPitch(
+          pigeon.getRoll().getValueAsDouble(), pigeon.getPitch().getValueAsDouble());
     }
 
     public double absRoll() {
@@ -417,7 +417,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   public RollPitch getRollPitch() {
-    return RollPitch.fromAHRS(navx);
+    return RollPitch.fromPigeon(swerveDrivetrain.getPigeon2());
   }
 
   /**
