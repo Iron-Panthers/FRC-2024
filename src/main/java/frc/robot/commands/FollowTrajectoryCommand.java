@@ -4,11 +4,7 @@
 
 package frc.robot.commands;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory.State;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import java.util.function.Supplier;
@@ -60,31 +56,15 @@ public class FollowTrajectoryCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    drivebaseSubsystem.getFollower().follow(trajectory.get());
-
-    if (localizeToStartPose) {
-      // sample the trajectory at 0 seconds (its beginning)
-      State firstState = trajectory.get().sample(0);
-      Pose2d pose = firstState.poseMeters;
-      if (firstState instanceof PathPlannerState) {
-        Rotation2d holonomicRotation = ((PathPlannerState) firstState).holonomicRotation;
-        pose = new Pose2d(pose.getTranslation(), holonomicRotation);
-      }
-      // If it's not an instanceof PathPlanner State, we still need to zero to current position...
-      drivebaseSubsystem.resetOdometryToPose(pose);
-    }
-  }
+  public void initialize() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    drivebaseSubsystem.getFollower().cancel();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivebaseSubsystem.getFollower().getCurrentTrajectory().isEmpty();
+    return true;
   }
 }

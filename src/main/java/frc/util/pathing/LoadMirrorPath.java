@@ -1,4 +1,4 @@
-package frc.util.pathing;
+/*package frc.util.pathing;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -70,3 +70,4 @@ public class LoadMirrorPath {
         .collect(Collectors.toList());
   }
 }
+*/

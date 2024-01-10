@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+/*// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -21,7 +21,7 @@ public class AlignGamepieceCommand extends SequentialCommandGroup {
   DriveToPlaceCommand driveToPlace;
 
   /** Creates a new DriveToPlaceCommand. */
-  public AlignGamepieceCommand(
+  /*public AlignGamepieceCommand(
       DrivebaseSubsystem drivebaseSubsystem,
       RubenManueverGenerator manueverGenerator,
       Supplier<Pose2d> observationPose,
@@ -39,8 +39,6 @@ public class AlignGamepieceCommand extends SequentialCommandGroup {
             drivebaseSubsystem,
             manueverGenerator,
             observationPose,
-            () -> createFinalPose(finalPose.get(), drivebaseSubsystem.getSensorDistance()),
-            observationTime,
             translationXSupplier,
             translationYSupplier,
             isRobotRelativeRelativeSupplier,
@@ -54,20 +52,6 @@ public class AlignGamepieceCommand extends SequentialCommandGroup {
 
     var alliance = DriverStation.getAlliance();
 
-    switch (alliance) {
-      case Blue -> yPos -= offset;
-      case Red -> yPos += offset;
-      case Invalid -> {
-        System.out.println("Invalid alliance, defaulting to blue align");
-        yPos -= offset;
-      }
-      default -> {
-        System.out.printf("Unknown alliance %s, defaulting to blue align", alliance);
-        yPos -= offset;
-      }
-    }
-    ;
-
     return new Pose2d(currentPose.getX(), yPos, currentPose.getRotation());
   }
 
@@ -78,25 +62,26 @@ public class AlignGamepieceCommand extends SequentialCommandGroup {
    * @param visionSubsystem The vision subsystem.
    * @param finalPose The final pose to put the robot in.
    */
-  public AlignGamepieceCommand(
-      DrivebaseSubsystem drivebaseSubsystem,
-      RubenManueverGenerator manueverGenerator,
-      Supplier<Pose2d> finalPose,
-      DoubleSupplier translationXSupplier,
-      DoubleSupplier translationYSupplier,
-      BooleanSupplier isRobotRelativeRelativeSupplier,
-      Optional<RGBSubsystem> rgbSubsystem,
-      Optional<GenericHID> failureRumbleDevice) {
-    this(
-        drivebaseSubsystem,
-        manueverGenerator,
-        finalPose,
-        finalPose,
-        0.1,
-        translationXSupplier,
-        translationYSupplier,
-        isRobotRelativeRelativeSupplier,
-        rgbSubsystem,
-        failureRumbleDevice);
+  /*public AlignGamepieceCommand(
+        DrivebaseSubsystem drivebaseSubsystem,
+        RubenManueverGenerator manueverGenerator,
+        Supplier<Pose2d> finalPose,
+        DoubleSupplier translationXSupplier,
+        DoubleSupplier translationYSupplier,
+        BooleanSupplier isRobotRelativeRelativeSupplier,
+        Optional<RGBSubsystem> rgbSubsystem,
+        Optional<GenericHID> failureRumbleDevice) {
+      this(
+          drivebaseSubsystem,
+          manueverGenerator,
+          finalPose,
+          finalPose,
+          0.1,
+          translationXSupplier,
+          translationYSupplier,
+          isRobotRelativeRelativeSupplier,
+          rgbSubsystem,
+          failureRumbleDevice);
+    }
   }
-}
+  */

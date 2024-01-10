@@ -4,10 +4,8 @@
 
 package frc.robot.autonomous;
 
-import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import frc.robot.Constants.Config;
 import java.util.Optional;
 
 /**
@@ -74,7 +72,6 @@ public abstract class TrajectoryFollower<T> {
   public final void follow(Trajectory trajectory) {
     currentTrajectory = trajectory;
     startTime = Double.NaN;
-    if (Config.RUN_PATHPLANNER_SERVER) PathPlannerServer.sendActivePath(trajectory.getStates());
   }
 
   /** Gets the current trajectory that is being followed, if applicable. */

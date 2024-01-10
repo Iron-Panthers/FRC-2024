@@ -21,13 +21,9 @@ import frc.robot.subsystems.RGBSubsystem.RGBColor;
 import frc.robot.subsystems.VisionSubsystem.TagCountDeviation;
 import frc.robot.subsystems.VisionSubsystem.UnitDeviationParams;
 import frc.util.CAN;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeType;
-import frc.util.NodeSelectorUtility.ScoreTypeIdentifier;
 import frc.util.pathing.FieldObstructionMap;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("java:S1118")
@@ -72,8 +68,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6380.0 // falcon 500 free speed rpm
             / 60.0
-    //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-    //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
+            //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally

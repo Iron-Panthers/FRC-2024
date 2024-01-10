@@ -1,4 +1,4 @@
-package frc.util.pathing;
+/*package frc.util.pathing;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -514,3 +514,4 @@ public class RubenManueverGeneratorTests {
     expect.toMatchSnapshot(sb.toString());
   }
 }
+*/

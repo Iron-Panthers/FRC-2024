@@ -20,7 +20,7 @@ public class AlliancePose2d {
 
   public Pose2d get() {
     var alliance = DriverStation.getAlliance();
-    //FIXME this bad
+    // FIXME this bad
     return switch (alliance.get()) {
       case Blue -> bluePose;
       case Red -> redPose;
