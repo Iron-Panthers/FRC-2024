@@ -6,6 +6,9 @@ package frc.robot;
 
 import static frc.util.MacUtil.IS_COMP_BOT;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -48,7 +51,7 @@ public final class Constants {
     public static final boolean SHOW_SHUFFLEBOARD_DEBUG_DATA = true;
 
     /** turn this off! only use on practice eboard testing. */
-    public static final boolean DISABLE_SWERVE_MODULE_INIT = false;
+    public static final boolean DISABLE_SWERVE_INIT = false;
 
     /** def turn this off unless you are using it, generates in excess of 100k rows for a match. */
     public static final boolean WRITE_APRILTAG_DATA = false;
@@ -60,6 +63,9 @@ public final class Constants {
   }
 
   public static final class Drive {
+    public static final int PIGEON_PORT = 0; // FIXME placeholder
+    public static final String SWERVE_CANBUS = "rio"; // placeholder
+
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
     public static final double MAX_VOLTAGE = 12.0;
@@ -124,6 +130,26 @@ public final class Constants {
      */
 
     public static final class Modules {
+      public static final class Params {
+        // FIXME ALL PLACEHOLDERS
+        public static final double WHEEL_RADIUS = 0;
+        public static final double COUPLING_GEAR_RATIO = 0;
+        public static final double DRIVE_GEAR_RATIO = 0;
+        public static final double STEER_GEAR_RATIO = 0;
+        public static final Slot0Configs DRIVE_MOTOR_GAINS =
+            new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+        public static final Slot0Configs STEER_MOTOR_GAINS =
+            new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+        public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
+            ClosedLoopOutputType.Voltage;
+        public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
+            ClosedLoopOutputType.Voltage; // also paywall, but not important?
+        public static final SteerFeedbackType FEEDBACK_SOURCE =
+            SteerFeedbackType.RemoteCANcoder; // other types locked by paywall
+        public static final double SPEED_TWELVE_VOLTS = 0;
+        public static final double SLIP_CURRENT = 0;
+      }
+
       public static final class Module1 { // historically front right
         public static final int DRIVE_MOTOR = CAN.at(4, "module 1 drive motor");
         public static final int STEER_MOTOR = CAN.at(3, "module 1 steer motor");
