@@ -6,7 +6,7 @@ import frc.RobotTest;
 import java.lang.reflect.Field;
 
 public class ConstantsTest {
-  
+
   private void recursiveFinalCheck(Class<?> clazz) {
     // iterate internal classes
     for (Class<?> internalClazz : clazz.getDeclaredClasses()) {

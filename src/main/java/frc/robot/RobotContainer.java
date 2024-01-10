@@ -4,8 +4,9 @@
 
 package frc.robot;
 
-//import com.pathplanner.lib.server.PathPlannerServer;
-import edu.wpi.first.math.geometry.Rotation2d;
+// import com.pathplanner.lib.server.PathPlannerServer;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -18,16 +19,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
-import frc.robot.commands.DriveToPlaceCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.HashMapCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
@@ -42,13 +40,9 @@ import frc.util.MacUtil;
 import frc.util.NodeSelectorUtility;
 import frc.util.NodeSelectorUtility.Height;
 import frc.util.NodeSelectorUtility.NodeSelection;
-import frc.util.NodeSelectorUtility.NodeType;
 import frc.util.SharedReference;
 import frc.util.Util;
-import frc.util.pathing.AlliancePose2d;
 import frc.util.pathing.RubenManueverGenerator;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -218,7 +212,7 @@ public class RobotContainer {
                 anthony::getRightX,
                 anthony.rightBumper()));
 
-    //FIXME reference if you want to use scoremap
+    // FIXME reference if you want to use scoremap
     /*var scoreCommandMap = new HashMap<NodeSelectorUtility.ScoreTypeIdentifier, Command>();
 
     for (var scoreType : Constants.SCORE_STEP_MAP.keySet())
@@ -267,14 +261,13 @@ public class RobotContainer {
    */
   private void setupAutonomousCommands() {
     if (Config.RUN_PATHPLANNER_SERVER) {
-    //PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
+      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
     }
 
     driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
 
-    final Map<String, Command> eventMap =
-        Map.of();
-    
+    final Map<String, Command> eventMap = Map.of();
+
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 
     autoDelay =
@@ -293,10 +286,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    double delay = autoDelay.getDouble(0);
-    return delay == 0
-        ? autoSelector.getSelected()
-        : new WaitCommand(delay).andThen(autoSelector.getSelected());
+    // Load the path you want to follow using its name in the GUI
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+
+    // Create a path following command using AutoBuilder. This will also trigger event markers.
+    return AutoBuilder.followPath(path);
   }
 
   /**

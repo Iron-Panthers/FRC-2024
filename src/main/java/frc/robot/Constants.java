@@ -6,6 +6,9 @@ package frc.robot;
 
 import static frc.util.MacUtil.IS_COMP_BOT;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -21,13 +24,9 @@ import frc.robot.subsystems.RGBSubsystem.RGBColor;
 import frc.robot.subsystems.VisionSubsystem.TagCountDeviation;
 import frc.robot.subsystems.VisionSubsystem.UnitDeviationParams;
 import frc.util.CAN;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeType;
-import frc.util.NodeSelectorUtility.ScoreTypeIdentifier;
 import frc.util.pathing.FieldObstructionMap;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("java:S1118")
@@ -47,6 +46,15 @@ public final class Constants {
         // never run pathplanner server in simulation, it will fail unit tests (???)
         Config.SHOW_SHUFFLEBOARD_DEBUG_DATA
             && HALUtil.getHALRuntimeType() != HALUtil.RUNTIME_SIMULATION;
+
+    // FIXME: These values should be replaced with actual values
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(5, 0, 0),
+            new PIDConstants(5, 0, 0),
+            Drive.MAX_VELOCITY_METERS_PER_SECOND,
+            Math.sqrt(Math.pow(Dims.BUMPER_WIDTH_METERS, 2) * 2),
+            new ReplanningConfig());
 
     /** turn this off before comp. */
     public static final boolean SHOW_SHUFFLEBOARD_DEBUG_DATA = true;
@@ -72,8 +80,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6380.0 // falcon 500 free speed rpm
             / 60.0
-    //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-    //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
+            //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally
