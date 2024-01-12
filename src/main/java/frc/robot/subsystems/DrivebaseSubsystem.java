@@ -36,7 +36,6 @@ import frc.robot.Constants.PoseEstimator;
 import frc.robot.subsystems.VisionSubsystem.VisionMeasurement;
 import frc.util.Util;
 
-// FIXME I got rid of all the errors, still have to delete all sds code and start fresh with phoe 6
 public class DrivebaseSubsystem extends SubsystemBase {
   /**
    * The kinematics object allows us to encode our relationship between desired speeds (represented
@@ -270,7 +269,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         getConsistentGyroscopeRotation()
             .minus(pose.getRotation())
             .plus(
-                DriverStation.getAlliance().get() == Alliance.Blue
+                DriverStation.getAlliance().get() == Alliance.Blue //FIXME
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 
