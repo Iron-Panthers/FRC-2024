@@ -76,7 +76,9 @@ public class VisionSubsystem {
       var estimator =
           new PhotonPoseEstimator(
               fieldLayout,
-              PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, //changed from "MULTI_TAG_PNP", have to config properly or smthn? idk
+              PhotonPoseEstimator.PoseStrategy
+                  .MULTI_TAG_PNP_ON_COPROCESSOR, // changed from "MULTI_TAG_PNP", have to config
+              // properly or smthn? idk
               camera,
               visionSource.robotToCamera());
       estimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);

@@ -6,6 +6,9 @@ package frc.robot;
 
 import static frc.util.MacUtil.IS_COMP_BOT;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -21,13 +24,8 @@ import frc.robot.subsystems.RGBSubsystem.RGBColor;
 import frc.robot.subsystems.VisionSubsystem.TagCountDeviation;
 import frc.robot.subsystems.VisionSubsystem.UnitDeviationParams;
 import frc.util.CAN;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeType;
-import frc.util.NodeSelectorUtility.ScoreTypeIdentifier;
-import frc.util.pathing.FieldObstructionMap;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("java:S1118")
@@ -47,6 +45,15 @@ public final class Constants {
         // never run pathplanner server in simulation, it will fail unit tests (???)
         Config.SHOW_SHUFFLEBOARD_DEBUG_DATA
             && HALUtil.getHALRuntimeType() != HALUtil.RUNTIME_SIMULATION;
+
+    // FIXME: These values should be replaced with actual values
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(5, 0, 0),
+            new PIDConstants(5, 0, 0),
+            Drive.MAX_VELOCITY_METERS_PER_SECOND,
+            Math.sqrt(Math.pow(Dims.BUMPER_WIDTH_METERS, 2) * 2),
+            new ReplanningConfig());
 
     /** turn this off before comp. */
     public static final boolean SHOW_SHUFFLEBOARD_DEBUG_DATA = true;
@@ -72,8 +79,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6380.0 // falcon 500 free speed rpm
             / 60.0
-    //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-    //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
+            //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally
@@ -261,50 +268,6 @@ public final class Constants {
         List.of(Set.of(1, 2, 3, 4), Set.of(5, 6, 7, 8));
 
     public static final int MAX_FRAME_FIDS = 4;
-  }
-
-  public static final class Pathing {
-    /** The size in meters of a given cell for pathfinding */
-    public static final double CELL_SIZE_METERS = 0.15;
-
-    public static final int CELL_X_MAX =
-        (int) Math.ceil(FieldObstructionMap.FIELD_LENGTH / Pathing.CELL_SIZE_METERS);
-    public static final int CELL_Y_MAX =
-        (int) Math.ceil(FieldObstructionMap.FIELD_HEIGHT / Pathing.CELL_SIZE_METERS);
-
-    /**
-     * this variable is badly named, it refers to half the width decimated to the cell grid. coords
-     * that require going within this distance will be very expensive for pathfinding.
-     */
-    public static final int ROBOT_RADIUS_DANGER_CELLS =
-        // using floor is not a bug, we want to be able to drive up to the edge of the cell if
-        // needed. this might not work too hot for other robot sizes, but for our size down is much
-        // more reasonable than up for .1m cells
-        // adding one serves to reduce the risk of a spline clipping something
-        (int) Math.floor((Dims.BUMPER_WIDTH_METERS / 2) / Pathing.CELL_SIZE_METERS) + 1;
-
-    /**
-     * grid coords that require going within this distance of field elements will be unavailable for
-     * pathfinding. subtracting one serves to make this number accurate because we added one
-     * earlier.
-     */
-    public static final int ROBOT_RADIUS_COLLISION_CELLS = ROBOT_RADIUS_DANGER_CELLS - 2;
-
-    public static final double CRITICAL_POINT_DIVERGENCE_THRESHOLD = 6;
-
-    public static final int PATHFINDING_HEURISTIC_CONSTANT = 1;
-
-    public static final double RESPECT_CURRENT_VELOCITY_THRESHOLD_MS = .2;
-
-    public static final double ANTICIPATED_PATH_SOLVE_TIME_SECONDS = .7;
-
-    public static final class Costs {
-      public static final int CARDINAL = 2;
-      public static final int DIAGONAL = 3;
-      public static final int DANGER_MULTIPLIER = 50;
-      public static final int PERPENDICULAR_BAD_FLOW_PENALTY = 3;
-      public static final int DIAGONAL_BAD_FLOW_PENALTY = 4;
-    }
   }
 
   public static final class NetworkWatchdog {

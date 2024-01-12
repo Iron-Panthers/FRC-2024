@@ -7,9 +7,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.Drive.*;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.playingwithfusion.TimeOfFlight;
-import com.playingwithfusion.TimeOfFlight.RangingMode;
-import com.playingwithfusion.TimeOfFlight.Status;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
@@ -27,7 +25,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -35,13 +32,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
+import frc.robot.Constants.Drive.Dims;
 import frc.robot.Constants.PoseEstimator;
 import frc.robot.subsystems.VisionSubsystem.VisionMeasurement;
 import frc.util.AdvancedSwerveTrajectoryFollower;
 import frc.util.Util;
 import java.util.Optional;
 
-//FIXME I got rid of all the errors, still have to delete all sds code and start fresh with phoe 6
+// FIXME I got rid of all the errors, still have to delete all sds code and start fresh with phoe 6
 public class DrivebaseSubsystem extends SubsystemBase {
   private final AdvancedSwerveTrajectoryFollower follower =
       new AdvancedSwerveTrajectoryFollower(
@@ -71,7 +69,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * by a ChassisSpeeds object) and our actual drive outputs (what speeds and angles we apply to
    * each module)
    */
-  //FIXME check if its correct for season
+  // FIXME check if its correct for season
   private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           // Front right
@@ -109,7 +107,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private Field2d field = new Field2d();
 
   /** Contains each swerve module. Order: FR, FL, BL, BR. Or in Quadrants: I, II, III, IV */
-//sds ->  private final SwerveModule[] swerveModules;
+  // sds ->  private final SwerveModule[] swerveModules;
 
   private final PIDController rotController;
 
@@ -126,7 +124,27 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public DrivebaseSubsystem(VisionSubsystem visionSubsystem) {
     this.visionSubsystem = visionSubsystem;
 
-    //FIXME determine if this should be kept
+    // FIXME check these values to make sure they are correct
+    AutoBuilder.configureHolonomic(
+        this::getPose,
+        this::resetOdometryToPose,
+        this::getChassisSpeeds,
+        null,
+        Constants.Config.PATH_FOLLOWER_CONFIG,
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
+
+    // FIXME determine if this should be kept
     if (!Config.DISABLE_SWERVE_MODULE_INIT) {
     } else {
     }
@@ -177,9 +195,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return chassisSpeeds;
   }
 
-  //FIXME placeholder return value
+  // FIXME placeholder return value
   private SwerveModulePosition[] getSwerveModulePositions() {
-    return new SwerveModulePosition[4];  
+    return new SwerveModulePosition[4];
   }
 
   private Rotation2d driverGyroOffset = Rotation2d.fromDegrees(0);
@@ -198,7 +216,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
                     .getEstimatedPosition()
                     .getRotation()
                     .plus(
-                        DriverStation.getAlliance().get() == Alliance.Blue //FIXME temp fix
+                        DriverStation.getAlliance().get() == Alliance.Blue // FIXME temp fix
                             ? new Rotation2d()
                             : Rotation2d.fromDegrees(180)));
   }

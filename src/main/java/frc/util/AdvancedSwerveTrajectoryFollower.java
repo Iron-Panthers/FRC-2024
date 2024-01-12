@@ -4,8 +4,6 @@
 
 package frc.util;
 
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -67,15 +65,11 @@ public class AdvancedSwerveTrajectoryFollower extends TrajectoryFollower<Chassis
     double yFF = linearVelocityRefMeters * poseRef.getRotation().getSin();
 
     double currentDegrees = (360 - currentPose.getRotation().getDegrees()) % 360;
-    double targetDegrees =
-        // only cast if safe
-        lastState instanceof PathPlannerState
-            ? ((360 - ((PathPlannerState) lastState).holonomicRotation.getDegrees()) % 360)
-            : ((360 - poseRef.getRotation().getDegrees()) % 360);
+    double targetDegrees = ((360 - poseRef.getRotation().getDegrees()) % 360);
 
-    if (Config.RUN_PATHPLANNER_SERVER)
-      PathPlannerServer.sendPathFollowingData(
-          new Pose2d(poseRef.getTranslation(), Rotation2d.fromDegrees(targetDegrees)), currentPose);
+    // if (Config.RUN_PATHPLANNER_SERVER)
+    //   PathPlannerServer.sendPathFollowingData(
+    //       new Pose2d(poseRef.getTranslation(), Rotation2d.fromDegrees(targetDegrees)), currentPose);
 
     // scope current and target angles
     double angularDifferenceDeg = Util.relativeAngularDifference(currentDegrees, targetDegrees);
