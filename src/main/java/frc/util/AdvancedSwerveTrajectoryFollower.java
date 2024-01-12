@@ -7,10 +7,8 @@ package frc.util;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import frc.robot.Constants.Config;
 import frc.robot.autonomous.TrajectoryFollower;
 
 /**
@@ -69,7 +67,8 @@ public class AdvancedSwerveTrajectoryFollower extends TrajectoryFollower<Chassis
 
     // if (Config.RUN_PATHPLANNER_SERVER)
     //   PathPlannerServer.sendPathFollowingData(
-    //       new Pose2d(poseRef.getTranslation(), Rotation2d.fromDegrees(targetDegrees)), currentPose);
+    //       new Pose2d(poseRef.getTranslation(), Rotation2d.fromDegrees(targetDegrees)),
+    // currentPose);
 
     // scope current and target angles
     double angularDifferenceDeg = Util.relativeAngularDifference(currentDegrees, targetDegrees);

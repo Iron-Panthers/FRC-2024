@@ -37,7 +37,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
-import frc.util.SharedReference;
 import frc.util.Util;
 import java.util.Map;
 import java.util.Optional;

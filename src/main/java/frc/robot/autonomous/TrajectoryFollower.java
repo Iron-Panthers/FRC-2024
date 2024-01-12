@@ -6,7 +6,6 @@ package frc.robot.autonomous;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import frc.robot.Constants.Config;
 import java.util.Optional;
 
 /**
