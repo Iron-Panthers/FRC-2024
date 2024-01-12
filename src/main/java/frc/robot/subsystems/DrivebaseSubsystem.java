@@ -269,7 +269,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         getConsistentGyroscopeRotation()
             .minus(pose.getRotation())
             .plus(
-                DriverStation.getAlliance().get() == Alliance.Blue //FIXME
+                DriverStation.getAlliance().get() == Alliance.Blue // FIXME
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 
