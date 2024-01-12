@@ -37,12 +37,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
-import frc.util.NodeSelectorUtility;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
 import frc.util.Util;
-import frc.util.pathing.RubenManueverGenerator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -66,11 +62,6 @@ public class RobotContainer {
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
-
-  private final RubenManueverGenerator manueverGenerator = new RubenManueverGenerator();
-
-  private final SharedReference<NodeSelection> currentNodeSelection =
-      new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
 
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);
@@ -260,9 +251,6 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    if (Config.RUN_PATHPLANNER_SERVER) {
-      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
-    }
 
     driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
 
