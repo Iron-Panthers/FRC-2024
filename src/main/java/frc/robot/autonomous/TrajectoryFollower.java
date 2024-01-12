@@ -72,6 +72,8 @@ public abstract class TrajectoryFollower<T> {
   public final void follow(Trajectory trajectory) {
     currentTrajectory = trajectory;
     startTime = Double.NaN;
+    //holdover from old pathplanner.
+    //if (Config.RUN_PATHPLANNER_SERVER) PathPlannerServer.sendActivePath(trajectory.getStates());
   }
 
   /** Gets the current trajectory that is being followed, if applicable. */

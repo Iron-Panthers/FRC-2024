@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-// import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -41,7 +40,6 @@ import frc.util.NodeSelectorUtility.Height;
 import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
 import frc.util.Util;
-// import frc.util.pathing.RubenManueverGenerator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -65,8 +63,6 @@ public class RobotContainer {
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
-
-  // private final RubenManueverGenerator manueverGenerator = new RubenManueverGenerator();
 
   private final SharedReference<NodeSelection> currentNodeSelection =
       new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));

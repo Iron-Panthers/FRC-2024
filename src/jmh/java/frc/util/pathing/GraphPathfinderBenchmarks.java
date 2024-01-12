@@ -16,7 +16,6 @@ public class GraphPathfinderBenchmarks {
 
   @Setup
   public void setup() {
-    RubenManueverGenerator generator = new RubenManueverGenerator();
     paths =
         List.of(
             new Pair<>(new GridCoord(149, 68), new GridCoord(23, 8)),
