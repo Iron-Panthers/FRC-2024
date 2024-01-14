@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-// import com.pathplanner.lib.server.PathPlannerServer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.networktables.GenericEntry;
@@ -37,6 +36,10 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
+import frc.util.NodeSelectorUtility;
+import frc.util.NodeSelectorUtility.Height;
+import frc.util.NodeSelectorUtility.NodeSelection;
+import frc.util.SharedReference;
 import frc.util.Util;
 import java.util.Map;
 import java.util.Optional;
@@ -61,6 +64,9 @@ public class RobotContainer {
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
+
+  private final SharedReference<NodeSelection> currentNodeSelection =
+      new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
 
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);
@@ -99,7 +105,7 @@ public class RobotContainer {
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
-    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_MODULE_INIT);
+    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -250,6 +256,9 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
+    if (Config.RUN_PATHPLANNER_SERVER) {
+      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
+    }
 
     driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
 

@@ -6,6 +6,9 @@ package frc.robot;
 
 import static frc.util.MacUtil.IS_COMP_BOT;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -59,7 +62,7 @@ public final class Constants {
     public static final boolean SHOW_SHUFFLEBOARD_DEBUG_DATA = true;
 
     /** turn this off! only use on practice eboard testing. */
-    public static final boolean DISABLE_SWERVE_MODULE_INIT = false;
+    public static final boolean DISABLE_SWERVE_INIT = false;
 
     /** def turn this off unless you are using it, generates in excess of 100k rows for a match. */
     public static final boolean WRITE_APRILTAG_DATA = false;
@@ -71,6 +74,9 @@ public final class Constants {
   }
 
   public static final class Drive {
+    public static final int PIGEON_PORT = 0; // FIXME placeholder
+    public static final String SWERVE_CANBUS = "rio"; // placeholder
+
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
     public static final double MAX_VOLTAGE = 12.0;
@@ -135,6 +141,33 @@ public final class Constants {
      */
 
     public static final class Modules {
+      public static final class Params {
+        // FIXME ALL PLACEHOLDERS
+        /* Currently use L2 gearing for alphabot, will use L3 for comp bot? Not decided? Check w/ engie */
+        public static final double WHEEL_RADIUS = 2; // FIXME
+        public static final double COUPLING_GEAR_RATIO = 3.5714285714285716; // optional
+        public static final double DRIVE_GEAR_RATIO = 6.746031746031747; // unsure?
+        public static final double STEER_GEAR_RATIO = 12.8; // FIXME
+        public static final Slot0Configs DRIVE_MOTOR_GAINS =
+            new Slot0Configs()
+                .withKP(0.2)
+                .withKI(0)
+                .withKD(0)
+                .withKS(0)
+                .withKV(0)
+                .withKA(0); // placeholder
+        public static final Slot0Configs STEER_MOTOR_GAINS =
+            new Slot0Configs().withKP(10).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+        public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
+            ClosedLoopOutputType.TorqueCurrentFOC;
+        public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
+            ClosedLoopOutputType.TorqueCurrentFOC;
+        public static final SteerFeedbackType FEEDBACK_SOURCE =
+            SteerFeedbackType.FusedCANcoder; // dunno if this is the best option
+        public static final double SPEED_TWELVE_VOLTS = 0;
+        public static final double SLIP_CURRENT = 0; // optional
+      }
+
       public static final class Module1 { // historically front right
         public static final int DRIVE_MOTOR = CAN.at(4, "module 1 drive motor");
         public static final int STEER_MOTOR = CAN.at(3, "module 1 steer motor");
@@ -142,8 +175,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(162.59765625 + 180) // comp bot offset
-                : -Math.toRadians(184.833984); // practice bot offset
+                ? -Math.toRadians(0) // comp bot offset
+                : -Math.toRadians(0); // practice bot offset
       }
 
       public static final class Module2 { // historically front left
@@ -153,8 +186,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(219.7265625) // comp bot offset
-                : -Math.toRadians(307.968750); // practice bot offset
+                ? -Math.toRadians(0) // comp bot offset
+                : -Math.toRadians(0); // practice bot offset
       }
 
       public static final class Module3 { // historically back left
@@ -164,8 +197,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(135.966796875) // comp bot offset
-                : -Math.toRadians(306.738281 + 180); // practice bot offset
+                ? -Math.toRadians(0) // comp bot offset
+                : -Math.toRadians(0); // practice bot offset
       }
 
       public static final class Module4 { // historically back right
@@ -175,8 +208,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(200.0390625 + 180) // comp bot offset
-                : -Math.toRadians(60.908203); // practice bot offset
+                ? -Math.toRadians(0) // comp bot offset
+                : -Math.toRadians(0); // practice bot offset
       }
     }
   }
