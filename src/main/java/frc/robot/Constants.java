@@ -132,22 +132,23 @@ public final class Constants {
     public static final class Modules {
       public static final class Params {
         // FIXME ALL PLACEHOLDERS
-        public static final double WHEEL_RADIUS = 0;
-        public static final double COUPLING_GEAR_RATIO = 0;
-        public static final double DRIVE_GEAR_RATIO = 0;
-        public static final double STEER_GEAR_RATIO = 0;
+        /* Currently use L2 gearing for alphabot, will use L3 for comp bot? Not decided? Check w/ engie */
+        public static final double WHEEL_RADIUS = 2; // FIXME 
+        public static final double COUPLING_GEAR_RATIO = 3.5714285714285716; // optional
+        public static final double DRIVE_GEAR_RATIO = 6.746031746031747; // unsure?
+        public static final double STEER_GEAR_RATIO = 12.8; // FIXME
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+            new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0); // placeholder
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+            new Slot0Configs().withKP(10).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.TorqueCurrentFOC;
+            ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.TorqueCurrentFOC;
+            ClosedLoopOutputType.Voltage;
         public static final SteerFeedbackType FEEDBACK_SOURCE =
-            SteerFeedbackType.FusedCANcoder; // dunno if this is the best option
+            SteerFeedbackType.RemoteCANcoder; // dunno if this is the best option
         public static final double SPEED_TWELVE_VOLTS = 0;
-        public static final double SLIP_CURRENT = 0;
+        public static final double SLIP_CURRENT = 0; // optional
       }
 
       public static final class Module1 { // historically front right
