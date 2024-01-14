@@ -142,11 +142,11 @@ public final class Constants {
         public static final Slot0Configs STEER_MOTOR_GAINS =
             new Slot0Configs().withKP(10).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.Voltage;
+            ClosedLoopOutputType.TorqueCurrentFOC;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.Voltage;
+            ClosedLoopOutputType.TorqueCurrentFOC;
         public static final SteerFeedbackType FEEDBACK_SOURCE =
-            SteerFeedbackType.RemoteCANcoder; // dunno if this is the best option
+            SteerFeedbackType.FusedCANcoder; // dunno if this is the best option
         public static final double SPEED_TWELVE_VOLTS = 0;
         public static final double SLIP_CURRENT = 0; // optional
       }
