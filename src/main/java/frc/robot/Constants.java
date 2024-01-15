@@ -356,4 +356,10 @@ public final class Constants {
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
   }
+
+  public static final class Intake{
+
+    public static final int INTAKE_MOTOR_PORT = 1;
+
+  }
 }
