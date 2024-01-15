@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
-  public Modes mode;
+  private Modes intakeMode;
 
   public enum Modes{
     Intake,
@@ -43,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.clearStickyFaults();
 
     //Mode to tell the motor what speed to go at
-    mode = Modes.Hold;//default to hold
+    intakeMode = Modes.Hold;//default to hold
     
     if(Config.SHOW_SHUFFLEBOARD_DEBUG_DATA){
       tab.add("intake power", intakeMotor.getMotorVoltage().asSupplier());
@@ -59,7 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void SetIntakeMotorSpeed(){//using the current mode, set the motor speed
-    switch(mode){
+    switch(intakeMode){
       case Intake:
         intakeMotor.set(Constants.Intake.INTAKE_MOTOR_SPEED);
         break;
@@ -70,5 +70,9 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.set(Constants.Intake.HOLD_MOTOR_SPEED);
         break;
     }
+  }
+
+  public void SetIntakeMode(Modes intakeMode){
+    this.intakeMode = intakeMode;
   }
 }
