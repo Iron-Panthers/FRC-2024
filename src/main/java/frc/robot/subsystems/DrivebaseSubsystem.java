@@ -123,8 +123,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
               .withDriveMotorClosedLoopOutput(Modules.Params.DRIVE_CLOSED_LOOP_OUTPUT)
               .withSteerMotorClosedLoopOutput(Modules.Params.STEER_CLOSED_LOOP_OUTPUT)
               .withFeedbackSource(Modules.Params.FEEDBACK_SOURCE)
-              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS)
-              .withSlipCurrent(Modules.Params.SLIP_CURRENT);
+              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS);
+      // .withSlipCurrent(Modules.Params.SLIP_CURRENT);
 
       // module wheel positions taken from kinematics object
       final SwerveModuleConstants frontLeft =
@@ -176,6 +176,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
     } else {
       swerveDrivetrain = null;
     }
+
     // FIXME check these values to make sure they are correct
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -223,6 +224,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("pitch", () -> swerveDrivetrain.getPigeon2().getPitch().getValueAsDouble());
       tab.addDouble("roll", () -> swerveDrivetrain.getPigeon2().getRoll().getValueAsDouble());
+      // tab.addDouble("x", () -> chassisSpeeds.vxMetersPerSecond);
+      // tab.addDouble("y", () -> chassisSpeeds.vyMetersPerSecond);
+      // tab.addDouble("rot", () -> chassisSpeeds.omegaRadiansPerSecond);
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
