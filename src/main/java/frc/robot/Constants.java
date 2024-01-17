@@ -74,7 +74,7 @@ public final class Constants {
   }
 
   public static final class Drive {
-    public static final int PIGEON_PORT = 0; // FIXME placeholder
+    public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
 
     // max voltage delivered to drivebase
@@ -146,20 +146,14 @@ public final class Constants {
       public static final class Params {
         // FIXME ALL PLACEHOLDERS
         /* Currently use L2 gearing for alphabot, will use L3 for comp bot? Not decided? Check w/ engie */
-        public static final double WHEEL_RADIUS = 2; // FIXME
-        public static final double COUPLING_GEAR_RATIO = 3.5714285714285716; // optional
-        public static final double DRIVE_GEAR_RATIO = 6.746031746031747; // unsure?
-        public static final double STEER_GEAR_RATIO = 12.8; // FIXME
+        public static final double WHEEL_RADIUS = 2; // validate
+        public static final double COUPLING_GEAR_RATIO = 3.5714285714285716;
+        public static final double DRIVE_GEAR_RATIO = 6.746031746031747;
+        public static final double STEER_GEAR_RATIO = 12.8;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs()
-                .withKP(3)
-                .withKI(0)
-                .withKD(0)
-                .withKS(0)
-                .withKV(0)
-                .withKA(0); // placeholder
+            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.TorqueCurrentFOC;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
