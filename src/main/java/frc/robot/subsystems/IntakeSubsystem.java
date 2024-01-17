@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
-import frc.robot.Constants.Intake;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -25,10 +24,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private Modes intakeMode;
 
   public enum Modes {
-    Intake,
-    Outtake,
-    Hold,
-    Idle
+    INTAKE,
+    OUTTAKE,
+    HOLD,
+    IDLE
   }
 
   /** Creates a new IntakeSubsystem. */
@@ -40,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.clearStickyFaults();
 
     // Mode to tell the motor what speed to go at
-    intakeMode = Modes.Hold; // default to hold
+    intakeMode = Modes.HOLD; // default to hold
 
     // Beam break code - once the beam is broken we need to hold the piece in place.
     noteSensor = new DigitalInput(Constants.Intake.INTAKE_SENSOR_PORT);
@@ -55,32 +54,32 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // check for a beam break
     if (noteSensor.get()) { // if the beam is broken
-      intakeMode = Modes.Hold; // set the mode to hold to hold the note
+      intakeMode = Modes.HOLD; // set the mode to hold to hold the note
     }
 
-    SetIntakeMotorSpeed();
+    setIntakeMotorSpeed();
 
-    SetIntakeMotorSpeed();
+    setIntakeMotorSpeed();
   }
 
-  public void SetIntakeMotorSpeed() { // using the current mode, set the motor speed
+  public void setIntakeMotorSpeed() { // using the current mode, set the motor speed
     switch (intakeMode) {
-      case Intake:
+      case INTAKE:
         intakeMotor.set(Constants.Intake.INTAKE_MOTOR_SPEED);
         break;
-      case Outtake:
+      case OUTTAKE:
         intakeMotor.set(Constants.Intake.OUTTAKE_MOTOR_SPEED);
         break;
-      case Hold:
+      case HOLD:
         intakeMotor.set(Constants.Intake.HOLD_MOTOR_SPEED);
         break;
-      case Idle:
+      case IDLE:
         intakeMotor.set(Constants.Intake.IDLE_MOTOR_SPEED);
         break;
     }
   }
 
-  public void SetIntakeMode(Modes intakeMode) {
+  public void setIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;
   }
 }
