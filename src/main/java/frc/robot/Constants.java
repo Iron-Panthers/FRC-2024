@@ -360,6 +360,7 @@ public final class Constants {
   public static final class Intake{
 
     public static final int INTAKE_MOTOR_PORT = 1;
+    public static final int INTAKE_SENSOR_PORT = 2;
 
     public static final double INTAKE_MOTOR_SPEED = 1;
     public static final double OUTTAKE_MOTOR_SPEED = 1;

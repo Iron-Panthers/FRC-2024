@@ -11,10 +11,12 @@ import static org.mockito.Mockito.mock;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Intake;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +26,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeMotor;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+
+  private final DigitalInput noteSensor;
 
   private Modes intakeMode;
 
@@ -45,6 +49,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     //Mode to tell the motor what speed to go at
     intakeMode = Modes.Hold;//default to hold
+
+    //Beam break code - once the beam is broken we need to hold the piece in place.
+    noteSensor = new DigitalInput(Constants.Intake.INTAKE_SENSOR_PORT);
     
     if(Config.SHOW_SHUFFLEBOARD_DEBUG_DATA){
       tab.add("intake power", intakeMotor.getMotorVoltage().asSupplier());
@@ -55,6 +62,11 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     
+    //check for a beam break
+    if(noteSensor.get()){//if the beam is broken
+      intakeMode = Modes.Hold;//set the mode to hold to hold the note
+    }
+
     SetIntakeMotorSpeed();
 
   }
