@@ -30,7 +30,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public enum Modes{
     Intake,
     Outtake,
-    Hold
+    Hold,
+    Idle
   }
 
 
@@ -68,6 +69,9 @@ public class IntakeSubsystem extends SubsystemBase {
         break;
       case Hold:
         intakeMotor.set(Constants.Intake.HOLD_MOTOR_SPEED);
+        break;
+      case Idle:
+        intakeMotor.set(Constants.Intake.IDLE_MOTOR_SPEED);
         break;
     }
   }

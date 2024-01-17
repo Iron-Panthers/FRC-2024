@@ -364,6 +364,7 @@ public final class Constants {
     public static final double INTAKE_MOTOR_SPEED = 1;
     public static final double OUTTAKE_MOTOR_SPEED = 1;
     public static final double HOLD_MOTOR_SPEED = 0;
+    public static final double IDLE_MOTOR_SPEED = 0;
 
   }
 }
