@@ -153,7 +153,7 @@ public final class Constants {
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
             new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(100).withKI(0).withKD(0.2).withKS(0).withKV(1.5).withKA(0);
+            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.TorqueCurrentFOC;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =

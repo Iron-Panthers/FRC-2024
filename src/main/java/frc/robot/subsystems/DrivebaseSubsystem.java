@@ -224,9 +224,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("pitch", () -> swerveDrivetrain.getPigeon2().getPitch().getValueAsDouble());
       tab.addDouble("roll", () -> swerveDrivetrain.getPigeon2().getRoll().getValueAsDouble());
-      // tab.addDouble("x", () -> chassisSpeeds.vxMetersPerSecond);
-      // tab.addDouble("y", () -> chassisSpeeds.vyMetersPerSecond);
-      // tab.addDouble("rot", () -> chassisSpeeds.omegaRadiansPerSecond);
+      tab.addDouble("x", () -> chassisSpeeds.vxMetersPerSecond);
+      tab.addDouble("y", () -> chassisSpeeds.vyMetersPerSecond);
+      tab.addDouble("rot", () -> chassisSpeeds.omegaRadiansPerSecond);
+      tab.addDouble("relx", () -> getRobotRelativeSpeeds().vxMetersPerSecond);
+      tab.addDouble("rely", () -> getRobotRelativeSpeeds().vyMetersPerSecond);
+      tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
@@ -244,6 +247,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   public ChassisSpeeds getChassisSpeeds() {
     return chassisSpeeds;
+  }
+
+    /** Return current robot-relative ChassisSpeeds**/
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return kinematics.toChassisSpeeds(swerveDrivetrain.getState().ModuleStates);
   }
 
   private SwerveModulePosition[] getSwerveModulePositions() {
