@@ -35,17 +35,20 @@ public class ShooterSubsystem extends SubsystemBase {
     this.targetDegrees = targetDegrees;
     pidController.setSetpoint(targetDegrees);
   }
-  public static double degreesToTicks(double angle) {
+  private static double degreesToTicks(double angle) {
     return (angle * 360d) / (Shooter.WRIST_GEAR_RATIO) / (Shooter.TICKS);
   }
-  public static double ticksToDegrees(double ticks) {
+  private static double ticksToDegrees(double ticks) {
     return ((ticks / Shooter.TICKS / (Shooter.WRIST_GEAR_RATIO) * 360));
   }
   private double getCurrentAngle() {
     return ticksToDegrees(wristMotor.getPosition().getValue());
   }
-  //roller methods
-  
+  //sensor methods
+  public static boolean isDone(){
+    //is sensor triggered?
+    return false;
+  }
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle());
