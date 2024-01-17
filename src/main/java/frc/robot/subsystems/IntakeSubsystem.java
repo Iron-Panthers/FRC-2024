@@ -4,22 +4,15 @@
 
 package frc.robot.subsystems;
 
-
-
-import static org.mockito.Mockito.mock;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-
-import frc.robot.Constants;
-import frc.robot.Constants.Config;
-import frc.robot.Constants.Intake;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Config;
+import frc.robot.Constants.Intake;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -31,13 +24,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private Modes intakeMode;
 
-  public enum Modes{
+  public enum Modes {
     Intake,
     Outtake,
     Hold,
     Idle
   }
-
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -47,32 +39,32 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeMotor.clearStickyFaults();
 
-    //Mode to tell the motor what speed to go at
-    intakeMode = Modes.Hold;//default to hold
+    // Mode to tell the motor what speed to go at
+    intakeMode = Modes.Hold; // default to hold
 
-    //Beam break code - once the beam is broken we need to hold the piece in place.
+    // Beam break code - once the beam is broken we need to hold the piece in place.
     noteSensor = new DigitalInput(Constants.Intake.INTAKE_SENSOR_PORT);
-    
-    if(Config.SHOW_SHUFFLEBOARD_DEBUG_DATA){
+
+    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.add("intake power", intakeMotor.getMotorVoltage().asSupplier());
     }
-
   }
 
   @Override
   public void periodic() {
-    
-    //check for a beam break
-    if(noteSensor.get()){//if the beam is broken
-      intakeMode = Modes.Hold;//set the mode to hold to hold the note
+
+    // check for a beam break
+    if (noteSensor.get()) { // if the beam is broken
+      intakeMode = Modes.Hold; // set the mode to hold to hold the note
     }
 
     SetIntakeMotorSpeed();
 
+    SetIntakeMotorSpeed();
   }
 
-  public void SetIntakeMotorSpeed(){//using the current mode, set the motor speed
-    switch(intakeMode){
+  public void SetIntakeMotorSpeed() { // using the current mode, set the motor speed
+    switch (intakeMode) {
       case Intake:
         intakeMotor.set(Constants.Intake.INTAKE_MOTOR_SPEED);
         break;
@@ -88,7 +80,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-  public void SetIntakeMode(Modes intakeMode){
+  public void SetIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;
   }
 }
