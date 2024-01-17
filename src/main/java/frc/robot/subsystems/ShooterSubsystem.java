@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.Constants.Shooter;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -19,6 +21,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetDegrees;
   private double wristMotorPower;
   private double rollerMotorPower;
+  private double currentTime;
+  private double startTime;
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.WRIST_MOTOR_PORT); 
@@ -28,8 +32,10 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotor.setNeutralMode(NeutralModeValue.Brake);
     pidController = new PIDController(0.1, 0, 0);
-    
+    startTime = 0;
   }
+
+
   //wrist methods
   public void setTargetDegrees(double targetDegrees){
     this.targetDegrees = targetDegrees;
@@ -44,16 +50,38 @@ public class ShooterSubsystem extends SubsystemBase {
   private double getCurrentAngle() {
     return ticksToDegrees(wristMotor.getPosition().getValue());
   }
-  //sensor methods
-  public static boolean isDone(){
-    //is sensor triggered?
+  //other methods
+  public double getCurrentTime(){
+        return Timer.getFPGATimestamp();
+  }
+  public boolean atTargetDegrees(){
+    if (Math.abs(getCurrentAngle() - targetDegrees)<1) {
+      return true;
+    }
     return false;
+  }
+  public boolean isDone(){
+    
+    if (getCurrentTime()- startTime>3000){
+          return true;
+    }
+    return false;
+
   }
   @Override
   public void periodic() {
-    wristMotorPower = pidController.calculate(getCurrentAngle());
+    if (!atTargetDegrees()){
+      wristMotorPower = pidController.calculate(getCurrentAngle());
+    
     wristMotor.set(wristMotorPower);
-    rollerMotor.set(rollerMotorPower);
+    }
+    else{
+      if (startTime == 0){
+        startTime = getCurrentTime();
+      }
+      rollerMotor.set(rollerMotorPower);
+    }
+
     // This method will be called once per scheduler run
 
   }
