@@ -123,8 +123,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
               .withDriveMotorClosedLoopOutput(Modules.Params.DRIVE_CLOSED_LOOP_OUTPUT)
               .withSteerMotorClosedLoopOutput(Modules.Params.STEER_CLOSED_LOOP_OUTPUT)
               .withFeedbackSource(Modules.Params.FEEDBACK_SOURCE)
-              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS)
-              .withSlipCurrent(Modules.Params.SLIP_CURRENT);
+              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS);
+              // .withSlipCurrent(Modules.Params.SLIP_CURRENT);
 
       // module wheel positions taken from kinematics object
       final SwerveModuleConstants frontLeft =
@@ -176,25 +176,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
     } else {
       swerveDrivetrain = null;
     }
-    // FIXME check these values to make sure they are correct
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        this::resetOdometryToPose,
-        this::getChassisSpeeds,
-        null,
-        Constants.Config.PATH_FOLLOWER_CONFIG,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this);
 
     rotController = new PIDController(0.03, 0.001, 0.003);
     rotController.setSetpoint(0);
@@ -213,6 +194,26 @@ public class DrivebaseSubsystem extends SubsystemBase {
             PoseEstimator.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
 
     zeroGyroscope();
+    
+    // FIXME check these values to make sure they are correct
+    AutoBuilder.configureHolonomic(
+        this::getPose,
+        this::resetOdometryToPose,
+        this::getRobotRelativeSpeeds,
+        null,
+        Constants.Config.PATH_FOLLOWER_CONFIG,
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
 
     // tab.addNumber("target angle", () -> targetAngle);
     // tab.addNumber("current angle", () -> getGyroscopeRotation().getDegrees());
@@ -223,6 +224,10 @@ public class DrivebaseSubsystem extends SubsystemBase {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("pitch", () -> swerveDrivetrain.getPigeon2().getPitch().getValueAsDouble());
       tab.addDouble("roll", () -> swerveDrivetrain.getPigeon2().getRoll().getValueAsDouble());
+      tab.addDouble("x", () -> getChassisSpeeds().vxMetersPerSecond);
+      tab.addDouble("y", () -> getChassisSpeeds().vyMetersPerSecond);
+      tab.addDouble("relx", () -> getRobotRelativeSpeeds().vxMetersPerSecond);
+      tab.addDouble("rely", () -> getRobotRelativeSpeeds().vyMetersPerSecond);
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
@@ -240,6 +245,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   public ChassisSpeeds getChassisSpeeds() {
     return chassisSpeeds;
+  }
+
+  /** Return current robot-relative ChassisSpeeds**/
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return kinematics.toChassisSpeeds(swerveDrivetrain.getState().ModuleStates);
   }
 
   private SwerveModulePosition[] getSwerveModulePositions() {

@@ -87,6 +87,8 @@ public final class Constants {
             / 60.0
             //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
             //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            * ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0))
+            * 0.10033
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally
@@ -150,21 +152,21 @@ public final class Constants {
         public static final double STEER_GEAR_RATIO = 12.8; // FIXME
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
             new Slot0Configs()
-                .withKP(0.2)
+                .withKP(3)
                 .withKI(0)
                 .withKD(0)
                 .withKS(0)
                 .withKV(0)
                 .withKA(0); // placeholder
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(10).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+            new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.TorqueCurrentFOC;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.TorqueCurrentFOC;
         public static final SteerFeedbackType FEEDBACK_SOURCE =
             SteerFeedbackType.FusedCANcoder; // dunno if this is the best option
-        public static final double SPEED_TWELVE_VOLTS = 0;
+        public static final double SPEED_TWELVE_VOLTS = 6;
         public static final double SLIP_CURRENT = 0; // optional
       }
 
