@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
@@ -76,7 +77,7 @@ public class RobotContainer {
   private final CommandXboxController anthony = new CommandXboxController(0);
 
   /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
+  private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
 
   private GenericEntry autoDelay;
 
@@ -256,13 +257,7 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    if (Config.RUN_PATHPLANNER_SERVER) {
-      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
-    }
-
-    driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
-
-    final Map<String, Command> eventMap = Map.of();
+    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(3, 1).withPosition(0, 0);
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 
@@ -282,11 +277,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    double delay = autoDelay.getDouble(0);
+    return delay == 0
+        ? autoSelector.getSelected()
+        : new WaitCommand(delay).andThen(autoSelector.getSelected());
   }
 
   /**

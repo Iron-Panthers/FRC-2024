@@ -43,12 +43,6 @@ import java.util.Set;
 public final class Constants {
 
   public static final class Config {
-    /** turn this off before comp. */
-    public static final boolean RUN_PATHPLANNER_SERVER =
-        // never run pathplanner server in simulation, it will fail unit tests (???)
-        Config.SHOW_SHUFFLEBOARD_DEBUG_DATA
-            && HALUtil.getHALRuntimeType() != HALUtil.RUNTIME_SIMULATION;
-
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
