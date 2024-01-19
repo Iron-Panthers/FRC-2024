@@ -81,8 +81,8 @@ public final class Constants {
             / 60.0
             //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
             //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
-            * ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0))
-            * 0.10033
+            * ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)) // drive reduction
+            * 0.10033 // wheel diameter
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally

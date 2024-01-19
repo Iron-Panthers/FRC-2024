@@ -124,7 +124,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
               .withSteerMotorClosedLoopOutput(Modules.Params.STEER_CLOSED_LOOP_OUTPUT)
               .withFeedbackSource(Modules.Params.FEEDBACK_SOURCE)
               .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS);
-              // .withSlipCurrent(Modules.Params.SLIP_CURRENT);
+      // .withSlipCurrent(Modules.Params.SLIP_CURRENT);
 
       // module wheel positions taken from kinematics object
       final SwerveModuleConstants frontLeft =
@@ -194,7 +194,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
             PoseEstimator.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
 
     zeroGyroscope();
-    
+
     AutoBuilder.configureHolonomic(
         this::getPose,
         this::resetOdometryToPose,
@@ -246,7 +246,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return chassisSpeeds;
   }
 
-  /** Return current robot-relative ChassisSpeeds**/
+  /** Return current robot-relative ChassisSpeeds **/
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return kinematics.toChassisSpeeds(swerveDrivetrain.getState().ModuleStates);
   }
