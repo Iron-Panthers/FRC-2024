@@ -249,7 +249,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return chassisSpeeds;
   }
 
-    /** Return current robot-relative ChassisSpeeds**/
+    /** Return current robot-relative ChassisSpeeds **/
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return kinematics.toChassisSpeeds(swerveDrivetrain.getState().ModuleStates);
   }
