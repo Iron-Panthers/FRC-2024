@@ -399,8 +399,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   private void drivePeriodic() {
-    chassisSpeedRequest.withSpeeds(chassisSpeeds);
-    swerveDrivetrain.setControl(chassisSpeedRequest);
+    swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(chassisSpeeds));
   }
 
   // called in drive to angle mode
@@ -492,15 +491,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
               swervePoseEstimator.getEstimatedPosition().getY(),
               swervePoseEstimator.getEstimatedPosition().getRotation().getDegrees()));
     }
-
-    /*
-     * See if there is a new drive signal from the trajectory follower object.
-     * An Optional means that this value might be "present" or not exist (be null),
-     * but provides somewhat more convenient semantics for checking if there is a
-     * value or not without a great risk of causing an Exception.
-     */
-
-    /* If there is a trajectory signal, overwrite the current chassis speeds setpoint to that trajectory value*/
 
     /* Write outputs, corresponding to our current Mode of operation */
     updateModules(currentMode);
