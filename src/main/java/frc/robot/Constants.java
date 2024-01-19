@@ -356,4 +356,10 @@ public final class Constants {
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
   }
+
+  public static final class Climber {
+    public static final class Ports {
+      public static final int CLIMBER_MOTOR_PORT = 0;
+    }
+  }
 }
