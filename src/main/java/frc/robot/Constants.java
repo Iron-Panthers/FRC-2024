@@ -361,5 +361,9 @@ public final class Constants {
     public static final class Ports {
       public static final int CLIMBER_MOTOR_PORT = 0;
     }
+
+    public static final int FALCON_CPR = 2048;
+    public static final double CLIMBER_GEAR_RATIO = 1;
+    public static final int ZERO_STATOR_LIMIT = 25;
   }
 }
