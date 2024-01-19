@@ -16,6 +16,7 @@ import frc.robot.Constants.Config;
 public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
+  private final TalonFX serializerMotor;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
@@ -33,10 +34,15 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
-
-    intakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    serializerMotor = new TalonFX(Constants.Intake.SERIALIZER_MOTOR_PORT);
 
     intakeMotor.clearStickyFaults();
+    serializerMotor.clearStickyFaults();
+
+    intakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    serializerMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    serializerMotor.setInverted(true);//invert the motor
 
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
