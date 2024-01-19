@@ -51,7 +51,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climberTab.addDouble("Current Extension", () -> currentExtension);
     climberTab.addDouble("Filter Output", () -> filterOutput);
     climberTab.addDouble("Current Motor Power", () -> climberMotor.get());
-    climberTab.addDouble("Stator Current", () -> climberMotor.getStatorCurrent().getValueAsDouble());
+    climberTab.addDouble(
+        "Stator Current", () -> climberMotor.getStatorCurrent().getValueAsDouble());
     climberTab.add("PID Controller", climberController);
     climberTab.addString("Current Mode", () -> currentMode.toString());
   }

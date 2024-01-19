@@ -363,7 +363,7 @@ public final class Constants {
     }
 
     public static final int FALCON_CPR = 2048;
-    public static final double CLIMBER_GEAR_RATIO = 1;
+    public static final double CLIMBER_GEAR_RATIO = 1; // FIXME These values are placeholders
     public static final int ZERO_STATOR_LIMIT = 25;
   }
 }

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
+import frc.robot.commands.ClimberManualCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
@@ -29,6 +30,7 @@ import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
@@ -36,9 +38,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
-import frc.util.NodeSelectorUtility;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
 import frc.util.Util;
 import java.util.Map;
@@ -81,6 +80,8 @@ public class RobotContainer {
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
+
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -170,6 +171,9 @@ public class RobotContainer {
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+
+    climberSubsystem.setDefaultCommand(
+        new ClimberManualCommand(climberSubsystem, jacob::getRightY));
 
     DoubleSupplier rotation =
         exponential(
