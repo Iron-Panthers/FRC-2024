@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -31,7 +30,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private Modes currentMode;
   private TalonFXConfiguration climberConfig;
   private MotionMagicConfigs motionMagicConfigs;
-  private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);// create a Motion Magic request, voltage output
+  private final MotionMagicVoltage m_request =
+      new MotionMagicVoltage(0); // create a Motion Magic request, voltage output
   private final ShuffleboardTab climberTab = Shuffleboard.getTab("Climber tab");
 
   public enum Modes {
@@ -50,7 +50,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.setNeutralMode(NeutralModeValue.Brake);
     climberMotor.setPosition(0);
 
-    //Motion Magic Configuration
+    // Motion Magic Configuration
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
 
     motionMagicConfigs.MotionMagicAcceleration = Constants.Climber.MotionMagicConstants.MotionMagicAcceleration; // These values are in RPS
@@ -62,7 +62,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberConfig.Slot0.kI = Constants.Climber.MotionMagicConstants.kI;
     climberConfig.Slot0.kD = Constants.Climber.MotionMagicConstants.kD;
 
-    climberMotor.getConfigurator().apply(climberConfig);//put the configuration on the motor
+    climberMotor.getConfigurator().apply(climberConfig); // put the configuration on the motor
 
     filter = LinearFilter.movingAverage(30);
 
@@ -105,23 +105,28 @@ public class ClimberSubsystem extends SubsystemBase {
   public double getCurrentTicks() {
     return climberMotor.getPosition().getValueAsDouble();
   }
-  
+
   public double currentExtensionInchesToTicks() {
-    return getCurrentExtension() * Climber.FALCON_CPR * Climber.CLIMBER_GEAR_RATIO;
+    return getCurrentExtension()
+        * Climber.FALCON_CPR
+        / Climber.CLIMBER_GEAR_RATIO
+        / (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
   public double ticksToExtensionInches() {
-    return getCurrentTicks() / Climber.FALCON_CPR / Climber.CLIMBER_GEAR_RATIO;
+    return getCurrentTicks()
+        / Climber.FALCON_CPR
+        * Climber.CLIMBER_GEAR_RATIO
+        * (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
   public double extensionInchesToRotations(double inches) {
     return inches * Climber.CLIMBER_GEAR_RATIO;
   }
 
-
   private void positionDrivePeriodic() {
     climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));
-        //MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
+    // MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
   }
 
   private void percentDrivePeriodic() {
