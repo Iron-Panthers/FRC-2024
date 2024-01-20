@@ -11,6 +11,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ApplyChassisSpeeds;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -78,7 +80,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(); // defaults to zeros
 
   /* Requests to pass to SwerveDrivetrain objects */
-  private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds();
+  private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.OpenLoopVoltage).withSteerRequestType(SteerRequestType.MotionMagic);
   private SwerveDriveBrake swerveBrakeRequest = new SwerveDriveBrake();
 
   /** The modes of the drivebase subsystem */
@@ -230,6 +232,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("relx", () -> getRobotRelativeSpeeds().vxMetersPerSecond);
       tab.addDouble("rely", () -> getRobotRelativeSpeeds().vyMetersPerSecond);
       tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
+      tab.addDouble("steermotor", () -> Constants.Drive.Modules.Module1.STEER_MOTOR);
+      tab.addDouble("drivemotor", () -> Constants.Drive.Modules.Module1.DRIVE_MOTOR);
+      tab.addDouble("encoderid", () -> Constants.Drive.Modules.Module1.STEER_ENCODER);
+      tab.addDouble("encoderoffset", () -> Constants.Drive.Modules.Module1.STEER_OFFSET);
+      tab.addDouble("steer kP", () -> Constants.Drive.Modules.Params.STEER_MOTOR_GAINS.kP);
+
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
@@ -399,7 +407,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   private void drivePeriodic() {
-    swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(chassisSpeeds));
+    //swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(new ChassisSpeeds(0, 0 , 1)));
+    //swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(chassisSpeeds));
+    swerveDrivetrain.setControl(chassisSpeedRequest);
   }
 
   // called in drive to angle mode
