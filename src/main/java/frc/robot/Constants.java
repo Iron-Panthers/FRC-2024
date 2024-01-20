@@ -362,7 +362,7 @@ public final class Constants {
       public static final int CLIMBER_MOTOR_PORT = 0;
     }
 
-    public static final class MotionMagicConstants{
+    public static final class MotionMagicConstants {
       public static final double MotionMagicAcceleration = 1000; // These values are in RPS
       public static final double MotionMagicCruiseVelocity = 1000;
       public static final double kS = 0;
@@ -371,10 +371,10 @@ public final class Constants {
       public static final double kP = 0;
       public static final double kI = 0;
       public static final double kD = 0;
-    } 
+    }
 
     public static final int FALCON_CPR = 2048;
-    public static final double CLIMBER_GEAR_RATIO = 1/75; 
+    public static final double CLIMBER_GEAR_RATIO = 1 / 75;
     public static final int ZERO_STATOR_LIMIT = 25; // FIXME These values are placeholders
     public static final double SPROCKET_DIAMETER = 1;
   }

@@ -53,8 +53,10 @@ public class ClimberSubsystem extends SubsystemBase {
     // Motion Magic Configuration
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
 
-    motionMagicConfigs.MotionMagicAcceleration = Constants.Climber.MotionMagicConstants.MotionMagicAcceleration; // These values are in RPS
-    motionMagicConfigs.MotionMagicCruiseVelocity = Constants.Climber.MotionMagicConstants.MotionMagicCruiseVelocity;
+    motionMagicConfigs.MotionMagicAcceleration =
+        Constants.Climber.MotionMagicConstants.MotionMagicAcceleration; // These values are in RPS
+    motionMagicConfigs.MotionMagicCruiseVelocity =
+        Constants.Climber.MotionMagicConstants.MotionMagicCruiseVelocity;
     climberConfig.Slot0.kS = Constants.Climber.MotionMagicConstants.kS;
     climberConfig.Slot0.kV = Constants.Climber.MotionMagicConstants.kV;
     climberConfig.Slot0.kA = Constants.Climber.MotionMagicConstants.kA;
@@ -121,7 +123,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public double extensionInchesToRotations(double inches) {
-    return inches * Climber.CLIMBER_GEAR_RATIO;
+    return inches / Climber.CLIMBER_GEAR_RATIO / (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
   private void positionDrivePeriodic() {
