@@ -16,6 +16,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Climber;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -52,14 +53,14 @@ public class ClimberSubsystem extends SubsystemBase {
     //Motion Magic Configuration
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
 
-    motionMagicConfigs.MotionMagicAcceleration = 1000; // These values are in RPS
-    motionMagicConfigs.MotionMagicCruiseVelocity = 1000;
-    climberConfig.Slot0.kS = 0;
-    climberConfig.Slot0.kV = 0;
-    climberConfig.Slot0.kA = 0;
-    climberConfig.Slot0.kP = 0;
-    climberConfig.Slot0.kI = 0;
-    climberConfig.Slot0.kD = 0;
+    motionMagicConfigs.MotionMagicAcceleration = Constants.Climber.MotionMagicConstants.MotionMagicAcceleration; // These values are in RPS
+    motionMagicConfigs.MotionMagicCruiseVelocity = Constants.Climber.MotionMagicConstants.MotionMagicCruiseVelocity;
+    climberConfig.Slot0.kS = Constants.Climber.MotionMagicConstants.kS;
+    climberConfig.Slot0.kV = Constants.Climber.MotionMagicConstants.kV;
+    climberConfig.Slot0.kA = Constants.Climber.MotionMagicConstants.kA;
+    climberConfig.Slot0.kP = Constants.Climber.MotionMagicConstants.kP;
+    climberConfig.Slot0.kI = Constants.Climber.MotionMagicConstants.kI;
+    climberConfig.Slot0.kD = Constants.Climber.MotionMagicConstants.kD;
 
     climberMotor.getConfigurator().apply(climberConfig);//put the configuration on the motor
 
