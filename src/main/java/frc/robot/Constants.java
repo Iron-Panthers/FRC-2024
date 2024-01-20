@@ -356,11 +356,12 @@ public final class Constants {
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
   }
+
   public static final class Shooter {
     public static final int WRIST_MOTOR_PORT = 0; // fix me
-    public static final int SHOOTER_MOTOR_PORT = 0; //fix me
-    public static final double WRIST_GEAR_RATIO = 1; //fix me
-    public static final double TICKS = 2048; 
+    public static final int SHOOTER_MOTOR_PORT = 0; // fix me
+    public static final double WRIST_GEAR_RATIO = 1; // fix me
+    public static final double TICKS = 2048;
     public static final double TARGET_ANGLE = 0;
   }
 }
