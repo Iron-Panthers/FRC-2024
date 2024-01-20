@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
@@ -29,6 +30,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private Modes currentMode;
   private TalonFXConfiguration climberConfig;
   private MotionMagicConfigs motionMagicConfigs;
+  private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);// create a Motion Magic request, voltage output
   private final ShuffleboardTab climberTab = Shuffleboard.getTab("Climber tab");
 
   public enum Modes {
@@ -47,6 +49,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.setNeutralMode(NeutralModeValue.Brake);
     climberMotor.setPosition(0);
 
+    //Motion Magic Configuration
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
 
     motionMagicConfigs.MotionMagicAcceleration = 1000; // These values are in RPS
@@ -58,7 +61,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberConfig.Slot0.kI = 0;
     climberConfig.Slot0.kD = 0;
 
-    climberMotor.getConfigurator().apply(climberConfig);
+    climberMotor.getConfigurator().apply(climberConfig);//put the configuration on the motor
 
     filter = LinearFilter.movingAverage(30);
 
@@ -101,7 +104,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public double getCurrentTicks() {
     return climberMotor.getPosition().getValueAsDouble();
   }
-
+  
   public double currentExtensionInchesToTicks() {
     return getCurrentExtension() * Climber.FALCON_CPR * Climber.CLIMBER_GEAR_RATIO;
   }
@@ -110,9 +113,14 @@ public class ClimberSubsystem extends SubsystemBase {
     return getCurrentTicks() / Climber.FALCON_CPR / Climber.CLIMBER_GEAR_RATIO;
   }
 
+  public double extensionInchesToRotations(double inches) {
+    return inches * Climber.CLIMBER_GEAR_RATIO;
+  }
+
+
   private void positionDrivePeriodic() {
-    climberMotor.set(
-        MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
+    climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));
+        //MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
   }
 
   private void percentDrivePeriodic() {
@@ -138,10 +146,13 @@ public class ClimberSubsystem extends SubsystemBase {
     switch (currentMode) {
       case PERCENT_CONTROL:
         percentDrivePeriodic();
+        break;
       case POSITION_CONTROL:
         positionDrivePeriodic();
+        break;
       case ZERO:
         zeroPeriodic();
+        break;
     }
   }
 }
