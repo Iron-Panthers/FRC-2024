@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -46,7 +43,10 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.setNeutralMode(NeutralModeValue.Brake);
     serializerMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    serializerMotor.setControl(new Follower(intakeMotor.getDeviceID(), true));//set serializer motor to follow the intake motor and also be inverted
+    serializerMotor.setControl(
+        new Follower(
+            intakeMotor.getDeviceID(),
+            true)); // set serializer motor to follow the intake motor and also be inverted
 
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
@@ -55,7 +55,9 @@ public class IntakeSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(Constants.Intake.INTAKE_SENSOR_PORT);
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.add("intake power", intakeMotor.getMotorVoltage().asSupplier());
+      tab.addDouble("intake power", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
+      tab.addBoolean("Note Sensor Output", () -> noteSensor.get());
+      tab.addString("Current Mode", () -> intakeMode.toString());
     }
   }
 
