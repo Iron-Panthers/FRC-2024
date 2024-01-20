@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
@@ -25,6 +27,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private LinearFilter filter;
   private PIDController climberController;
   private Modes currentMode;
+  private TalonFXConfiguration climberConfig;
+  private MotionMagicConfigs motionMagicConfigs;
   private final ShuffleboardTab climberTab = Shuffleboard.getTab("Climber tab");
 
   public enum Modes {
@@ -36,12 +40,25 @@ public class ClimberSubsystem extends SubsystemBase {
   /** Creates a new Climber. */
   public ClimberSubsystem() {
     climberMotor = new TalonFX(Climber.Ports.CLIMBER_MOTOR_PORT);
+    climberConfig = new TalonFXConfiguration();
+    motionMagicConfigs = climberConfig.MotionMagic;
 
     climberMotor.clearStickyFaults();
     climberMotor.setNeutralMode(NeutralModeValue.Brake);
     climberMotor.setPosition(0);
 
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
+
+    motionMagicConfigs.MotionMagicAcceleration = 1000; // These values are in RPS
+    motionMagicConfigs.MotionMagicCruiseVelocity = 1000;
+    climberConfig.Slot0.kS = 0;
+    climberConfig.Slot0.kV = 0;
+    climberConfig.Slot0.kA = 0;
+    climberConfig.Slot0.kP = 0;
+    climberConfig.Slot0.kI = 0;
+    climberConfig.Slot0.kD = 0;
+
+    climberMotor.getConfigurator().apply(climberConfig);
 
     filter = LinearFilter.movingAverage(30);
 
@@ -66,7 +83,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setPercentPower(double percentPower) {
-    this.percentPower = percentPower;
+    this.percentPower = MathUtil.clamp(percentPower, -1, 1);
   }
 
   public double getFilterOutput() {
@@ -85,11 +102,11 @@ public class ClimberSubsystem extends SubsystemBase {
     return climberMotor.getPosition().getValueAsDouble();
   }
 
-  public double extensionInchesToTicks(double inches) {
+  public double currentExtensionInchesToTicks() {
     return getCurrentExtension() * Climber.FALCON_CPR * Climber.CLIMBER_GEAR_RATIO;
   }
 
-  public double ticksToExtensionInches(double ticks) {
+  public double ticksToExtensionInches() {
     return getCurrentTicks() / Climber.FALCON_CPR / Climber.CLIMBER_GEAR_RATIO;
   }
 
@@ -115,7 +132,7 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    currentExtension = ticksToExtensionInches(climberMotor.getPosition().getValueAsDouble());
+    currentExtension = ticksToExtensionInches();
     filterOutput = filter.calculate(filterOutput);
 
     switch (currentMode) {
