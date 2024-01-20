@@ -38,6 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shuffleboard.addDouble("Target Wrist Power", () -> wristMotorPower);
     shuffleboard.addDouble("Target Roller Power", () -> rollerMotorPower);
     shuffleboard.addDouble("Wrist Motor Angle", this::getCurrentAngle);
+    shuffleboard.addDouble("Target Angle", () -> targetDegrees);
     shuffleboard.add("PID", pidController);
   }
   // wrist methods
@@ -46,8 +47,12 @@ public class ShooterSubsystem extends SubsystemBase {
     pidController.setSetpoint(targetDegrees);
   }
 
+  public void setRollerPower(double rollerMotorPower) {
+    this.rollerMotorPower = rollerMotorPower;
+  }
+
   private static double degreesToTicks(double angle) {
-    return (angle * 360d) / (Shooter.WRIST_GEAR_RATIO) / (Shooter.TICKS);
+    return (angle * 360) / (Shooter.WRIST_GEAR_RATIO) / (Shooter.TICKS);
   }
 
   private static double ticksToDegrees(double ticks) {
@@ -69,6 +74,5 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotor.set(wristMotorPower);
     rollerMotor.set(rollerMotorPower);
     // This method will be called once per scheduler run
-
   }
 }

@@ -5,23 +5,28 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Shooter;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   ShooterSubsystem shooterSubsystem;
 
-  public ShooterCommand(ShooterSubsystem shooterSubsystem) {
+  double targetAngle;
+  double rollerPower;
+
+  public ShooterCommand(ShooterSubsystem shooterSubsystem, double targetAngle, double rollerPower) {
     // Use addRequirements() here to declare subsystem dependencies.
     shooterSubsystem = new ShooterSubsystem();
+    this.targetAngle = targetAngle;
+    this.rollerPower = rollerPower;
     addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTargetDegrees(Shooter.TARGET_ANGLE);
+    shooterSubsystem.setTargetDegrees(targetAngle);
+    shooterSubsystem.setRollerPower(rollerPower);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override

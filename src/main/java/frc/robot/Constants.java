@@ -358,9 +358,9 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int WRIST_MOTOR_PORT = 0; // fix me
-    public static final int SHOOTER_MOTOR_PORT = 0; // fix me
-    public static final double WRIST_GEAR_RATIO = 1; // fix me
+    public static final int WRIST_MOTOR_PORT = 0; // FIXME These values are placeholders
+    public static final int SHOOTER_MOTOR_PORT = 0;
+    public static final double WRIST_GEAR_RATIO = 1;
     public static final double TICKS = 2048;
     public static final double TARGET_ANGLE = 0;
   }

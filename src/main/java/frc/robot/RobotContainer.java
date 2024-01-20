@@ -106,7 +106,8 @@ public class RobotContainer {
             translationYSupplier,
             // anthony.rightBumper(),
             anthony.leftBumper()));
-    jacob.rightTrigger().onTrue(new ShooterCommand(shooterSubsystem));
+    jacob.rightTrigger().onTrue(new ShooterCommand(shooterSubsystem, 0, 0));
+    jacob.leftTrigger().onTrue(new ShooterCommand(shooterSubsystem, 20, 0.5));
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
