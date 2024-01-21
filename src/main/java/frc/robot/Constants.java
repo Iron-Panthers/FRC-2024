@@ -47,8 +47,8 @@ public final class Constants {
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
-            new PIDConstants(5, 0, 0),
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(1.3853, 0, 0),
+            new PIDConstants(.147, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
             Math.sqrt(Math.pow(Dims.BUMPER_WIDTH_METERS, 2) * 2),
             new ReplanningConfig());
