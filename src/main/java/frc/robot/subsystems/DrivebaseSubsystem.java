@@ -12,8 +12,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ApplyChassisSpeeds;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -27,7 +25,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,7 +35,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
-import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.Constants.PoseEstimator;
 import frc.robot.subsystems.VisionSubsystem.VisionMeasurement;
@@ -68,6 +64,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * better to do it ourselves
    */
   private final SwerveDrivetrain swerveDrivetrain;
+
   private final SwerveModule[] swerveModules;
 
   /** The SwerveDriveOdometry class allows us to estimate the robot's "pose" over time. */
@@ -84,7 +81,10 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(); // defaults to zeros
 
   /* Requests to pass to SwerveDrivetrain objects */
-  private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds().withDriveRequestType(Modules.Params.driveRequestType).withSteerRequestType(Modules.Params.steerRequestType);
+  private ApplyChassisSpeeds chassisSpeedRequest =
+      new ApplyChassisSpeeds()
+          .withDriveRequestType(Modules.Params.driveRequestType)
+          .withSteerRequestType(Modules.Params.steerRequestType);
   private SwerveDriveBrake swerveBrakeRequest = new SwerveDriveBrake();
 
   /** The modes of the drivebase subsystem */
@@ -179,8 +179,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
       swerveDrivetrain =
           new SwerveDrivetrain(
               swerveDrivetrainConstants, frontLeft, frontRight, backLeft, backRight);
-      swerveModules = 
-          new SwerveModule[] {swerveDrivetrain.getModule(0), swerveDrivetrain.getModule(1), swerveDrivetrain.getModule(2), swerveDrivetrain.getModule(3)};
+      swerveModules =
+          new SwerveModule[] {
+            swerveDrivetrain.getModule(0),
+            swerveDrivetrain.getModule(1),
+            swerveDrivetrain.getModule(2),
+            swerveDrivetrain.getModule(3)
+          };
     } else {
       swerveDrivetrain = null;
     }
@@ -257,7 +262,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return chassisSpeeds;
   }
 
-    /** Return current robot-relative ChassisSpeeds **/
+  /** Return current robot-relative ChassisSpeeds * */
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return kinematics.toChassisSpeeds(swerveDrivetrain.getState().ModuleStates);
   }
@@ -412,7 +417,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
     // SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     // for(int i = 0; i < swerveModules.length; i++) {
-    //   swerveModules[i].apply(states[i], Modules.Params.driveRequestType, Modules.Params.steerRequestType);
+    //   swerveModules[i].apply(states[i], Modules.Params.driveRequestType,
+    // Modules.Params.steerRequestType);
     // }
   }
 
