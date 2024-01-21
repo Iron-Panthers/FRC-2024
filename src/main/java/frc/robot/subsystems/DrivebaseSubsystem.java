@@ -190,26 +190,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
       swerveDrivetrain = null;
     }
 
-    // FIXME check these values to make sure they are correct
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        this::resetOdometryToPose,
-        this::getChassisSpeeds,
-        null,
-        Constants.Config.PATH_FOLLOWER_CONFIG,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this);
-
     rotController = new PIDController(0.03, 0.001, 0.003);
     rotController.setSetpoint(0);
     rotController.setTolerance(ANGULAR_ERROR); // degrees error
@@ -256,6 +236,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("pitch", () -> swerveDrivetrain.getPigeon2().getPitch().getValueAsDouble());
       tab.addDouble("roll", () -> swerveDrivetrain.getPigeon2().getRoll().getValueAsDouble());
+      tab.addDouble("gyro", () -> getConsistentGyroscopeRotation().getDegrees());
+      tab.addDouble("driver gyro", () -> getDriverGyroscopeRotation().getDegrees());
       tab.addDouble("x", () -> chassisSpeeds.vxMetersPerSecond);
       tab.addDouble("y", () -> chassisSpeeds.vyMetersPerSecond);
       tab.addDouble("rot", () -> chassisSpeeds.omegaRadiansPerSecond);
@@ -281,7 +263,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return chassisSpeeds;
   }
 
-  /** Return current robot-relative ChassisSpeeds * */
+  /* Return current robot-relative ChassisSpeeds */
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return kinematics.toChassisSpeeds(swerveDrivetrain.getState().ModuleStates);
   }
