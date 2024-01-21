@@ -180,7 +180,7 @@ public class RobotContainer {
 
     DoubleSupplier rotationVelocity =
         () ->
-            rotation.getAsDouble()
+            -rotation.getAsDouble()
                 * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
                 *
                 /** percent of fraction power */
@@ -195,18 +195,18 @@ public class RobotContainer {
                 rotationVelocity,
                 anthony.rightBumper()));
 
-    new Trigger(
-            () ->
-                Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
-                    > Drive.ROTATE_VECTOR_MAGNITUDE)
-        .onTrue(
-            new RotateVectorDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                anthony::getRightY,
-                anthony::getRightX,
-                anthony.rightBumper()));
+    // new Trigger(
+    //         () ->
+    //             Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
+    //                 > Drive.ROTATE_VECTOR_MAGNITUDE)
+    //     .onTrue(
+    //         new RotateVectorDriveCommand(
+    //             drivebaseSubsystem,
+    //             translationXSupplier,
+    //             translationYSupplier,
+    //             anthony::getRightY,
+    //             anthony::getRightX,
+    //             anthony.rightBumper()));
 
     // FIXME reference if you want to use scoremap
     /*var scoreCommandMap = new HashMap<NodeSelectorUtility.ScoreTypeIdentifier, Command>();

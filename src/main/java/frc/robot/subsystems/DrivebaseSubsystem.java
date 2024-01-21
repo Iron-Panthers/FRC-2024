@@ -9,6 +9,7 @@ import static frc.robot.Constants.Drive.*;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
+import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.Constants.PoseEstimator;
 import frc.robot.subsystems.VisionSubsystem.VisionMeasurement;
@@ -65,6 +68,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * better to do it ourselves
    */
   private final SwerveDrivetrain swerveDrivetrain;
+  private final SwerveModule[] swerveModules;
 
   /** The SwerveDriveOdometry class allows us to estimate the robot's "pose" over time. */
   private final SwerveDrivePoseEstimator swervePoseEstimator;
@@ -80,7 +84,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(); // defaults to zeros
 
   /* Requests to pass to SwerveDrivetrain objects */
-  private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.OpenLoopVoltage).withSteerRequestType(SteerRequestType.MotionMagic);
+  private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds().withDriveRequestType(Modules.Params.driveRequestType).withSteerRequestType(Modules.Params.steerRequestType);
   private SwerveDriveBrake swerveBrakeRequest = new SwerveDriveBrake();
 
   /** The modes of the drivebase subsystem */
@@ -148,7 +152,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
               Modules.Module3.STEER_OFFSET,
               Dims.TRACKWIDTH_METERS / 2.0,
               -Dims.TRACKWIDTH_METERS / 2.0,
-              false);
+              true);
 
       // module wheel positions taken from kinematics object
       final SwerveModuleConstants backLeft =
@@ -170,11 +174,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
               Modules.Module2.STEER_OFFSET,
               -Dims.TRACKWIDTH_METERS / 2.0,
               -Dims.TRACKWIDTH_METERS / 2.0,
-              false);
+              true);
 
       swerveDrivetrain =
           new SwerveDrivetrain(
               swerveDrivetrainConstants, frontLeft, frontRight, backLeft, backRight);
+      swerveModules = 
+          new SwerveModule[] {swerveDrivetrain.getModule(0), swerveDrivetrain.getModule(1), swerveDrivetrain.getModule(2), swerveDrivetrain.getModule(3)};
     } else {
       swerveDrivetrain = null;
     }
@@ -232,12 +238,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("relx", () -> getRobotRelativeSpeeds().vxMetersPerSecond);
       tab.addDouble("rely", () -> getRobotRelativeSpeeds().vyMetersPerSecond);
       tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
-      tab.addDouble("steermotor", () -> Constants.Drive.Modules.Module1.STEER_MOTOR);
-      tab.addDouble("drivemotor", () -> Constants.Drive.Modules.Module1.DRIVE_MOTOR);
-      tab.addDouble("encoderid", () -> Constants.Drive.Modules.Module1.STEER_ENCODER);
-      tab.addDouble("encoderoffset", () -> Constants.Drive.Modules.Module1.STEER_OFFSET);
-      tab.addDouble("steer kP", () -> Constants.Drive.Modules.Params.STEER_MOTOR_GAINS.kP);
-
     }
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
@@ -271,10 +271,10 @@ public class DrivebaseSubsystem extends SubsystemBase {
           new SwerveModulePosition(),
         }
         : new SwerveModulePosition[] {
-          swerveDrivetrain.getModule(0).getPosition(false),
-          swerveDrivetrain.getModule(1).getPosition(false),
-          swerveDrivetrain.getModule(2).getPosition(false),
-          swerveDrivetrain.getModule(3).getPosition(false),
+          swerveModules[0].getPosition(false),
+          swerveModules[1].getPosition(false),
+          swerveModules[2].getPosition(false),
+          swerveModules[3].getPosition(false),
         };
   }
 
@@ -407,9 +407,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   private void drivePeriodic() {
-    //swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(new ChassisSpeeds(0, 0 , 1)));
-    //swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(chassisSpeeds));
-    swerveDrivetrain.setControl(chassisSpeedRequest);
+    swerveDrivetrain.setControl(chassisSpeedRequest.withSpeeds(chassisSpeeds));
+    // SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    // SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+
+    // for(int i = 0; i < swerveModules.length; i++) {
+    //   swerveModules[i].apply(states[i], Modules.Params.driveRequestType, Modules.Params.steerRequestType);
+    // }
   }
 
   // called in drive to angle mode

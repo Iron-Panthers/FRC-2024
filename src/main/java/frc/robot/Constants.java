@@ -8,6 +8,8 @@ import static frc.util.MacUtil.IS_COMP_BOT;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -155,12 +157,15 @@ public final class Constants {
         public static final Slot0Configs STEER_MOTOR_GAINS =
             new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.TorqueCurrentFOC;
+            ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.TorqueCurrentFOC;
+            ClosedLoopOutputType.Voltage;
         public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.FusedCANcoder;
         public static final double SPEED_TWELVE_VOLTS = 6;
         public static final double SLIP_CURRENT = 0; // optional
+
+        public static final DriveRequestType driveRequestType = DriveRequestType.OpenLoopVoltage;
+        public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagic;
       }
 
       public static final class Module1 { // historically front right
