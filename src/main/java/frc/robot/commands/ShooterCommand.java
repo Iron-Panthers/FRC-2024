@@ -6,10 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.Constants.Shooter;
+
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   ShooterSubsystem shooterSubsystem;
+
   public ShooterCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     shooterSubsystem = new ShooterSubsystem();
@@ -18,8 +19,8 @@ public class ShooterCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {  
-    shooterSubsystem.setTargetDegrees(Shooter.TARGET_ANGLE);
+  public void initialize() {
+    shooterSubsystem.setTargetDegrees();
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -32,6 +33,6 @@ public class ShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooterSubsystem.isDone();
+    return false;
   }
 }

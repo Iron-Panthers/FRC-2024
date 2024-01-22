@@ -91,7 +91,7 @@ public class RobotContainer {
       () -> (-modifyAxis(anthony.getLeftY()) * Drive.MAX_VELOCITY_METERS_PER_SECOND);
   private final DoubleSupplier translationYSupplier =
       () -> (-modifyAxis(anthony.getLeftX()) * Drive.MAX_VELOCITY_METERS_PER_SECOND);
-  
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Set up the default command for the drivetrain.
@@ -106,7 +106,7 @@ public class RobotContainer {
             translationYSupplier,
             // anthony.rightBumper(),
             anthony.leftBumper()));
-    jacob.rightTrigger().onTrue(new ShooterCommand(shooterSubsystem));
+
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
@@ -172,7 +172,7 @@ public class RobotContainer {
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-
+    anthony.rightTrigger().onTrue(new ShooterCommand(shooterSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     DoubleSupplier rotation =

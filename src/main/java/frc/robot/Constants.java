@@ -29,7 +29,6 @@ import frc.robot.subsystems.VisionSubsystem.UnitDeviationParams;
 import frc.util.CAN;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @SuppressWarnings("java:S1118")
@@ -357,14 +356,17 @@ public final class Constants {
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
   }
+
   public static final class Shooter {
-    public static final int WRIST_MOTOR_PORT = 0; // fix me
-    public static final int SHOOTER_MOTOR_PORT = 0; //fix me
-    public static final double WRIST_GEAR_RATIO = 1; //fix me
-    public static final double TICKS = 2048; 
-    public static final double TARGET_ANGLE = 0;
-    
-
-
+    public static final int WRIST_MOTOR_PORT = 16; // fix me
+    public static final int SHOOTER_MOTOR_PORT = 0; // fix me
+    public static final double WRIST_GEAR_RATIO = 128; // fix me
+    public static final double TICKS = 2048;
+    public static final double ROLLER_MOTOR_POWER = 1;
+    public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
+    public static final double X_DISTANCE = 2; // meters
+    public static final double SPEAKER_HEIGHT = 2; // meters
+    public static final double NOTE_SPEED = 5; // meters per second
+    public static final double GRAVITY = 9.8; // meters per second
   }
 }
