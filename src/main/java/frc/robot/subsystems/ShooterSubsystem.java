@@ -120,7 +120,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (!atTargetDegrees()) {
       wristMotorPower = pidController.calculate(getCurrentAngle());
 
-      wristMotor.set(0.5);
+      wristMotor.set(wristMotorPower);
     }
     // else{
     //   if (startTime == 0){

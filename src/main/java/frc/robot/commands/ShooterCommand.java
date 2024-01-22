@@ -13,7 +13,7 @@ public class ShooterCommand extends Command {
 
   public ShooterCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    shooterSubsystem = new ShooterSubsystem();
+    this.shooterSubsystem = shooterSubsystem;
     addRequirements(shooterSubsystem);
   }
 

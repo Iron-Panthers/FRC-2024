@@ -172,7 +172,7 @@ public class RobotContainer {
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    anthony.rightTrigger().onTrue(new ShooterCommand(shooterSubsystem));
+    anthony.a().onTrue(new ShooterCommand(shooterSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     DoubleSupplier rotation =
