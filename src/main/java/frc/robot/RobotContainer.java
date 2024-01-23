@@ -254,13 +254,7 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    if (Config.RUN_PATHPLANNER_SERVER) {
-      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
-    }
-
     driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
-
-    final Map<String, Command> eventMap = Map.of();
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 

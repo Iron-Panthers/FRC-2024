@@ -14,7 +14,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.hal.HALUtil;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -45,12 +45,6 @@ import java.util.Set;
 public final class Constants {
 
   public static final class Config {
-    /** turn this off before comp. */
-    public static final boolean RUN_PATHPLANNER_SERVER =
-        // never run pathplanner server in simulation, it will fail unit tests (???)
-        Config.SHOW_SHUFFLEBOARD_DEBUG_DATA
-            && HALUtil.getHALRuntimeType() != HALUtil.RUNTIME_SIMULATION;
-
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
@@ -76,8 +70,8 @@ public final class Constants {
   }
 
   public static final class Drive {
-    public static final int PIGEON_PORT = 0; // FIXME placeholder
-    public static final String SWERVE_CANBUS = "rio"; // placeholder
+    public static final int PIGEON_PORT = 0;
+    public static final String SWERVE_CANBUS = "rio";
 
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
@@ -110,7 +104,7 @@ public final class Constants {
           .5207; // 20.5 inches (source: cad) converted to meters
       public static final double WHEELBASE_METERS = TRACKWIDTH_METERS; // robot is square
 
-      public static final double BUMPER_WIDTH_METERS = .851;
+      public static final double BUMPER_WIDTH_METERS = .851; // FIXME bumper will be rectangular
     }
 
     /*
@@ -250,12 +244,13 @@ public final class Constants {
      * estimates less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
     public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                0.1, // x
-                0.1, // y
-                0.1 // theta
-                );
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N1(),
+            0.1, // x
+            0.1, // y
+            0.1 // theta
+            );
 
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global
@@ -266,13 +261,14 @@ public final class Constants {
      * them. This value is calculated dynamically using the below list.
      */
     public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                // if these numbers are less than one, multiplying will do bad things
-                1, // x
-                1, // y
-                1 * Math.PI // theta
-                );
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N1(),
+            // if these numbers are less than one, multiplying will do bad things
+            1, // x
+            1, // y
+            1 * Math.PI // theta
+            );
 
     public static final double POSE_AMBIGUITY_CUTOFF = .05;
 

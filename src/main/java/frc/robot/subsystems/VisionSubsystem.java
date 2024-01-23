@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -158,11 +159,12 @@ public class VisionSubsystem {
   public static record TagCountDeviation(
       UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
     private Matrix<N3, N1> computeDeviation(double averageDistance) {
-      return Matrix.mat(Nat.N3(), Nat.N1())
-          .fill(
-              xParams.computeUnitDeviation(averageDistance),
-              yParams.computeUnitDeviation(averageDistance),
-              thetaParams.computeUnitDeviation(averageDistance));
+      return MatBuilder.fill(
+          Nat.N3(),
+          Nat.N1(),
+          xParams.computeUnitDeviation(averageDistance),
+          yParams.computeUnitDeviation(averageDistance),
+          thetaParams.computeUnitDeviation(averageDistance));
     }
 
     public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
