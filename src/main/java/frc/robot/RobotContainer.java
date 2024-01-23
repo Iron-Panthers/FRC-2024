@@ -92,13 +92,11 @@ public class RobotContainer {
     // The controls are for field-oriented driving:
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
-    // Right stick X axis -> rotation
     drivebaseSubsystem.setDefaultCommand(
         new DefaultDriveCommand(
             drivebaseSubsystem,
             translationXSupplier,
             translationYSupplier,
-            // anthony.rightBumper(),
             anthony.leftBumper()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
