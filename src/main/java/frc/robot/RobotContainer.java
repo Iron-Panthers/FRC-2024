@@ -147,8 +147,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    
-
     // vibrate jacob controller when in layer
     jacobLayer.whenChanged(
         (enabled) -> {

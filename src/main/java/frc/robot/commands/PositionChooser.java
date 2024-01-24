@@ -11,8 +11,9 @@ import frc.robot.subsystems.ClimberSubsystem.Modes;
 public class PositionChooser extends CommandBase {
   /** Creates a new PositionChooser. */
   ClimberSubsystem climberSubsystem;
+
   double targetExtension;
-  
+
   public PositionChooser(ClimberSubsystem climberSubsystem, double targetExtension) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climberSubsystem = climberSubsystem;
@@ -22,12 +23,11 @@ public class PositionChooser extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
-  climberSubsystem.setMode(Modes.POSITION_CONTROL);
-  climberSubsystem.setTargetExtension(targetExtension);
+
+    climberSubsystem.setMode(Modes.POSITION_CONTROL);
+    climberSubsystem.setTargetExtension(targetExtension);
   }
 
-  
   @Override
   public void execute() {}
 
