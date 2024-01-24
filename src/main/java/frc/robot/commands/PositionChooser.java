@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ClimberSubsystem.Modes;
 
 public class PositionChooser extends CommandBase {
   /** Creates a new PositionChooser. */
@@ -21,7 +23,7 @@ public class PositionChooser extends CommandBase {
   @Override
   public void initialize() {
     
-  climberSubsystem.setMode(POSITION_CONTROL);
+  climberSubsystem.setMode(Modes.POSITION_CONTROL);
   climberSubsystem.setTargetExtension(targetExtension);
   }
 

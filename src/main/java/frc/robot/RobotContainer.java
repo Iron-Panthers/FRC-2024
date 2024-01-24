@@ -26,6 +26,7 @@ import frc.robot.commands.ClimberManualCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.PositionChooser;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
@@ -164,7 +165,9 @@ public class RobotContainer {
         .back()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    anthony.a().onTrue(new PositionChooser(climberSubsystem));
+    anthony.a().onTrue(new PositionChooser(climberSubsystem, 10));
+
+    anthony.b().onTrue(new PositionChooser(climberSubsystem, 0));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
