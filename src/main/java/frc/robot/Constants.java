@@ -359,7 +359,7 @@ public final class Constants {
 
   public static final class Climber {
     public static final class Ports {
-      public static final int CLIMBER_MOTOR_PORT = 0;
+      public static final int CLIMBER_MOTOR_PORT = 6;
     }
 
     public static final class MotionMagicConstants {
