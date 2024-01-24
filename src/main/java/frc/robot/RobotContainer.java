@@ -173,7 +173,7 @@ public class RobotContainer {
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
-    anthony.b().onTrue(new InstantCommand(() -> drivebaseSubsystem.resetOdometryToPose(new Pose2d(new Translation2d(2, 7), new Rotation2d(0))), drivebaseSubsystem));
+    anthony.b().onTrue(new InstantCommand(() -> drivebaseSubsystem.resetOdometryToPose(new Pose2d(new Translation2d(1.45, 5.5), new Rotation2d(0))), drivebaseSubsystem));
 
     DoubleSupplier rotation =
         exponential(
