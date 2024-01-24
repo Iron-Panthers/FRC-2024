@@ -47,9 +47,10 @@ public final class Constants {
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
-            new PIDConstants(1.3853, 0, 0),
-            new PIDConstants(.147, 0, 0),
-            Drive.MAX_VELOCITY_METERS_PER_SECOND,
+            new PIDConstants(10, 0, 0),
+            new PIDConstants(15, 0, 0),
+            // Drive.MAX_VELOCITY_METERS_PER_SECOND,
+            0.1,
             Math.sqrt(Math.pow(Dims.BUMPER_WIDTH_METERS, 2) * 2),
             new ReplanningConfig());
 
@@ -139,7 +140,7 @@ public final class Constants {
       public static final class Params {
         // FIXME ALL PLACEHOLDERS
         /* Currently use L2 gearing for alphabot, will use L3 for comp bot? Not decided? Check w/ engie */
-        public static final double WHEEL_RADIUS = 2; // also in INCHES
+        public static final double WHEEL_RADIUS = 1.93; // also in INCHES
         public static final double COUPLING_GEAR_RATIO = 3.5714285714285716;
         public static final double DRIVE_GEAR_RATIO = 6.746031746031747;
         public static final double STEER_GEAR_RATIO = 12.8;

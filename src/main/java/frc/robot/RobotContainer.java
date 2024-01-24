@@ -5,6 +5,10 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -168,6 +172,8 @@ public class RobotContainer {
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+
+    anthony.b().onTrue(new InstantCommand(() -> drivebaseSubsystem.resetOdometryToPose(new Pose2d(new Translation2d(2, 7), new Rotation2d(0))), drivebaseSubsystem));
 
     DoubleSupplier rotation =
         exponential(
