@@ -212,7 +212,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         this::getPose,
         this::resetOdometryToPose,
         this::getRobotRelativeSpeeds,
-        this::drive,
+        (speeds) -> this.drive(speeds),
         Constants.Config.PATH_FOLLOWER_CONFIG,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
