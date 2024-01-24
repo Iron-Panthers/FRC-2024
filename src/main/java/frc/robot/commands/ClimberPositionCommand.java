@@ -4,17 +4,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ClimberSubsystem.Modes;
 
-public class PositionChooser extends CommandBase {
+public class ClimberPositionCommand extends Command {
   /** Creates a new PositionChooser. */
   ClimberSubsystem climberSubsystem;
 
   double targetExtension;
 
-  public PositionChooser(ClimberSubsystem climberSubsystem, double targetExtension) {
+  public ClimberPositionCommand(ClimberSubsystem climberSubsystem, double targetExtension) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climberSubsystem = climberSubsystem;
     this.targetExtension = targetExtension;
@@ -38,6 +38,6 @@ public class PositionChooser extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

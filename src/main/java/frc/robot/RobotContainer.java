@@ -163,11 +163,11 @@ public class RobotContainer {
         .back()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    anthony.a().onTrue(new PositionChooser(climberSubsystem, 10));
+    jacob.a().onTrue(new PositionChooser(climberSubsystem, -5));
 
-    anthony.b().onTrue(new PositionChooser(climberSubsystem, 0));
+    jacob.b().onTrue(new PositionChooser(climberSubsystem, 0));
 
-    anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
+    jacob.y().onTrue(new PositionChooser(climberSubsystem, 5));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
