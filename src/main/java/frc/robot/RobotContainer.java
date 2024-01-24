@@ -146,6 +146,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    
+
     // vibrate jacob controller when in layer
     jacobLayer.whenChanged(
         (enabled) -> {
@@ -161,6 +163,8 @@ public class RobotContainer {
     anthony
         .back()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
+
+    anthony.a().onTrue(new PositionChooser(climberSubsystem));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
