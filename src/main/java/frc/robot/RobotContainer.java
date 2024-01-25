@@ -94,10 +94,7 @@ public class RobotContainer {
     // Left stick X axis -> left and right movement
     drivebaseSubsystem.setDefaultCommand(
         new DefaultDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            anthony.leftBumper()));
+            drivebaseSubsystem, translationXSupplier, translationYSupplier, anthony.leftBumper()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);

@@ -48,11 +48,7 @@ public class DefaultDriveCommand extends Command {
 
     drivebaseSubsystem.drive(
         DrivebaseSubsystem.produceChassisSpeeds(
-            forwardRelative,
-            x,
-            y,
-            0,
-            drivebaseSubsystem.getDriverGyroscopeRotation()));
+            forwardRelative, x, y, 0, drivebaseSubsystem.getDriverGyroscopeRotation()));
   }
 
   // Called once the command ends or is interrupted.
