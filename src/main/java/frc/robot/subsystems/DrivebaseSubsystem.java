@@ -224,8 +224,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
             PoseEstimator.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("pitch", () -> swerveDrivetrain.getPigeon2().getPitch().getValueAsDouble());
-      tab.addDouble("roll", () -> swerveDrivetrain.getPigeon2().getRoll().getValueAsDouble());
       tab.addDouble("x", () -> chassisSpeeds.vxMetersPerSecond);
       tab.addDouble("y", () -> chassisSpeeds.vyMetersPerSecond);
       tab.addDouble("rot", () -> chassisSpeeds.omegaRadiansPerSecond);
