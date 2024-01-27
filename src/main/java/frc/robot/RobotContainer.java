@@ -22,10 +22,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
+import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.TargetLockCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -166,6 +168,8 @@ public class RobotContainer {
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+
+    anthony.a().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER.getFirst(), Setpoints.SPEAKER.getSecond()));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 

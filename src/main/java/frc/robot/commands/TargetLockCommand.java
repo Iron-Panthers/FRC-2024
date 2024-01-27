@@ -15,14 +15,17 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 /**
- * This command takes a drive angle and a target angle, and snaps the robot to an angle. This is
- * useful to snap the robot to an angle setpoint with a button, as opposed to using an entire stick.
+ * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the target. This is
+ * useful to lock the robot to fixed target with a button.
  */
 public class TargetLockCommand extends Command {
   private final DrivebaseSubsystem drivebaseSubsystem;
 
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
+
+  private final double targetX;
+  private final double targetY;
 
   private int targetAngle;
   private Supplier<Pose2d> pose;
@@ -31,11 +34,15 @@ public class TargetLockCommand extends Command {
   public TargetLockCommand (
       DrivebaseSubsystem drivebaseSubsystem,
       DoubleSupplier translationXSupplier,
-      DoubleSupplier translationYSupplier) {
+      DoubleSupplier translationYSupplier,
+      double targetX,
+      double targetY) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
+    this.targetX = targetX;
+    this.targetY = targetY;
 
     Supplier<Pose2d> pose = drivebaseSubsystem::getPose;
     int targetAngle = 0;
@@ -50,8 +57,8 @@ public class TargetLockCommand extends Command {
   @Override
   public void execute() {
     targetAngle = (int) Math.atan(
-      (Setpoints.SPEAKER.getFirst() - pose.get().getY()) / 
-      (Setpoints.SPEAKER.getSecond() - pose.get().getX()));
+      (targetY - pose.get().getY()) / 
+      (targetX - pose.get().getX()));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 
