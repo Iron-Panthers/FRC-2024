@@ -17,6 +17,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -211,6 +213,10 @@ public final class Constants {
                 ? 0.44238 // comp bot offset
                 : 0; // practice bot offset
       }
+    }
+
+    public static final class Setpoints {
+        public static final Pair<Double, Double> SPEAKER = new Pair<>(0d, 104.64d);
     }
   }
 
