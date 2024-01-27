@@ -26,7 +26,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private double filterOutput;
   private double percentPower;
   private LinearFilter filter;
-  private PIDController climberController;
+  //private PIDController climberController;
   private Modes currentMode;
   private TalonFXConfiguration climberConfig;
   private MotionMagicConfigs motionMagicConfigs;
@@ -51,7 +51,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.setPosition(0);
     climberMotor.setInverted(false);
 
-    climberController = new PIDController(0.1, 0, 0);
+    //climberController = new PIDController(0.1, 0, 0);
 
     // Motion Magic Configuration
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
@@ -79,14 +79,14 @@ public class ClimberSubsystem extends SubsystemBase {
     climberTab.addDouble("Current Motor Power", () -> climberMotor.get());
     climberTab.addDouble(
         "Stator Current", () -> climberMotor.getStatorCurrent().getValueAsDouble());
-    climberTab.add("PID Controller", climberController);
+    //climberTab.add("PID Controller", climberController);
     climberTab.addString("Current Mode", () -> currentMode.toString());
     climberTab.addDouble("Motor rotations", () -> climberMotor.getPosition().getValueAsDouble());
   }
 
   public void setTargetExtension(double targetExtension) {
     this.targetExtension = targetExtension;
-    climberController.setSetpoint(targetExtension);
+    //climberController.setSetpoint(targetExtension);
   }
 
   public void setMode(Modes mode) {
@@ -120,19 +120,19 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public double rotationsToExtensionInches() {
-    return -climberMotor.getPosition().getValueAsDouble()
+    return climberMotor.getPosition().getValueAsDouble()
         / Climber.CLIMBER_GEAR_RATIO
         * (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
   public double extensionInchesToRotations(double inches) {
-    return inches / Climber.CLIMBER_GEAR_RATIO / (Climber.SPROCKET_DIAMETER * Math.PI);
+    return inches * Climber.CLIMBER_GEAR_RATIO / (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
   private void positionDrivePeriodic() {
-    // climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));
-    climberMotor.set(
-        -MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
+    climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));
+    //climberMotor.set(
+    //    -MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
   }
 
   private void percentDrivePeriodic() {

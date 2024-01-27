@@ -366,9 +366,9 @@ public final class Constants {
       public static final double MotionMagicAcceleration = 1000; // These values are in RPS
       public static final double MotionMagicCruiseVelocity = 1000;
       public static final double kS = .17;
-      public static final double kV = 0;
-      public static final double kA = 0;
-      public static final double kP = 0;
+      public static final double kV = 1.48;
+      public static final double kA = 1.05;
+      public static final double kP = .1;
       public static final double kI = 0;
       public static final double kD = 0;
     }

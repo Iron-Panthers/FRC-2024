@@ -20,13 +20,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Climber;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.commands.ClimberManualCommand;
+import frc.robot.commands.ClimberPositionCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.PositionChooser;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
@@ -163,11 +164,11 @@ public class RobotContainer {
         .back()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    jacob.a().onTrue(new PositionChooser(climberSubsystem, -5));
+    jacob.a().onTrue(new ClimberPositionCommand(climberSubsystem, -5));
 
-    jacob.b().onTrue(new PositionChooser(climberSubsystem, 0));
+    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 0));
 
-    jacob.y().onTrue(new PositionChooser(climberSubsystem, 5));
+    jacob.y().onTrue(new ClimberPositionCommand(climberSubsystem, 5));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
