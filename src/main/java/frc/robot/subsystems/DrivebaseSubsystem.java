@@ -119,7 +119,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
       String title, int pos, SwerveModule[] swerveModules, ShuffleboardTab shuffleboardTab) {
     shuffleboardTab
         .getLayout(title, BuiltInLayouts.kList)
-        .withSize(2, 4)
+        .withSize(2, 1)
         .withPosition(pos * 2, 0)
         .addDouble(
             "absolute encoder rotations",
@@ -248,6 +248,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("relx", () -> getRobotRelativeSpeeds().vxMetersPerSecond);
       tab.addDouble("rely", () -> getRobotRelativeSpeeds().vyMetersPerSecond);
       tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
+      tab.addDouble("targetAngle", () -> targetAngle);
+      tab.addDouble("currentGyroAngle", () -> getDriverGyroscopeRotation().getDegrees());
 
       addSwerveShuffleboard("module 4", 0, swerveModules, tab);
       addSwerveShuffleboard("module 3", 1, swerveModules, tab);
