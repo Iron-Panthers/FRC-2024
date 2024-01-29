@@ -42,10 +42,12 @@ public class ClimberSubsystem extends SubsystemBase {
 
   /** Creates a new Climber. */
   public ClimberSubsystem() {
+    //DEFINE MOTORS
     climberMotor = new TalonFX(Climber.Ports.CLIMBER_MOTOR_PORT);
     climberConfig = new TalonFXConfiguration();
     motionMagicConfigs = climberConfig.MotionMagic;
 
+    //MOTOR CONFIG
     climberMotor.clearStickyFaults();
     climberMotor.setNeutralMode(NeutralModeValue.Brake);
     climberMotor.setPosition(0);
@@ -53,7 +55,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     //climberController = new PIDController(0.1, 0, 0);
 
-    // Motion Magic Configuration
+    // MOTION MAGIC CONFIG
     climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
 
     motionMagicConfigs.MotionMagicAcceleration =
@@ -69,10 +71,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
     climberMotor.getConfigurator().apply(climberConfig); // put the configuration on the motor
 
+
+    //LINEAR FILTER for stator currents and zeroing
     filter = LinearFilter.movingAverage(30);
 
     currentMode = Modes.POSITION_CONTROL;
 
+
+    //SHUFFLEBOARD
     climberTab.addDouble("Target Extension", () -> targetExtension);
     climberTab.addDouble("Current Extension", this::getCurrentExtension);
     climberTab.addDouble("Filter Output", () -> filterOutput);
@@ -84,6 +90,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberTab.addDouble("Motor rotations", () -> climberMotor.getPosition().getValueAsDouble());
   }
 
+  //SETTERS
   public void setTargetExtension(double targetExtension) {
     this.targetExtension = targetExtension;
     //climberController.setSetpoint(targetExtension);
@@ -97,6 +104,7 @@ public class ClimberSubsystem extends SubsystemBase {
     this.percentPower = MathUtil.clamp(percentPower, -1, 1);
   }
 
+  //GETTERS
   public double getFilterOutput() {
     return filterOutput;
   }
@@ -109,28 +117,32 @@ public class ClimberSubsystem extends SubsystemBase {
     return currentExtension;
   }
 
-  public double getCurrentTicks() {
-    return climberMotor.getPosition().getValueAsDouble();
+  public double getCurrentRotations() {
+    return climberMotor.getPosition().getValueAsDouble();//negate the value to invert the motor
   }
 
-  public double currentExtensionInchesToRotations() {
-    return getCurrentExtension()
-        * Climber.CLIMBER_GEAR_RATIO
-        / (Climber.SPROCKET_DIAMETER * Math.PI);
+  public double getCurrentExtensionInches() {
+    return getCurrentRotations()
+        / Climber.CLIMBER_GEAR_RATIO
+        * (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
-  public double rotationsToExtensionInches() {
-    return climberMotor.getPosition().getValueAsDouble()
+  //ROTATION TO INCHES CONVERSION
+  public double rotationsToExtensionInches(double rotations) {
+    return rotations
         / Climber.CLIMBER_GEAR_RATIO
         * (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
   public double extensionInchesToRotations(double inches) {
-    return inches * Climber.CLIMBER_GEAR_RATIO / (Climber.SPROCKET_DIAMETER * Math.PI);
+    return inches 
+      * Climber.CLIMBER_GEAR_RATIO 
+      / (Climber.SPROCKET_DIAMETER * Math.PI);
   }
 
+  //PERIODICS
   private void positionDrivePeriodic() {
-    climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));
+    climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));//Uses motion magic to set the position
     //climberMotor.set(
     //    -MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
   }
@@ -152,7 +164,7 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    currentExtension = rotationsToExtensionInches();
+    currentExtension = getCurrentExtensionInches();
     filterOutput = filter.calculate(filterOutput);
 
     switch (currentMode) {
