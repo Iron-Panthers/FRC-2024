@@ -169,7 +169,14 @@ public class RobotContainer {
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
-    anthony.a().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER.getFirst(), Setpoints.SPEAKER.getSecond()));
+    anthony
+        .a()
+        .whileTrue(
+            new TargetLockCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                Setpoints.SPEAKER));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 

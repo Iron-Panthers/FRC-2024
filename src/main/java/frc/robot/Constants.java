@@ -18,9 +18,9 @@ import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -216,7 +216,7 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-        public static final Pair<Double, Double> SPEAKER = new Pair<>(0d, 104.64d);
+      public static final Translation2d SPEAKER = new Translation2d(0, 104.64);
     }
   }
 

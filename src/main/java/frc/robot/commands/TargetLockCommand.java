@@ -6,17 +6,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Drive;
-import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.util.Util;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 /**
- * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the target. This is
- * useful to lock the robot to fixed target with a button.
+ * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the
+ * target. This is useful to lock the robot to fixed target with a button.
  */
 public class TargetLockCommand extends Command {
   private final DrivebaseSubsystem drivebaseSubsystem;
@@ -24,28 +24,24 @@ public class TargetLockCommand extends Command {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
 
-  private final double targetX;
-  private final double targetY;
+  private final Translation2d targetPoint;
 
   private int targetAngle;
   private Supplier<Pose2d> pose;
 
   /** Creates a new TargetLockCommand. */
-  public TargetLockCommand (
+  public TargetLockCommand(
       DrivebaseSubsystem drivebaseSubsystem,
       DoubleSupplier translationXSupplier,
       DoubleSupplier translationYSupplier,
-      double targetX,
-      double targetY) {
+      Translation2d targetPoint) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
-    this.targetX = targetX;
-    this.targetY = targetY;
+    this.targetPoint = targetPoint;
 
-    Supplier<Pose2d> pose = drivebaseSubsystem::getPose;
-    int targetAngle = 0;
+    targetAngle = 0;
 
     addRequirements(drivebaseSubsystem);
   }
@@ -56,9 +52,11 @@ public class TargetLockCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    targetAngle = (int) Math.atan(
-      (targetY - pose.get().getY()) / 
-      (targetX - pose.get().getX()));
+    targetAngle =
+        (int) // may want to change to double for more accuracy (likely unnecessary)
+            Math.atan(
+                (targetPoint.getY() - pose.get().getY())
+                    / (targetPoint.getX() - pose.get().getX()));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 
