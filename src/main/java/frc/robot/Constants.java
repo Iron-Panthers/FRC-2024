@@ -145,7 +145,7 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = 6.746031746031747;
         public static final double STEER_GEAR_RATIO = 12.8;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
+            new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0.28).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
             new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
