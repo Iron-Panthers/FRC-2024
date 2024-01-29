@@ -123,7 +123,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         .withPosition(pos * 2, 0)
         .addDouble(
             "absolute encoder rotations",
-            () -> -swerveModules[pos].getCANcoder().getAbsolutePosition().getValue());
+            () -> swerveModules[pos].getCANcoder().getAbsolutePosition().getValue());
   }
 
   /** Creates a new DrivebaseSubsystem. */
