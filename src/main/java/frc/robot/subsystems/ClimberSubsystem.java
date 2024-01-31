@@ -83,7 +83,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   //GETTERS
-  public double getFilterOutput() {
+  private double getFilterOutput() {
     return filterOutput;
   }
 
@@ -95,7 +95,7 @@ public class ClimberSubsystem extends SubsystemBase {
     return currentExtension;
   }
 
-  public double getCurrentRotations() {
+  private double getCurrentRotations() {
     return climberMotor.getPosition().getValueAsDouble();//negate the value to invert the motor
   }
 
@@ -142,7 +142,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     currentExtension = getCurrentExtensionInches();
-    filterOutput = filter.calculate(filterOutput);
+    filterOutput = filter.calculate(filterOutput); // FIXME
 
     switch (currentMode) {
       case PERCENT_CONTROL:
