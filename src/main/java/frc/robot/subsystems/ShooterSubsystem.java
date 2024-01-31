@@ -29,10 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double currentTime;
   private double startTime;
   private double mathJunk;
-  private double xV;
-  private double yV;
-  private double x;
-  private double y;
+
   
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
@@ -70,14 +67,14 @@ public class ShooterSubsystem extends SubsystemBase {
     //ShooterTab.addNumber("Target Degrees10982", () -> this.targetDegrees);
     //ShooterTab.addNumber("Motor SPeed9872", () -> wristMotorPower);
   }
-  public double speakerTargetAngle (){
-    //Solves for the reference angle then 90 minus theta to get the angle of the robot. 
-    //Inverse tan y/x to find theta, and the x offset is 
-    return 90 - Math.atan(y/(x-(Shooter.NOTE_SPEED*xV)));
-  }
-  public double noteVelocity(){
-    return Shooter.NOTE_SPEED + xV;
-  }
+  // public double speakerTargetAngle (){
+  //   //Solves for the reference angle then 90 minus theta to get the angle of the robot. 
+  //   //Inverse tan y/x to find theta, and the x offset is 
+  //   return 90 - Math.atan(y/(x-(Shooter.NOTE_SPEED*xV)));
+  // }
+  // public double noteVelocity(){
+  //   return Shooter.NOTE_SPEED + xV;
+  // }
   private double getFeedForward() {
 
     // get the radians of the arm
@@ -113,18 +110,22 @@ public class ShooterSubsystem extends SubsystemBase {
     return -rotationsToDegrees(wristMotor.getPosition().getValue());
   }
 
-  public void calculateWristTargetDegrees(Pose2d pose) {
+  public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     double g = Shooter.GRAVITY;
-    x = pose.getX();
+    double x = pose.getX();
+    double y = pose.getY();
     double h = Shooter.SPEAKER_HEIGHT;
-    double v = Shooter.NOTE_SPEED;
+    // difference between distance to speaker now and after 1 second to find v to speaker
+    double velocityToSpeaker = (Math.pow((x-Shooter.SPEAKER_X),2)+Math.pow((y-Shooter.SPEAKER_Y),2)-Math.pow((xV-Shooter.SPEAKER_X),2)+Math.pow((yV-Shooter.SPEAKER_Y),2));
+    double v = Shooter.NOTE_SPEED+velocityToSpeaker;
     //iterates 3 times to find the angle. Finds time to get to the height, subtracts gravity, 
     //finds how off the height is, adds more height on next iteration to the old height, iterates 
     //3 times, is very close to the limit. 
-    double y1 = Math.pow(((Math.sqrt(x*x)+(h*h))/v),2)*9.81*0.5;
-    double y2 = Math.pow(((Math.sqrt(x*x)+((y1+h)*(y1+h)))/v),2)*9.81*0.5;
-    double y3 = Math.pow(((Math.sqrt(x*x)+((y2+h)*(y2+h)))/v),2)*9.81*0.5;
+    double y1 = Math.pow(((Math.sqrt(x*x)+(h*h))/v),2)*g*0.5;
+    double y2 = Math.pow(((Math.sqrt(x*x)+((y1+h)*(y1+h)))/v),2)*g*0.5;
+    double y3 = Math.pow(((Math.sqrt(x*x)+((y2+h)*(y2+h)))/v),2)*g*0.5;
     targetDegrees =180/3.14159*(Math.atan((y3+h)/x));
+    pidController.setSetpoint(targetDegrees);
   }
   // other methods
   // public double getCurrentTime() {
@@ -137,21 +138,26 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     return false;
   }
-
-  /*public boolean isDone() {
-
-     if (getCurrentTime() - startTime > 10000) {
-       return true;
-     }
+  private boolean sensorIsTriggered(){
+    //if is triggered return true
+    return false;
+  }
+  public boolean isDone(Pose2d pose) {
+    if(pose.getX()>8.4){
+      return true;
+    }
+    if (sensorIsTriggered()){
+      return true;
+    }
      return false;
    }
-  */
+  
   @Override
   public void periodic() {
     if (!atTargetDegrees()) {
       wristMotorPower = pidController.calculate(getCurrentAngle());
       //wristMotor.set(0);
-      wristMotor.set(-MathUtil.clamp(wristMotorPower, -0.5, 0.5));
+      wristMotor.set(-MathUtil.clamp(wristMotorPower+getFeedForward(), -0.5, 0.5));
     }
     // else{
     //   if (startTime == 0){

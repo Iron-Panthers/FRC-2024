@@ -22,7 +22,7 @@ public class ShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.calculateWristTargetDegrees(drivebaseSubsystem.getPose());
+    shooterSubsystem.calculateWristTargetDegrees(drivebaseSubsystem.getPose(),drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
