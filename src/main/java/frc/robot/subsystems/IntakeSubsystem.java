@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
+import frc.robot.Constants.Intake;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -26,10 +27,16 @@ public class IntakeSubsystem extends SubsystemBase {
   private Modes intakeMode;
 
   public enum Modes {
-    INTAKE,
-    OUTTAKE,
-    HOLD,
-    IDLE
+    INTAKE(Intake.INTAKE_MOTOR_SPEED),
+    OUTTAKE(Intake.OUTTAKE_MOTOR_SPEED),
+    HOLD(Intake.HOLD_MOTOR_SPEED),
+    IDLE(Intake.IDLE_MOTOR_SPEED);
+
+    public final double motorSpeed;
+
+    private Modes(double motorSpeed) {
+      this.motorSpeed = motorSpeed;
+    }
   }
 
   /** Creates a new IntakeSubsystem. */
@@ -56,9 +63,21 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake power", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
-      tab.addBoolean("Note Sensor Output", () -> noteSensor.get());
+      tab.addBoolean("Note Sensor Output", this::getNoteSensorBool);
       tab.addString("Current Mode", () -> intakeMode.toString());
     }
+  }
+
+  public boolean getNoteSensorBool() {
+    return noteSensor.get();
+  }
+
+  public void setIntakeMode(Modes intakeMode) {
+    this.intakeMode = intakeMode;
+  }
+
+  private void setIntakeMotorSpeed() { // using the current mode, set the motor speed
+    intakeMotor.set(intakeMode.motorSpeed);
   }
 
   @Override
@@ -70,26 +89,5 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     setIntakeMotorSpeed();
-  }
-
-  public void setIntakeMotorSpeed() { // using the current mode, set the motor speed
-    switch (intakeMode) {
-      case INTAKE:
-        intakeMotor.set(Constants.Intake.INTAKE_MOTOR_SPEED);
-        break;
-      case OUTTAKE:
-        intakeMotor.set(Constants.Intake.OUTTAKE_MOTOR_SPEED);
-        break;
-      case HOLD:
-        intakeMotor.set(Constants.Intake.HOLD_MOTOR_SPEED);
-        break;
-      case IDLE:
-        intakeMotor.set(Constants.Intake.IDLE_MOTOR_SPEED);
-        break;
-    }
-  }
-
-  public void setIntakeMode(Modes intakeMode) {
-    this.intakeMode = intakeMode;
   }
 }
