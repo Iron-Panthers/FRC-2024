@@ -370,7 +370,7 @@ public final class Constants {
 
     public static final int FALCON_CPR = 2048;
     public static final double CLIMBER_GEAR_RATIO = 75;
-    public static final double ZERO_STATOR_LIMIT = 4.75; // FIXME These values are placeholders
+    public static final double ZERO_STATOR_LIMIT = 6; // FIXME These values are placeholders
     public static final double SPROCKET_DIAMETER = 1.5;
   }
 }

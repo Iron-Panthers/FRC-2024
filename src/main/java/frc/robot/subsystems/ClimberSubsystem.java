@@ -142,7 +142,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     currentExtension = getCurrentExtensionInches();
-    filterOutput = filter.calculate(filterOutput); // FIXME
+    filterOutput = filter.calculate(climberMotor.getStatorCurrent().getValueAsDouble());
 
     switch (currentMode) {
       case PERCENT_CONTROL:

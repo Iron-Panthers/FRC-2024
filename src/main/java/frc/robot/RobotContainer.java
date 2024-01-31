@@ -164,11 +164,11 @@ public class RobotContainer {
         .back()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    jacob.a().onTrue(new ClimberPositionCommand(climberSubsystem, -5));
+    jacob.a().onTrue(new ClimberPositionCommand(climberSubsystem, 0));
 
-    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 0));
+    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 12));
 
-    jacob.y().onTrue(new ClimberPositionCommand(climberSubsystem, 5));
+    jacob.y().onTrue(new ClimberPositionCommand(climberSubsystem, 25));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
