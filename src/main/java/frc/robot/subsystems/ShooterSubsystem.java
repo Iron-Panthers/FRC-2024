@@ -4,15 +4,20 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.subsystems.DrivebaseSubsystem;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import edu.wpi.first.math.geometry.Pose2d;
 
 public class ShooterSubsystem extends SubsystemBase {
   private TalonFX wristMotor;
@@ -24,14 +29,22 @@ public class ShooterSubsystem extends SubsystemBase {
   private double currentTime;
   private double startTime;
   private double mathJunk;
-  private final ShuffleboardTab ShooterTab = Shuffleboard.getTab("Wrist");
+  private double xV;
+  private double yV;
+  private double x;
+  private double y;
+  
+  private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   /** Creates a new ShooterSubsystem. */
-  public ShooterSubsystem() {
+  // public ShooterSubsystem(DoubleSupplier xV, DoubleSupplier yV, DoubleSupplier x, DoubleSupplier y) {
+    public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.WRIST_MOTOR_PORT);
     // rollerMotorTop = new TalonFX(Shooter.SHOOTER_MOTOR_PORT);
     // rollerMotorBottom = new TalonFX(Shooter.SHOOTER_MOTOR_PORT);
+    this.wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
+    this.wristMotor.set(0);
     // rollerMotorTop.clearStickyFaults();
     // rollerMotorBottom.clearStickyFaults();
     // rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), true));
@@ -41,16 +54,31 @@ public class ShooterSubsystem extends SubsystemBase {
     // rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
     pidController = new PIDController(0.1, 0, 0);
     startTime = 0;
-    // WristTab.addNumber("Current Motor Position", wristMotor::getSelectedSensorPosition);
-    // WristTab.addNumber("Current motor angle for wrist", this::getCurrentAngle);
-    // WristTab.addBoolean("Is at target", this::atTargetDegrees);
+    WristTab.addNumber("Current Motor Position", ()-> wristMotor.getPosition().getValueAsDouble());
+    WristTab.addNumber("Current motor angle", this::getCurrentAngle);
+    WristTab.addNumber("Motor Power", ()-> wristMotorPower);
+    WristTab.addBoolean("Is at target", this::atTargetDegrees);
+    WristTab.addNumber("Error", this::error);
+    WristTab.addNumber("target", ()-> targetDegrees);
+    WristTab.addNumber("Error PID", pidController::getPositionError);
     targetDegrees = 0;
     wristMotorPower =0;
+    //this.xV = xV.getAsDouble();
+    //this.yV = yV.getAsDouble();
+    //this.x = x.getAsDouble();
+    //this.y = y.getAsDouble();
     //ShooterTab.addNumber("Target Degrees10982", () -> this.targetDegrees);
     //ShooterTab.addNumber("Motor SPeed9872", () -> wristMotorPower);
   }
-
-  public double getFeedForward() {
+  public double speakerTargetAngle (){
+    //Solves for the reference angle then 90 minus theta to get the angle of the robot. 
+    //Inverse tan y/x to find theta, and the x offset is 
+    return 90 - Math.atan(y/(x-(Shooter.NOTE_SPEED*xV)));
+  }
+  public double noteVelocity(){
+    return Shooter.NOTE_SPEED + xV;
+  }
+  private double getFeedForward() {
 
     // get the radians of the arm
     // getAngle() returns degrees
@@ -70,30 +98,33 @@ public class ShooterSubsystem extends SubsystemBase {
   //   this.targetDegrees = targetDegrees;
   //   pidController.setSetpoint(targetDegrees);
   // }
+  private double error(){
+    return targetDegrees - getCurrentAngle();
+  }
   private static double degreesToTicks(double angle) {
-    return (angle * 360d) / (Shooter.WRIST_GEAR_RATIO) / (Shooter.TICKS);
+    return (angle * 360d) / (Shooter.WRIST_GEAR_RATIO);
   }
 
-  private static double ticksToDegrees(double ticks) {
-    return ((ticks / Shooter.TICKS / (Shooter.WRIST_GEAR_RATIO) * 360));
+  private static double rotationsToDegrees(double rotations) {
+    return ((rotations / (Shooter.WRIST_GEAR_RATIO) * 360));
   }
 
   private double getCurrentAngle() {
-    return ticksToDegrees(wristMotor.getPosition().getValue());
+    return -rotationsToDegrees(wristMotor.getPosition().getValue());
   }
 
-  public void setTargetDegrees() {
-    mathJunk =
-        Math.pow(Shooter.NOTE_SPEED, 4)
-            - Shooter.GRAVITY
-                * ((Shooter.GRAVITY * Math.pow(Shooter.X_DISTANCE, 2))
-                    + 2 * (Math.pow(Shooter.NOTE_SPEED, 2)) * Shooter.SPEAKER_HEIGHT);
-    if (!(mathJunk > 1)) {
-      mathJunk = mathJunk * -1;
-    }
-    targetDegrees =
-        (180 / Math.PI)*(Math.atan((Shooter.NOTE_SPEED + mathJunk) / (Shooter.GRAVITY * Shooter.X_DISTANCE)));
-    pidController.setSetpoint(targetDegrees);
+  public void calculateWristTargetDegrees(Pose2d pose) {
+    double g = Shooter.GRAVITY;
+    x = pose.getX();
+    double h = Shooter.SPEAKER_HEIGHT;
+    double v = Shooter.NOTE_SPEED;
+    //iterates 3 times to find the angle. Finds time to get to the height, subtracts gravity, 
+    //finds how off the height is, adds more height on next iteration to the old height, iterates 
+    //3 times, is very close to the limit. 
+    double y1 = Math.pow(((Math.sqrt(x*x)+(h*h))/v),2)*9.81*0.5;
+    double y2 = Math.pow(((Math.sqrt(x*x)+((y1+h)*(y1+h)))/v),2)*9.81*0.5;
+    double y3 = Math.pow(((Math.sqrt(x*x)+((y2+h)*(y2+h)))/v),2)*9.81*0.5;
+    targetDegrees =180/3.14159*(Math.atan((y3+h)/x));
   }
   // other methods
   // public double getCurrentTime() {
@@ -119,8 +150,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     if (!atTargetDegrees()) {
       wristMotorPower = pidController.calculate(getCurrentAngle());
-
-      wristMotor.set(wristMotorPower);
+      //wristMotor.set(0);
+      wristMotor.set(-MathUtil.clamp(wristMotorPower, -0.5, 0.5));
     }
     // else{
     //   if (startTime == 0){
