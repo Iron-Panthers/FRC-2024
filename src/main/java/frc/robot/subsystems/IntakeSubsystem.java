@@ -62,13 +62,15 @@ public class IntakeSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(Constants.Intake.INTAKE_SENSOR_PORT);
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("intake power", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
-      tab.addBoolean("Note Sensor Output", this::getNoteSensorBool);
+      tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
+      tab.addDouble(
+          "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
+      tab.addBoolean("Note Sensor Output", this::getNoteSensorOutput);
       tab.addString("Current Mode", () -> intakeMode.toString());
     }
   }
 
-  public boolean getNoteSensorBool() {
+  public boolean getNoteSensorOutput() {
     return noteSensor.get();
   }
 
