@@ -174,8 +174,6 @@ public class RobotContainer {
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
-    climberSubsystem.setDefaultCommand(
-        new ClimberManualCommand(climberSubsystem, jacob::getRightY));
 
     DoubleSupplier rotation =
         exponential(

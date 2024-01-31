@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Climber;
-import frc.robot.Constants.Climber.MotionMagicConstants;
+import frc.robot.Constants.Climber.PIDConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
 
@@ -29,10 +29,6 @@ public class ClimberSubsystem extends SubsystemBase {
   private LinearFilter filter;
   private PIDController climberController;
   private Modes currentMode;
-  private TalonFXConfiguration climberConfig;
-  private MotionMagicConfigs motionMagicConfigs;
-  private final MotionMagicVoltage m_request =
-      new MotionMagicVoltage(0); // create a Motion Magic request, voltage output
   private final ShuffleboardTab climberTab = Shuffleboard.getTab("Climber tab");
 
   public enum Modes {
@@ -45,8 +41,6 @@ public class ClimberSubsystem extends SubsystemBase {
   public ClimberSubsystem() {
     //DEFINE MOTORS
     climberMotor = new TalonFX(Climber.Ports.CLIMBER_MOTOR_PORT);
-    climberConfig = new TalonFXConfiguration();
-    motionMagicConfigs = climberConfig.MotionMagic;
 
     //MOTOR CONFIG
     climberMotor.clearStickyFaults();
@@ -54,35 +48,19 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.setPosition(0);
     climberMotor.setInverted(false);
 
-    climberController = new PIDController(MotionMagicConstants.kP, MotionMagicConstants.kI, MotionMagicConstants.kD);
-
-    // MOTION MAGIC CONFIG
-    climberMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
-
-    motionMagicConfigs.MotionMagicAcceleration =
-        Constants.Climber.MotionMagicConstants.MotionMagicAcceleration; // These values are in RPS
-    motionMagicConfigs.MotionMagicCruiseVelocity =
-        Constants.Climber.MotionMagicConstants.MotionMagicCruiseVelocity;
-    climberConfig.Slot0.kS = Constants.Climber.MotionMagicConstants.kS;
-    climberConfig.Slot0.kV = Constants.Climber.MotionMagicConstants.kV;
-    climberConfig.Slot0.kA = Constants.Climber.MotionMagicConstants.kA;
-    climberConfig.Slot0.kP = Constants.Climber.MotionMagicConstants.kP;
-    climberConfig.Slot0.kI = Constants.Climber.MotionMagicConstants.kI;
-    climberConfig.Slot0.kD = Constants.Climber.MotionMagicConstants.kD;
-
-    climberMotor.getConfigurator().apply(climberConfig); // put the configuration on the motor
-
+    climberController = new PIDController(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
 
     //LINEAR FILTER for stator currents and zeroing
     filter = LinearFilter.movingAverage(30);
 
-    currentMode = Modes.POSITION_CONTROL;
+    currentMode = Modes.ZERO;
 
 
     //SHUFFLEBOARD
     climberTab.addDouble("Target Extension", () -> targetExtension);
     climberTab.addDouble("Current Extension", this::getCurrentExtension);
     climberTab.addDouble("Filter Output", () -> filterOutput);
+    climberTab.addBoolean("Stator Ecceded?", () -> Math.abs(filterOutput) > Climber.ZERO_STATOR_LIMIT);
     climberTab.addDouble("Current Motor Power", () -> climberMotor.get());
     climberTab.addDouble(
         "Stator Current", () -> climberMotor.getStatorCurrent().getValueAsDouble());
@@ -142,9 +120,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   //PERIODICS
   private void positionDrivePeriodic() {
-    // climberMotor.setControl(m_request.withPosition(extensionInchesToRotations(targetExtension)));//Uses motion magic to set the position
     climberMotor.set(
-       MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
+      MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
   }
 
   private void percentDrivePeriodic() {
@@ -152,12 +129,12 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   private void zeroPeriodic() {
-    if (filterOutput > Climber.ZERO_STATOR_LIMIT) {
+    if (Math.abs(filterOutput) > Climber.ZERO_STATOR_LIMIT) {
       currentMode = Modes.PERCENT_CONTROL;
       climberMotor.set(0);
       climberMotor.setPosition(0);
     } else {
-      climberMotor.set(0.25);
+      climberMotor.set(-0.25);
     }
   }
 
