@@ -86,9 +86,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
 
     // check for a beam break
-    if (noteSensor.get()) { // if the beam is broken
-      intakeMode = Modes.HOLD; // set the mode to hold the note
-    }
+    // if (noteSensor.get()) { // if the beam is broken
+    //   intakeMode = Modes.HOLD; // set the mode to hold the note
+    // }
 
     setIntakeMotorSpeed();
   }
