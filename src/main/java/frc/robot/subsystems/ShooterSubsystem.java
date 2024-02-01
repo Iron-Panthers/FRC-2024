@@ -54,8 +54,8 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Current Motor Position", ()-> wristMotor.getPosition().getValueAsDouble());
     WristTab.addNumber("Current motor angle", this::getCurrentAngle);
     WristTab.addNumber("Motor Power", ()-> wristMotorPower);
-    WristTab.addBoolean("Is at target", this::atTargetDegrees);
-    WristTab.addNumber("Error", this::error);
+    WristTab.addBoolean("Is at target", this::isAtTargetDegrees);
+    WristTab.addNumber("Error", this::getCurrentError);
     WristTab.addNumber("target", ()-> targetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
     targetDegrees = 0;
@@ -95,11 +95,12 @@ public class ShooterSubsystem extends SubsystemBase {
   //   this.targetDegrees = targetDegrees;
   //   pidController.setSetpoint(targetDegrees);
   // }
-  private double error(){
+  private double getCurrentError(){
     return targetDegrees - getCurrentAngle();
   }
+
   private static double degreesToTicks(double angle) {
-    return (angle * 360d) / (Shooter.WRIST_GEAR_RATIO);
+    return (angle * 360) / (Shooter.WRIST_GEAR_RATIO);
   }
 
   private static double rotationsToDegrees(double rotations) {
@@ -132,33 +133,22 @@ public class ShooterSubsystem extends SubsystemBase {
   //   return Timer.getFPGATimestamp();
   // }
 
-  public boolean atTargetDegrees() {
-    if (Math.abs(getCurrentAngle() - targetDegrees) < 1) {
-      return true;
-    }
-    return false;
+  public boolean isAtTargetDegrees() {
+    return Math.abs(getCurrentAngle() - targetDegrees) < 1;
   }
-  private boolean sensorIsTriggered(){
+  private boolean isSensorTriggered(){
     //if is triggered return true
     return false;
   }
+  
   public boolean isDone(Pose2d pose) {
-    if(pose.getX()>8.4){
-      return true;
-    }
-    if (sensorIsTriggered()){
-      return true;
-    }
-     return false;
-   }
+     return isSensorTriggered() || pose.getX()>8.4;
+  }
   
   @Override
   public void periodic() {
-    if (!atTargetDegrees()) {
       wristMotorPower = pidController.calculate(getCurrentAngle());
-      //wristMotor.set(0);
-      wristMotor.set(-MathUtil.clamp(wristMotorPower+getFeedForward(), -0.5, 0.5));
-    }
+      wristMotor.set(-MathUtil.clamp(wristMotorPower+getFeedForward(), -0.5, 0.5));//you allways need to incorperate feed foreward
     // else{
     //   if (startTime == 0){
     //     startTime = getCurrentTime();
