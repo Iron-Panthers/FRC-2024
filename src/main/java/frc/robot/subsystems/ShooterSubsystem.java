@@ -28,6 +28,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetDegrees;
   private double wristMotorPower;
   private Pose2d pose;
+  private double pastShooterHeight;
+  private double pastCenterOfNote;
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
     public ShooterSubsystem() {
@@ -89,8 +91,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return false;
   }
 
-    public boolean isDone(Pose2d pose) {
+    public boolean isDone() {
      return isSensorTriggered() || pose.getX()>8.4;
+  }
+  
+  public void setNoteCenter(){
+
+  }
+
+  public double getSpeakerHeight(){
+    return Shooter.SPEAKER_HEIGHT + Shooter.RESTING_SHOOTER_HEIGHT;
   }
 
   public boolean isReadyToShoot(){
@@ -102,7 +112,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double g = Shooter.GRAVITY;
     double x = pose.getX();
     double y = pose.getY();
-    double h = Shooter.SPEAKER_HEIGHT;
+    double h = getSpeakerHeight();
     // difference between distance to speaker now and after 1 second to find v to speaker
     double velocityToSpeaker = (Math.pow((x-Shooter.SPEAKER_X),2)+Math.pow((y-Shooter.SPEAKER_Y),2)-Math.pow((x+xV-Shooter.SPEAKER_X),2)+Math.pow((y+yV-Shooter.SPEAKER_Y),2));
     double v = Shooter.NOTE_SPEED+velocityToSpeaker;
@@ -114,6 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double y3 = Math.pow(((Math.sqrt(x*x)+((y2+h)*(y2+h)))/v),2)*g*0.5;
     targetDegrees =180/3.14159*(Math.atan((y3+h)/x));
     pidController.setSetpoint(targetDegrees);
+    
   }
 
   private static double degreesToTicks(double angle) {
@@ -123,12 +134,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private static double rotationsToDegrees(double rotations) {
     return ((rotations / (Shooter.WRIST_GEAR_RATIO) * 360));
   }
-
   @Override
   public void periodic() {
       wristMotorPower = pidController.calculate(getCurrentAngle());
+      if (!isReadyToShoot()){
       wristMotor.set(-MathUtil.clamp(wristMotorPower+getFeedForward(), -0.5, 0.5));//you allways need to incorperate feed foreward
+      }
       if (isReadyToShoot()){
+        wristMotor.set(-MathUtil.clamp(wristMotorPower+getFeedForward(), -0.1, 0.1));
         rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
       }
   }

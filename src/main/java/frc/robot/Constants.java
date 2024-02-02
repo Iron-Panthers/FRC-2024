@@ -8,6 +8,8 @@ import static frc.util.MacUtil.IS_COMP_BOT;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -358,13 +360,14 @@ public final class Constants {
     public static final int SHOOTER_MOTOR_PORT = 0; // fix me
     public static final double WRIST_GEAR_RATIO = 128; // fix me
     public static final double TICKS = 2048;
-    public static final double ROLLER_MOTOR_POWER = 1;
+    public static final double ROLLER_MOTOR_POWER = 0.5;
     public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
     public static final double X_DISTANCE = 4; // meters
-    public static final double SPEAKER_HEIGHT = 2; // meters
+    public static final double SPEAKER_HEIGHT = 1.9; // meters
     public static final double NOTE_SPEED = 40; // meters per second
-    public static final double GRAVITY = 9.81; // meters per second
-    public static final double SPEAKER_X = 0.2;
-    public static final double SPEAKER_Y = 5.6;
+    public static final double GRAVITY = 9.80665; // meters per second
+    public static final double SPEAKER_X = 0.2; // cords
+    public static final double SPEAKER_Y = 5.6; // cords
+    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; //meters
   }
 }
