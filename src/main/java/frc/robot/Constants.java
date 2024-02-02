@@ -57,7 +57,7 @@ public final class Constants {
             new PIDConstants(5, 0, 0),
             new PIDConstants(5, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
-            Math.sqrt(Math.pow(Dims.BUMPER_WIDTH_METERS, 2) * 2),
+            Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
             new ReplanningConfig());
 
     /** turn this off before comp. */
@@ -110,7 +110,8 @@ public final class Constants {
           .5207; // 20.5 inches (source: cad) converted to meters
       public static final double WHEELBASE_METERS = TRACKWIDTH_METERS; // robot is square
 
-      public static final double BUMPER_WIDTH_METERS = .851;
+      public static final double BUMPER_WIDTH_METERS_X = .9779;
+      public static final double BUMPER_WIDTH_METERS_Y = .8382;
     }
 
     /*
