@@ -88,9 +88,7 @@ public final class Constants {
         6380.0 // falcon 500 free speed rpm
             / 60.0
             * 0.10033
-            * ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0))
-            //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-            //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            * (1 / 6.12) // mk4i l3 16t falcon drive reduction (sourced from adrian)
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally
