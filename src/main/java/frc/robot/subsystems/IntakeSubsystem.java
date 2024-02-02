@@ -19,18 +19,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
+  private final DigitalInput noteSensor;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-
-  private final DigitalInput noteSensor;
 
   private Modes intakeMode;
 
   public enum Modes {
     INTAKE(Intake.INTAKE_MOTOR_SPEED),
     OUTTAKE(Intake.OUTTAKE_MOTOR_SPEED),
-    HOLD(Intake.HOLD_MOTOR_SPEED),
-    IDLE(Intake.IDLE_MOTOR_SPEED);
+    HOLD(Intake.HOLD_MOTOR_SPEED);
 
     public final double motorSpeed;
 
@@ -41,36 +39,37 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
-    serializerMotor = new TalonFX(Constants.Intake.SERIALIZER_MOTOR_PORT);
+    intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
+    serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
 
     intakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
-
     intakeMotor.setNeutralMode(NeutralModeValue.Brake);
     serializerMotor.setNeutralMode(NeutralModeValue.Brake);
 
     serializerMotor.setControl(
         new Follower(
             intakeMotor.getDeviceID(),
-            true)); // set serializer motor to follow the intake motor and also be inverted
+            Intake.IS_SERIALIZER_INVERTED)); // set serializer motor to follow the intake motor and also be inverted
 
+  
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
 
-    // Beam break code - once the beam is broken we need to hold the piece in place.
-    noteSensor = new DigitalInput(Constants.Intake.INTAKE_SENSOR_PORT);
+    // BEAM BRAKE SENSOR - once the beam is broken we need to hold the piece in place.
+    noteSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
 
+  
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
       tab.addDouble(
           "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
-      tab.addBoolean("Note Sensor Output", this::getNoteSensorOutput);
+      tab.addBoolean("Note Sensor Output", this::getSensorOutput);
       tab.addString("Current Mode", () -> intakeMode.toString());
     }
   }
 
-  public boolean getNoteSensorOutput() {
+  public boolean getSensorOutput() {
     return noteSensor.get();
   }
 
@@ -86,7 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
 
     // check for a beam break
-    // if (noteSensor.get()) { // if the beam is broken
+    // if (getSensorOutput()) { // if the beam is broken
     //   intakeMode = Modes.HOLD; // set the mode to hold the note
     // }
 

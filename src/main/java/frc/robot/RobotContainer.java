@@ -175,9 +175,9 @@ public class RobotContainer {
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
-    jacob.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
-    jacob.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.IDLE));
-    jacob.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
+    anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
+    anthony.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.HOLD));
+    anthony.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
 
     DoubleSupplier rotation =
         exponential(
