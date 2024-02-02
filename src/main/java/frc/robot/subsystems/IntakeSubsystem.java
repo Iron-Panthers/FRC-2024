@@ -17,7 +17,8 @@ import frc.robot.Constants.Intake;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX intakeMotor;
+  private final TalonFX rightIntakeMotor;//LEADER
+  private final TalonFX leftIntakeMotor;//FOLLOWER
   private final TalonFX serializerMotor;
   private final DigitalInput noteSensor;
 
@@ -39,17 +40,27 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
+    rightIntakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);    
+    leftIntakeMotor = new TalonFX(Intake.Ports.LEFT_INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
 
-    intakeMotor.clearStickyFaults();
+    rightIntakeMotor.clearStickyFaults();
+    leftIntakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
-    intakeMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    rightIntakeMotor.setNeutralMode(NeutralModeValue.Brake);    
+    leftIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
     serializerMotor.setNeutralMode(NeutralModeValue.Brake);
+
+
+    leftIntakeMotor.setControl(
+        new Follower(
+            rightIntakeMotor.getDeviceID(),
+            false)); // set serializer motor to follow the intake motor and also be inverted
 
     serializerMotor.setControl(
         new Follower(
-            intakeMotor.getDeviceID(),
+            rightIntakeMotor.getDeviceID(),
             Intake.IS_SERIALIZER_INVERTED)); // set serializer motor to follow the intake motor and also be inverted
 
   
@@ -61,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
+      tab.addDouble("intake voltage", () -> rightIntakeMotor.getMotorVoltage().getValueAsDouble());
       tab.addDouble(
           "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
       tab.addBoolean("Note Sensor Output", this::getSensorOutput);
@@ -78,7 +89,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void setIntakeMotorSpeed() { // using the current mode, set the motor speed
-    intakeMotor.set(intakeMode.motorSpeed);
+    rightIntakeMotor.set(intakeMode.motorSpeed);
   }
 
   @Override

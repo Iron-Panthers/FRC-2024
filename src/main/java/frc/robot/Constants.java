@@ -359,7 +359,8 @@ public final class Constants {
 
   public static final class Intake {
     public static final class Ports{
-        public static final int INTAKE_MOTOR_PORT = 1;
+        public static final int RIGHT_INTAKE_MOTOR_PORT = 1;
+        public static final int LEFT_INTAKE_MOTOR_PORT = 2;
         public static final int SERIALIZER_MOTOR_PORT = 20;
         public static final int INTAKE_SENSOR_PORT = 3;
     }
