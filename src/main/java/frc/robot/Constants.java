@@ -368,6 +368,6 @@ public final class Constants {
     public static final double GRAVITY = 9.80665; // meters per second
     public static final double SPEAKER_X = 0.2; // cords
     public static final double SPEAKER_Y = 5.6; // cords
-    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; //meters
+    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
   }
 }

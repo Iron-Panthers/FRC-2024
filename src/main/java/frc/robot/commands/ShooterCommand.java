@@ -11,7 +11,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   ShooterSubsystem shooterSubsystem;
+
   DrivebaseSubsystem drivebaseSubsystem;
+
   public ShooterCommand(ShooterSubsystem shooterSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
@@ -22,7 +24,10 @@ public class ShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.calculateWristTargetDegrees(drivebaseSubsystem.getPose(),drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
+    shooterSubsystem.calculateWristTargetDegrees(
+        drivebaseSubsystem.getPose(),
+        drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,
+        drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
