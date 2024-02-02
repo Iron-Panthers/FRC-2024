@@ -39,11 +39,11 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(intakeMode == IntakeSubsystem.Modes.INTAKE){
-        return intakeSubsystem.getSensorOutput();
-    }else if(intakeMode == IntakeSubsystem.Modes.OUTTAKE){
-        return !intakeSubsystem.getSensorOutput();
-    }
+    // if(intakeMode == IntakeSubsystem.Modes.INTAKE){
+    //     return intakeSubsystem.getSensorOutput();
+    // }else if(intakeMode == IntakeSubsystem.Modes.OUTTAKE){
+    //     return !intakeSubsystem.getSensorOutput();
+    // }
     return true;
   }
 }
