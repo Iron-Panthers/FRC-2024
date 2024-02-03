@@ -365,7 +365,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-    this.chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getDriverGyroscopeRotation());
+    this.chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getDriverGyroscopeRotation());
   }
 
   /**
