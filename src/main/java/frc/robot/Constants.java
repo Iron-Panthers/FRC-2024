@@ -365,9 +365,15 @@ public final class Constants {
         public static final int INTAKE_SENSOR_PORT = 3;
     }
 
-    public static final double INTAKE_MOTOR_SPEED = -0.8;
-    public static final double OUTTAKE_MOTOR_SPEED = 0.8;
-    public static final double HOLD_MOTOR_SPEED = 0;
+    //INTAKE MOTOR SPEEDS
+    public static final double INTAKE_MOTOR_INTAKE_SPEED = -0.8;
+    public static final double INTAKE_MOTOR_OUTTAKE_SPEED = 0;
+    public static final double INTAKE_MOTOR_HOLD_SPEED = 0;
+
+    //SERIALIZER MOTOR SPEEDS
+    public static final double SERIALIZER_MOTOR_INTAKE_SPEED = -0.8;
+    public static final double SERIALIZER_MOTOR_OUTTAKE_SPEED = 0.4;
+    public static final double SERIALIZER_MOTOR_HOLD_SPEED = 0;
 
     public static final boolean IS_SERIALIZER_INVERTED = false;
   }

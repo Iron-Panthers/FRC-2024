@@ -26,16 +26,19 @@ public class IntakeSubsystem extends SubsystemBase {
   private Modes intakeMode;
 
   public enum Modes {
-    INTAKE(Intake.INTAKE_MOTOR_SPEED),
-    OUTTAKE(Intake.OUTTAKE_MOTOR_SPEED),
-    HOLD(Intake.HOLD_MOTOR_SPEED);
+    INTAKE(Intake.INTAKE_MOTOR_INTAKE_SPEED, Intake.SERIALIZER_MOTOR_INTAKE_SPEED),
+    OUTTAKE(Intake.INTAKE_MOTOR_OUTTAKE_SPEED, Intake.SERIALIZER_MOTOR_OUTTAKE_SPEED),
+    HOLD(Intake.INTAKE_MOTOR_HOLD_SPEED, Intake.SERIALIZER_MOTOR_HOLD_SPEED);
 
-    public final double motorSpeed;
+    public final double intakeMotorSpeed;
+    public final double serializerMotorSpeed;
 
-    private Modes(double motorSpeed) {
-      this.motorSpeed = motorSpeed;
+    private Modes(double intakeMotorSpeed, double serializerMotorSpeed) {
+      this.intakeMotorSpeed = intakeMotorSpeed;
+      this.serializerMotorSpeed = serializerMotorSpeed;
     }
   }
+
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -55,12 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
     leftIntakeMotor.setControl(
         new Follower(
             rightIntakeMotor.getDeviceID(),
-            false)); // set serializer motor to follow the intake motor and also be inverted
-
-    serializerMotor.setControl(
-        new Follower(
-            rightIntakeMotor.getDeviceID(),
-            Intake.IS_SERIALIZER_INVERTED)); // set serializer motor to follow the intake motor and also be inverted
+            false)); // set left intake motor to follow the right intake motor
 
   
     // Mode to tell the motor what speed to go at
@@ -87,8 +85,9 @@ public class IntakeSubsystem extends SubsystemBase {
     this.intakeMode = intakeMode;
   }
 
-  private void setIntakeMotorSpeed() { // using the current mode, set the motor speed
-    rightIntakeMotor.set(intakeMode.motorSpeed);
+  private void setMotorSpeeds() { // using the current mode, set the motor speed
+    rightIntakeMotor.set(intakeMode.intakeMotorSpeed);
+    serializerMotor.set(intakeMode.serializerMotorSpeed);
   }
 
   @Override
@@ -99,6 +98,6 @@ public class IntakeSubsystem extends SubsystemBase {
     //   intakeMode = Modes.HOLD; // set the mode to hold the note
     // }
 
-    setIntakeMotorSpeed();
+    setMotorSpeeds();
   }
 }
