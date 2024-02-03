@@ -209,7 +209,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         this::getPose,
         this::resetOdometryToPose,
         this::getRobotRelativeSpeeds,
-        this::drive,
+        this::driveRobotRelative,
         Constants.Config.PATH_FOLLOWER_CONFIG,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -362,6 +362,10 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   public double getRotVelocity() {
     return swerveDrivetrain.getPigeon2().getRate();
+  }
+
+  public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+    this.chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getDriverGyroscopeRotation());
   }
 
   /**
