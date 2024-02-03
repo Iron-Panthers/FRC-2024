@@ -96,7 +96,6 @@ public class VisionSubsystem {
             () -> {
               if (fieldLayout == null) return;
               while (!Thread.currentThread().isInterrupted()) {
-                System.out.println("we have a thread");
                 this.findVisionMeasurements();
                 try {
                   Thread.sleep(Vision.THREAD_SLEEP_DURATION_MS);
@@ -104,7 +103,6 @@ public class VisionSubsystem {
                   Thread.currentThread().interrupt();
                 }
               }
-              System.exit(0);
             });
     thread.setDaemon(true);
     thread.start();
@@ -198,26 +196,19 @@ public class VisionSubsystem {
 
   private void findVisionMeasurements() {
     for (CameraEstimator cameraEstimator : cameraEstimators) {
-      System.out.println("running vision measurement");
       PhotonPipelineResult frame = cameraEstimator.camera().getLatestResult();
-      System.out.println("cam name: " + cameraEstimator.camera().getName());
-      System.out.println("haz target " + frame.hasTargets());
-      System.out.println("time when frame " + frame.getTimestampSeconds());
 
       // determine if result should be ignored
-      // if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
+      if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
 
       var optEstimation = cameraEstimator.estimator().update(frame);
       if (optEstimation.isEmpty()) continue;
       var estimation = optEstimation.get();
 
-      // if (estimation.targetsUsed.size() == 1
-      //     && (estimation.targetsUsed.get(0).getPoseAmbiguity() >
-      // PoseEstimator.POSE_AMBIGUITY_CUTOFF
-      //         || estimation.targetsUsed.get(0).getPoseAmbiguity() == -1)) continue;
-
-      System.out.println("                                                             # of targets: " + estimation.targetsUsed.size());
-      System.out.println("                                                             target #: " + frame.getBestTarget().getFiducialId());
+      if (estimation.targetsUsed.size() == 1
+          && (estimation.targetsUsed.get(0).getPoseAmbiguity() >
+      PoseEstimator.POSE_AMBIGUITY_CUTOFF
+              || estimation.targetsUsed.get(0).getPoseAmbiguity() == -1)) continue;
 
       double sumDistance = 0;
       for (var target : estimation.targetsUsed) {
