@@ -92,7 +92,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return isSensorTriggered() || pose.getX() > 8.4;
   }
 
-  public void setNoteCenter() {}
+
 
   public double getSpeakerHeight() {
     return Shooter.SPEAKER_HEIGHT + Shooter.RESTING_SHOOTER_HEIGHT;
@@ -105,26 +105,35 @@ public class ShooterSubsystem extends SubsystemBase {
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.GRAVITY;
+
     double x = pose.getX();
     double y = pose.getY();
-    double h = getSpeakerHeight();
+    //sets height and distance of NOTE based on angle (which changes where the note is)
+    double d = Math.pow((x - Shooter.SPEAKER_X), 2)
+      + Math.pow((y - Shooter.SPEAKER_Y), 2) + Shooter.NOTE_DISTANCE_FROM_CENTER + Shooter.NOTE_DISTANCE_FROM_PIVOT/Math.cos(targetDegrees);
+    double h = getSpeakerHeight()-(Shooter.NOTE_DISTANCE_FROM_PIVOT*Math.tan(targetDegrees));
     // difference between distance to speaker now and after 1 second to find v to speaker
     double velocityToSpeaker =
         (Math.pow((x - Shooter.SPEAKER_X), 2)
             + Math.pow((y - Shooter.SPEAKER_Y), 2)
-            - Math.pow((x + xV - Shooter.SPEAKER_X), 2)
-            + Math.pow((y + yV - Shooter.SPEAKER_Y), 2));
+            - (Math.pow((x + xV - Shooter.SPEAKER_X), 2)
+            + Math.pow((y + yV - Shooter.SPEAKER_Y), 2)));
     double v = Shooter.NOTE_SPEED + velocityToSpeaker;
-    // iterates 3 times to find the angle. Finds time to get to the height, subtracts gravity,
-    // finds how off the height is, adds more height on next iteration to the old height, iterates
-    // 3 times, is very close to the limit.
-    double y1 = Math.pow(((Math.sqrt(x * x) + (h * h)) / v), 2) * g * 0.5;
-    double y2 = Math.pow(((Math.sqrt(x * x) + ((y1 + h) * (y1 + h))) / v), 2) * g * 0.5;
-    double y3 = Math.pow(((Math.sqrt(x * x) + ((y2 + h) * (y2 + h))) / v), 2) * g * 0.5;
-    targetDegrees = 180 / 3.14159 * (Math.atan((y3 + h) / x));
+    
+    for (int i = 0; i>3; i++){
+    double interiorMath = (v*v*v*v)-g*((g*x*x)+(2*h*v*v));
+    if (interiorMath>0){
+      targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*x)));
+    }
+    else{
+      targetDegrees = 0;
+    }
+
+    }
+
     pidController.setSetpoint(targetDegrees);
   }
-
+  
   private static double degreesToTicks(double angle) {
     return (angle * 360) / (Shooter.WRIST_GEAR_RATIO);
   }
