@@ -14,7 +14,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -45,12 +44,6 @@ import java.util.Set;
 public final class Constants {
 
   public static final class Config {
-    /** turn this off before comp. */
-    public static final boolean RUN_PATHPLANNER_SERVER =
-        // never run pathplanner server in simulation, it will fail unit tests (???)
-        Config.SHOW_SHUFFLEBOARD_DEBUG_DATA
-            && HALUtil.getHALRuntimeType() != HALUtil.RUNTIME_SIMULATION;
-
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
@@ -76,7 +69,7 @@ public final class Constants {
   }
 
   public static final class Drive {
-    public static final int PIGEON_PORT = 0; // FIXME placeholder
+    public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
 
     // max voltage delivered to drivebase
@@ -152,7 +145,7 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
+            new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0.28).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
             new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
