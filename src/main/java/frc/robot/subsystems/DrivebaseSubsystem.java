@@ -205,12 +205,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
       swerveDrivetrain = null;
     }
 
-    // FIXME check these values to make sure they are correct
     AutoBuilder.configureHolonomic(
         this::getPose,
         this::resetOdometryToPose,
-        this::getChassisSpeeds,
-        null,
+        this::getRobotRelativeSpeeds,
+        this::drive,
         Constants.Config.PATH_FOLLOWER_CONFIG,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
