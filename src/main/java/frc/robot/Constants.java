@@ -358,19 +358,19 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final class Ports{
-        public static final int RIGHT_INTAKE_MOTOR_PORT = 19;
-        public static final int LEFT_INTAKE_MOTOR_PORT = 16;
-        public static final int SERIALIZER_MOTOR_PORT = 20;
-        public static final int INTAKE_SENSOR_PORT = 3;
+    public static final class Ports {
+      public static final int RIGHT_INTAKE_MOTOR_PORT = 19;
+      public static final int LEFT_INTAKE_MOTOR_PORT = 16;
+      public static final int SERIALIZER_MOTOR_PORT = 20;
+      public static final int INTAKE_SENSOR_PORT = 3;
     }
 
-    //INTAKE MOTOR SPEEDS
+    // INTAKE MOTOR SPEEDS
     public static final double INTAKE_MOTOR_INTAKE_SPEED = -0.8;
     public static final double INTAKE_MOTOR_OUTTAKE_SPEED = 0;
     public static final double INTAKE_MOTOR_HOLD_SPEED = 0;
 
-    //SERIALIZER MOTOR SPEEDS
+    // SERIALIZER MOTOR SPEEDS
     public static final double SERIALIZER_MOTOR_INTAKE_SPEED = -0.8;
     public static final double SERIALIZER_MOTOR_OUTTAKE_SPEED = 0.4;
     public static final double SERIALIZER_MOTOR_HOLD_SPEED = 0;
