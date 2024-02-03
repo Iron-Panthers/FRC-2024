@@ -145,9 +145,9 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0.28).withKV(0.11).withKA(0);
+            new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
+            new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
@@ -167,7 +167,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.231201171875 // comp bot offset
+                ? -0.064208984375 // comp bot offset
                 : 0; // practice bot offset
       }
 
@@ -178,8 +178,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.367431640625 // comp bot offset
-                : -0.367431640625; // practice bot offset
+                ? 0.190185546875 // comp bot offset
+                : 0; // practice bot offset
       }
 
       public static final class Module3 { // historically back left
@@ -189,8 +189,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.0732421875 // comp bot offset
-                : 0.0732421875; // practice bot offset
+                ? 0.225341796875 // comp bot offset
+                : 0; // practice bot offset
       }
 
       public static final class Module4 { // historically back right
@@ -200,8 +200,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.224853515625 // comp bot offset
-                : -0.224853515625; // practice bot offset
+                ? 0.371826171875 // comp bot offset
+                : 0; // practice bot offset
       }
     }
   }
