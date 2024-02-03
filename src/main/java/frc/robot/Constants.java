@@ -372,7 +372,7 @@ public final class Constants {
 
     // SERIALIZER MOTOR SPEEDS
     public static final double SERIALIZER_MOTOR_INTAKE_SPEED = -0.8;
-    public static final double SERIALIZER_MOTOR_OUTTAKE_SPEED = 0.4;
+    public static final double SERIALIZER_MOTOR_OUTTAKE_SPEED = -0.4;
     public static final double SERIALIZER_MOTOR_HOLD_SPEED = 0;
 
     public static final boolean IS_SERIALIZER_INVERTED = false;
