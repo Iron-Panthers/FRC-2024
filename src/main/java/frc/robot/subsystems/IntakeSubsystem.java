@@ -20,6 +20,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX leftIntakeMotor; // FOLLOWER
   private final TalonFX serializerMotor;
   private final DigitalInput noteSensor;
+  public boolean isUsingIntakeSensor = true;
+  
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
@@ -73,8 +75,16 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
+
+  //GETTERS
   public boolean getSensorOutput() {
-    return noteSensor.get();
+    return !noteSensor.get();
+  }
+
+  //SETTERS
+
+  public void setUsingIntakeSensor(boolean isUsingIntakeSensor){
+    this.isUsingIntakeSensor = isUsingIntakeSensor;
   }
 
   public void setIntakeMode(Modes intakeMode) {
@@ -88,12 +98,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    // check for a beam break
-    // if (getSensorOutput()) { // if the beam is broken
-    //   intakeMode = Modes.HOLD; // set the mode to hold the note
-    // }
-
     setMotorSpeeds();
   }
 }
