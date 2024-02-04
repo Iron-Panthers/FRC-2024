@@ -94,9 +94,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
 
-  public double getSpeakerHeight() {
-    return Shooter.SPEAKER_HEIGHT + Shooter.RESTING_SHOOTER_HEIGHT;
-  }
 
   public boolean isReadyToShoot() {
     return pose.getX() < 8.4 && isAtTargetDegrees();
@@ -110,8 +107,9 @@ public class ShooterSubsystem extends SubsystemBase {
     double y = pose.getY();
     //sets height and distance of NOTE based on angle (which changes where the note is)
     double d = Math.pow((x - Shooter.SPEAKER_X), 2)
-      + Math.pow((y - Shooter.SPEAKER_Y), 2) + Shooter.NOTE_DISTANCE_FROM_CENTER + Shooter.NOTE_DISTANCE_FROM_PIVOT/Math.cos(targetDegrees);
-    double h = getSpeakerHeight()-(Shooter.NOTE_DISTANCE_FROM_PIVOT*Math.tan(targetDegrees));
+      + Math.pow((y - Shooter.SPEAKER_Y), 2) - Shooter.PIVOT_TO_ROBO_CENTER_LENGTH + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER*Math.cos(getCurrentAngle()) - Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(getCurrentAngle());
+    double h = Shooter.SPEAKER_HEIGHT - (Shooter.PIVOT_TO_ROBO_CENTER_HEIGHT + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(getCurrentAngle()) + Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.cos(getCurrentAngle()));
+
     // difference between distance to speaker now and after 1 second to find v to speaker
     double velocityToSpeaker =
         (Math.pow((x - Shooter.SPEAKER_X), 2)
@@ -121,9 +119,9 @@ public class ShooterSubsystem extends SubsystemBase {
     double v = Shooter.NOTE_SPEED + velocityToSpeaker;
     
     for (int i = 0; i>3; i++){
-    double interiorMath = (v*v*v*v)-g*((g*x*x)+(2*h*v*v));
+    double interiorMath = (v*v*v*v)-g*((g*d*d)+(2*h*v*v));
     if (interiorMath>0){
-      targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*x)));
+      targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*d)));
     }
     else{
       targetDegrees = 0;

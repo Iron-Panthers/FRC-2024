@@ -369,5 +369,10 @@ public final class Constants {
     public static final double SPEAKER_X = 0.2; // cords
     public static final double SPEAKER_Y = 5.6; // cords
     public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
+    public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
+    public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; //meters
+    public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; //meters
+    public static final double ANGLE_OFFSET = 5.319; //degrees
+    public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
   }
 }
