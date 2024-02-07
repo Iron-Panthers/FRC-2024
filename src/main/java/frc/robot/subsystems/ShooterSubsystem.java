@@ -102,23 +102,25 @@ public class ShooterSubsystem extends SubsystemBase {
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.GRAVITY;
-
+    targetDegrees = getCurrentAngle();
     double x = pose.getX();
     double y = pose.getY();
-    //sets height and distance of NOTE based on angle (which changes where the note is)
-    double d = Math.pow((x - Shooter.SPEAKER_X), 2)
-      + Math.pow((y - Shooter.SPEAKER_Y), 2) - Shooter.PIVOT_TO_ROBO_CENTER_LENGTH + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER*Math.cos(getCurrentAngle()) - Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(getCurrentAngle());
-    double h = Shooter.SPEAKER_HEIGHT - (Shooter.PIVOT_TO_ROBO_CENTER_HEIGHT + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(getCurrentAngle()) + Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.cos(getCurrentAngle()));
+    for (int i = 0; i<5; i++){
+        //sets height and distance of NOTE based on angle (which changes where the note is)
+    double d = Math.sqrt(Math.pow((x - Shooter.SPEAKER_X), 2)
+      + Math.pow((y - Shooter.SPEAKER_Y), 2)) - Shooter.PIVOT_TO_ROBO_CENTER_LENGTH + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER*Math.cos(targetDegrees) - Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(targetDegrees);
+    double h = Shooter.SPEAKER_HEIGHT - (Shooter.PIVOT_TO_ROBO_CENTER_HEIGHT + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(targetDegrees) + Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.cos(targetDegrees));
 
     // difference between distance to speaker now and after 1 second to find v to speaker
     double velocityToSpeaker =
-        (Math.pow((x - Shooter.SPEAKER_X), 2)
-            + Math.pow((y - Shooter.SPEAKER_Y), 2)
-            - (Math.pow((x + xV - Shooter.SPEAKER_X), 2)
-            + Math.pow((y + yV - Shooter.SPEAKER_Y), 2)));
+    Math.sqrt((Math.pow((x - Shooter.SPEAKER_X), 2)
+    + Math.pow((y - Shooter.SPEAKER_Y), 2)))
+    - Math.sqrt((Math.pow((x + xV - Shooter.SPEAKER_X), 2)
+    + Math.pow((y + yV - Shooter.SPEAKER_Y), 2)));
+System.out.println(velocityToSpeaker);
     double v = Shooter.NOTE_SPEED + velocityToSpeaker;
     
-    for (int i = 0; i>3; i++){
+
     double interiorMath = (v*v*v*v)-g*((g*d*d)+(2*h*v*v));
     if (interiorMath>0){
       targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*d)));
@@ -127,7 +129,7 @@ public class ShooterSubsystem extends SubsystemBase {
       targetDegrees = 0;
     }
 
-    }
+  }
 
     pidController.setSetpoint(targetDegrees);
   }
