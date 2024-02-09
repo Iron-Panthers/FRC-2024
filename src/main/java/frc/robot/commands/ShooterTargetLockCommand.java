@@ -8,18 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShooterCommand extends Command {
+public class ShooterTargetLockCommand extends Command {
   /** Creates a new ShooterCommand. */
   ShooterSubsystem shooterSubsystem;
 
   DrivebaseSubsystem drivebaseSubsystem;
 
-  public ShooterCommand(ShooterSubsystem shooterSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
+  public ShooterTargetLockCommand(ShooterSubsystem shooterSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
     this.drivebaseSubsystem = drivebaseSubsystem;
     addRequirements(shooterSubsystem);
   }
+
 
   // Called when the command is initially scheduled.
   @Override

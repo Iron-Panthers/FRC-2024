@@ -98,7 +98,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean isReadyToShoot() {
     return pose.getX() < 8.4 && isAtTargetDegrees();
   }
-
+  public void manualSetWristTargetDegrees(double degree){
+    targetDegrees = degree;
+    pidController.setSetpoint(targetDegrees);
+  }
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.GRAVITY;

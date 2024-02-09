@@ -26,7 +26,8 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
-import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
+import frc.robot.commands.StoreShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -170,7 +171,8 @@ public class RobotContainer {
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    anthony.a().onTrue(new ShooterCommand(shooterSubsystem, drivebaseSubsystem));
+    anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    anthony.b().onTrue(new StoreShooterCommand(shooterSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     DoubleSupplier rotation =
