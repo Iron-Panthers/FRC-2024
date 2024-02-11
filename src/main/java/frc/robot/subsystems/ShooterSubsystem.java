@@ -21,6 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX wristMotor;
   private TalonFX rollerMotorBottom;
   private TalonFX rollerMotorTop;
+  private TalonFX acceleratorMotor;
   private PIDController pidController;
   private double targetDegrees;
   private double wristMotorPower;
@@ -31,16 +32,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.WRIST_MOTOR_PORT);
-    rollerMotorTop = new TalonFX(Shooter.SHOOTER_MOTOR_PORT);
-    rollerMotorBottom = new TalonFX(Shooter.SHOOTER_MOTOR_PORT);
+    rollerMotorTop = new TalonFX(Shooter.TOP_SHOOTER_MOTOR_PORT);
+    rollerMotorBottom = new TalonFX(Shooter.BOTTOM_SHOOTER_MOTOR_PORT);
+    acceleratorMotor = new TalonFX(Shooter.ACCELERATOR_MOTOR_PORT);
     this.wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     this.wristMotor.set(0);
     rollerMotorTop.clearStickyFaults();
+    acceleratorMotor.clearStickyFaults();
     rollerMotorBottom.clearStickyFaults();
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), true));
     rollerMotorBottom.setInverted(true);
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
+    acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
     pidController = new PIDController(0.1, 0, 0);
@@ -136,7 +140,9 @@ System.out.println(velocityToSpeaker);
 
     pidController.setSetpoint(targetDegrees);
   }
-  
+  private void cacheNote(double speed){
+    acceleratorMotor.set(speed);
+  }
   private static double degreesToTicks(double angle) {
     return (angle * 360) / (Shooter.WRIST_GEAR_RATIO);
   }
@@ -158,6 +164,7 @@ System.out.println(velocityToSpeaker);
     if (isReadyToShoot()) {
       wristMotor.set(-MathUtil.clamp(wristMotorPower + getFeedForward(), -0.1, 0.1));
       rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
+      acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
     }
   }
 }

@@ -356,11 +356,14 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int WRIST_MOTOR_PORT = 16; // fix me
-    public static final int SHOOTER_MOTOR_PORT = 0; // fix me
+    public static final int WRIST_MOTOR_PORT = 0; // fix me
+    public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
+    public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
+    public static final int ACCELERATOR_MOTOR_PORT = 6;
     public static final double WRIST_GEAR_RATIO = 128; // fix me
     public static final double TICKS = 2048;
     public static final double ROLLER_MOTOR_POWER = 0.5;
+    public static final double ACCELERATOR_MOTOR_POWER = 0.5;
     public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
     public static final double X_DISTANCE = 4; // meters
     public static final double SPEAKER_HEIGHT = 1.9; // meters
