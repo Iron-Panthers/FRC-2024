@@ -155,53 +155,54 @@ public final class Constants {
         public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.FusedCANcoder;
         public static final double SPEED_TWELVE_VOLTS = MAX_VELOCITY_METERS_PER_SECOND;
         public static final double SLIP_CURRENT = 0; // optional, unused rn
+        public static final boolean STEER_MOTOR_INVERTED = true;
 
         public static final DriveRequestType driveRequestType = DriveRequestType.OpenLoopVoltage;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagic;
       }
 
-      public static final class Module1 { // historically front right
+      public static final class Module1 { // back left
         public static final int DRIVE_MOTOR = CAN.at(4, "module 1 drive motor");
         public static final int STEER_MOTOR = CAN.at(3, "module 1 steer motor");
         public static final int STEER_ENCODER = CAN.at(24, "module 1 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.064208984375 // comp bot offset
-                : 0.066650390625; // practice bot offset
+                ? 0.07470703125 // comp bot offset
+                : 0; // practice bot offset
       }
 
-      public static final class Module2 { // historically front left
+      public static final class Module2 { // back right
         public static final int DRIVE_MOTOR = CAN.at(11, "module 2 drive motor");
         public static final int STEER_MOTOR = CAN.at(10, "module 2 steer motor");
         public static final int STEER_ENCODER = CAN.at(25, "module 2 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.190185546875 // comp bot offset
-                : 0.066650390625; // practice bot offset
+                ? 0.308349609375 // comp bot offset
+                : 0; // practice bot offset
       }
 
-      public static final class Module3 { // historically back left
+      public static final class Module3 { // front right
         public static final int DRIVE_MOTOR = CAN.at(13, "module 3 drive motor");
         public static final int STEER_MOTOR = CAN.at(12, "module 3 steer motor");
         public static final int STEER_ENCODER = CAN.at(26, "module 3 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.225341796875 // comp bot offset
-                : -0.225830078125; // practice bot offset
+                ? -0.223388671875 // comp bot offset
+                : 0; // practice bot offset
       }
 
-      public static final class Module4 { // historically back right
+      public static final class Module4 { // front left
         public static final int DRIVE_MOTOR = CAN.at(2, "module 4 drive motor");
         public static final int STEER_MOTOR = CAN.at(1, "module 4 steer motor");
         public static final int STEER_ENCODER = CAN.at(27, "module 4 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.371826171875 // comp bot offset
-                : -0.3759765625; // practice bot offset
+                ? -0.3671875 // comp bot offset
+                : 0; // practice bot offset
       }
     }
   }
