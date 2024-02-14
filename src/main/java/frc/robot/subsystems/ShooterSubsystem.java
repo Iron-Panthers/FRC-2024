@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private Pose2d pose;
   private DigitalInput noteSensor;
   private boolean inRange;
-    private final CANcoder wristCANcoder = new CANcoder(Shooter.CANCODER_PORT);
+    private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   public ShooterSubsystem() {
@@ -55,7 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorConfig.Feedback.FeedbackRemoteSensorID = wristCANcoder.getDeviceID();
     wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
-    wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.WRIST_GEAR_RATIO;
+    wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.WRIST_GEAR_RATIO;
 
     wristMotor.getConfigurator().apply(wristMotorConfig);
 
