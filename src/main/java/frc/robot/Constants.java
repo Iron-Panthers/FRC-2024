@@ -356,10 +356,12 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int WRIST_MOTOR_PORT = 0; // fix me
+    public static final int WRIST_MOTOR_PORT = 0; 
     public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
     public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
     public static final int ACCELERATOR_MOTOR_PORT = 6;
+    public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+    public static final int BEAM_BREAK_SENSOR_PORT = 31;
     public static final double WRIST_GEAR_RATIO = 128; // fix me
     public static final double TICKS = 2048;
     public static final double ROLLER_MOTOR_POWER = 0.5;

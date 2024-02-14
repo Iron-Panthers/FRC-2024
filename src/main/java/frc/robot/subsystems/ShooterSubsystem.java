@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,8 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetDegrees;
   private double wristMotorPower;
   private Pose2d pose;
-  private double pastShooterHeight;
-  private double pastCenterOfNote;
+  private DigitalInput noteSensor;
+  private boolean inRange;
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   public ShooterSubsystem() {
@@ -35,6 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop = new TalonFX(Shooter.TOP_SHOOTER_MOTOR_PORT);
     rollerMotorBottom = new TalonFX(Shooter.BOTTOM_SHOOTER_MOTOR_PORT);
     acceleratorMotor = new TalonFX(Shooter.ACCELERATOR_MOTOR_PORT);
+    noteSensor = new DigitalInput(Shooter.BEAM_BREAK_SENSOR_PORT);
     this.wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     this.wristMotor.set(0);
@@ -87,20 +89,17 @@ public class ShooterSubsystem extends SubsystemBase {
     return getCurrentError() < 1;
   }
 
-  private boolean isSensorTriggered() {
+  private boolean isBeamBreakSensorTriggered() {
     // if is triggered return true
-    return false;
+    return noteSensor.get();
   }
 
   public boolean isDone() {
-    return isSensorTriggered() || pose.getX() > 8.4;
+    return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
   }
 
-
-
-
   public boolean isReadyToShoot() {
-    return pose.getX() < 8.4 && isAtTargetDegrees();
+    return inRange && isAtTargetDegrees() && isBeamBreakSensorTriggered();
   }
   public void manualSetWristTargetDegrees(double degree){
     targetDegrees = degree;
@@ -133,7 +132,7 @@ System.out.println(velocityToSpeaker);
       targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*d)));
     }
     else{
-      targetDegrees = 0;
+      inRange = false;
     }
 
   }
@@ -158,8 +157,8 @@ System.out.println(velocityToSpeaker);
       wristMotor.set(
           -MathUtil.clamp(
               wristMotorPower + getFeedForward(),
-              -0.5,
-              0.5)); // you allways need to incorperate feed foreward
+              -0.25,
+              0.25)); // you allways need to incorperate feed foreward
     }
     if (isReadyToShoot()) {
       wristMotor.set(-MathUtil.clamp(wristMotorPower + getFeedForward(), -0.1, 0.1));
