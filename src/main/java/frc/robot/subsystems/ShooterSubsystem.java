@@ -4,11 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.*;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,6 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private Pose2d pose;
   private DigitalInput noteSensor;
   private boolean inRange;
+    private final CANcoder wristCANcoder = new CANcoder(Shooter.CANCODER_PORT);
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   public ShooterSubsystem() {
@@ -37,6 +45,20 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorBottom = new TalonFX(Shooter.BOTTOM_SHOOTER_MOTOR_PORT);
     acceleratorMotor = new TalonFX(Shooter.ACCELERATOR_MOTOR_PORT);
     noteSensor = new DigitalInput(Shooter.BEAM_BREAK_SENSOR_PORT);
+
+    CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
+    wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    wristCANcoderConfig.MagnetSensor.MagnetOffset = 0;
+    wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
+
+    TalonFXConfiguration wristMotorConfig = new TalonFXConfiguration();
+    wristMotorConfig.Feedback.FeedbackRemoteSensorID = wristCANcoder.getDeviceID();
+    wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
+    wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.WRIST_GEAR_RATIO;
+
+    wristMotor.getConfigurator().apply(wristMotorConfig);
 
     wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
@@ -88,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getCurrentAngle() {
-    return rotationsToDegrees(-wristMotor.getPosition().getValue());
+    return wristMotor.getPosition().getValue();
   }
 
   public boolean isAtTargetDegrees() {

@@ -361,10 +361,11 @@ public final class Constants {
     public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
     public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
     public static final int ACCELERATOR_MOTOR_PORT = 6;
+    public static final int CANCODER_PORT = 57;
     // public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
     public static final int BEAM_BREAK_SENSOR_PORT = 9;
     //measurements
-    public static final double WRIST_GEAR_RATIO = 128; // fix me
+    public static final double WRIST_GEAR_RATIO = (60/8)*(60/16)*(72/15); // fix me
     public static final double TICKS = 2048;
     public static final double X_DISTANCE = 4; // meters
     public static final double SPEAKER_HEIGHT = 1.9; // meters
