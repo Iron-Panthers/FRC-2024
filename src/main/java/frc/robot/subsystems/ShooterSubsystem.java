@@ -37,19 +37,27 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorBottom = new TalonFX(Shooter.BOTTOM_SHOOTER_MOTOR_PORT);
     acceleratorMotor = new TalonFX(Shooter.ACCELERATOR_MOTOR_PORT);
     noteSensor = new DigitalInput(Shooter.BEAM_BREAK_SENSOR_PORT);
-    this.wristMotor.setPosition(0);
+
+    wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
-    this.wristMotor.set(0);
+    wristMotor.set(0);
+
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
     rollerMotorBottom.clearStickyFaults();
+
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), true));
-    rollerMotorBottom.setInverted(true);
+
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
+
     pidController = new PIDController(0.1, 0, 0);
+
+    targetDegrees = 0;
+    wristMotorPower = 0;
+
     WristTab.addNumber("Current Motor Position", () -> wristMotor.getPosition().getValueAsDouble());
     WristTab.addNumber("Current motor angle", this::getCurrentAngle);
     WristTab.addNumber("Motor Power", () -> wristMotorPower);
@@ -57,8 +65,6 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Error", this::getCurrentError);
     WristTab.addNumber("target", () -> targetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
-    targetDegrees = 0;
-    wristMotorPower = 0;
   }
 
   private double getFeedForward() {
@@ -73,7 +79,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // horizontalHoldOutput is the minimum power required to hold the arm up when horizontal
     double feedForward = gravityCompensation * Shooter.HORIZONTAL_HOLD_OUTPUT;
 
-    return 0.017;
+    return 0.017;//FIXME: WHY NORA???
   }
 
   // wrist methods
@@ -82,11 +88,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getCurrentAngle() {
-    return -rotationsToDegrees(wristMotor.getPosition().getValue());
+    return rotationsToDegrees(-wristMotor.getPosition().getValue());
   }
 
   public boolean isAtTargetDegrees() {
-    return getCurrentError() < 1;
+    return Math.abs(getCurrentError()) < 1;
   }
 
   private boolean isBeamBreakSensorTriggered() {
@@ -99,12 +105,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isReadyToShoot() {
-    return inRange && isAtTargetDegrees() && isBeamBreakSensorTriggered()&& rotationsToDegrees(getCurrentAngle())>0 &&rotationsToDegrees(getCurrentAngle())<90;
+    return inRange 
+    && isAtTargetDegrees() 
+    && isBeamBreakSensorTriggered();//&& rotationsToDegrees(getCurrentAngle())>0 &&rotationsToDegrees(getCurrentAngle())<90;
   }
-  public void manualSetWristTargetDegrees(double degree){
-    targetDegrees = degree;
-    pidController.setSetpoint(targetDegrees);
+  public void setTargetDegrees(double degrees){
+    targetDegrees = degrees;
   }
+
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.GRAVITY;
@@ -130,6 +138,7 @@ System.out.println(velocityToSpeaker);
     double interiorMath = (v*v*v*v)-g*((g*d*d)+(2*h*v*v));
     if (interiorMath>0){
       targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*d)));
+      inRange = true;
     }
     else{
       inRange = false;
@@ -137,11 +146,9 @@ System.out.println(velocityToSpeaker);
 
   }
 
-    pidController.setSetpoint(targetDegrees);
   }
-  private void cacheNote(double speed){
-    acceleratorMotor.set(speed);
-  }
+
+  
   private static double degreesToRotations(double angle) {
     return (angle/360) * (Shooter.WRIST_GEAR_RATIO);
   }
@@ -152,16 +159,14 @@ System.out.println(velocityToSpeaker);
 
   @Override
   public void periodic() {
-    wristMotorPower = pidController.calculate(getCurrentAngle());
-    if (!isReadyToShoot()) {
-      wristMotor.set(
+    wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
+    wristMotor.set(
           -MathUtil.clamp(
               wristMotorPower + getFeedForward(),
               -0.09,
               0.09)); // you allways need to incorperate feed foreward
-    }
+
     if (isReadyToShoot()) {
-      wristMotor.set(-MathUtil.clamp(wristMotorPower + getFeedForward(), -0.1, 0.1));
       rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
       acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
     }
