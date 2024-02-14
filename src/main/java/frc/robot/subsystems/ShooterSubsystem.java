@@ -4,13 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -163,6 +160,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return (rotations / (Shooter.Measurements.WRIST_GEAR_RATIO)) * 360;
   }
 
+  public void manualShoot() {
+    rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
+    acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
+  }
+
+  public void manualHold() {
+    rollerMotorTop.set(0);
+    acceleratorMotor.set(0);
+  }
+
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
@@ -172,9 +179,9 @@ public class ShooterSubsystem extends SubsystemBase {
             -0.09,
             0.09)); // you always need to incorperate feed foreward
 
-    if (isReadyToShoot()) {
-      rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
-      acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
-    }
+    // if (isReadyToShoot()) {
+    //   rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
+    //   acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
+    // }
   }
 }

@@ -29,6 +29,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ManualShooterCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShooterTargetLockCommand;
@@ -177,15 +178,13 @@ public class RobotContainer {
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-
-    anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
-    anthony.b().onTrue(new StoreShooterCommand(shooterSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
+    anthony.y().onTrue(new ManualShooterCommand(shooterSubsystem, intakeSubsystem));
+    anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    anthony.x().onTrue(new StoreShooterCommand(shooterSubsystem));
+
     anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
-    anthony.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.HOLD));
-    anthony.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
 
     DoubleSupplier rotation =
         exponential(

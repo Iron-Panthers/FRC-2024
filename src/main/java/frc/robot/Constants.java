@@ -400,8 +400,8 @@ public final class Constants {
       public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
     }
     // power
-    public static final double ROLLER_MOTOR_POWER = 0.5;
-    public static final double ACCELERATOR_MOTOR_POWER = 0.5;
+    public static final double ROLLER_MOTOR_POWER = 0.8;
+    public static final double ACCELERATOR_MOTOR_POWER = 0.8;
     public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
   }
 }
