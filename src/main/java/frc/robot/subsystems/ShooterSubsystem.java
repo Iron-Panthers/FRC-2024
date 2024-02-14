@@ -99,7 +99,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isReadyToShoot() {
-    return inRange && isAtTargetDegrees() && isBeamBreakSensorTriggered();
+    return inRange && isAtTargetDegrees() && isBeamBreakSensorTriggered()&& rotationsToDegrees(getCurrentAngle())>0 &&rotationsToDegrees(getCurrentAngle())<90;
   }
   public void manualSetWristTargetDegrees(double degree){
     targetDegrees = degree;
@@ -142,12 +142,12 @@ System.out.println(velocityToSpeaker);
   private void cacheNote(double speed){
     acceleratorMotor.set(speed);
   }
-  private static double degreesToTicks(double angle) {
-    return (angle * 360) / (Shooter.WRIST_GEAR_RATIO);
+  private static double degreesToRotations(double angle) {
+    return (angle/360) * (Shooter.WRIST_GEAR_RATIO);
   }
 
   private static double rotationsToDegrees(double rotations) {
-    return ((rotations / (Shooter.WRIST_GEAR_RATIO) * 360));
+    return (((rotations / (Shooter.WRIST_GEAR_RATIO)) * 360));
   }
 
   @Override
@@ -157,8 +157,8 @@ System.out.println(velocityToSpeaker);
       wristMotor.set(
           -MathUtil.clamp(
               wristMotorPower + getFeedForward(),
-              -0.25,
-              0.25)); // you allways need to incorperate feed foreward
+              -0.09,
+              0.09)); // you allways need to incorperate feed foreward
     }
     if (isReadyToShoot()) {
       wristMotor.set(-MathUtil.clamp(wristMotorPower + getFeedForward(), -0.1, 0.1));
