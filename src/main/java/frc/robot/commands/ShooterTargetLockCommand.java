@@ -14,13 +14,13 @@ public class ShooterTargetLockCommand extends Command {
 
   DrivebaseSubsystem drivebaseSubsystem;
 
-  public ShooterTargetLockCommand(ShooterSubsystem shooterSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
+  public ShooterTargetLockCommand(
+      ShooterSubsystem shooterSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
     this.drivebaseSubsystem = drivebaseSubsystem;
     addRequirements(shooterSubsystem);
   }
-
 
   // Called when the command is initially scheduled.
   @Override
