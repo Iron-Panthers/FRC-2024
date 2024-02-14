@@ -10,6 +10,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class StoreShooterCommand extends Command {
   /** Creates a new StoreShooterCommand. */
   ShooterSubsystem shooterSubsystem;
+
   public StoreShooterCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
@@ -19,7 +20,7 @@ public class StoreShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  shooterSubsystem.setTargetDegrees(0);
+    shooterSubsystem.setTargetDegrees(0);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override

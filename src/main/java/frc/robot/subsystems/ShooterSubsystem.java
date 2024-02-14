@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -40,11 +39,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   public ShooterSubsystem() {
-    wristMotor = new TalonFX(Shooter.WRIST_MOTOR_PORT);
-    rollerMotorTop = new TalonFX(Shooter.TOP_SHOOTER_MOTOR_PORT);
-    rollerMotorBottom = new TalonFX(Shooter.BOTTOM_SHOOTER_MOTOR_PORT);
-    acceleratorMotor = new TalonFX(Shooter.ACCELERATOR_MOTOR_PORT);
-    noteSensor = new DigitalInput(Shooter.BEAM_BREAK_SENSOR_PORT);
+    wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
+    rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
+    rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
+    acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
+    noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
 
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
@@ -101,7 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // horizontalHoldOutput is the minimum power required to hold the arm up when horizontal
     double feedForward = gravityCompensation * Shooter.HORIZONTAL_HOLD_OUTPUT;
 
-    return 0.017;//FIXME: WHY NORA???
+    return 0.017; // FIXME: WHY NORA???
   }
 
   // wrist methods
@@ -127,66 +126,70 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isReadyToShoot() {
-    return inRange 
-    && isAtTargetDegrees() 
-    && isBeamBreakSensorTriggered();//&& rotationsToDegrees(getCurrentAngle())>0 &&rotationsToDegrees(getCurrentAngle())<90;
+    return inRange
+        && isAtTargetDegrees()
+        && isBeamBreakSensorTriggered(); // && rotationsToDegrees(getCurrentAngle())>0
+    // &&rotationsToDegrees(getCurrentAngle())<90;
   }
-  public void setTargetDegrees(double degrees){
+
+  public void setTargetDegrees(double degrees) {
     targetDegrees = degrees;
   }
 
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
-    double g = Shooter.GRAVITY;
+    double g = Shooter.Measurements.GRAVITY;
     targetDegrees = getCurrentAngle();
     double x = pose.getX();
     double y = pose.getY();
-    for (int i = 0; i<5; i++){
-        //sets height and distance of NOTE based on angle (which changes where the note is)
-    double d = Math.sqrt(Math.pow((x - Shooter.SPEAKER_X), 2)
-      + Math.pow((y - Shooter.SPEAKER_Y), 2)) - Shooter.PIVOT_TO_ROBO_CENTER_LENGTH + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER*Math.cos(targetDegrees) - Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(targetDegrees);
-    double h = Shooter.SPEAKER_HEIGHT - (Shooter.PIVOT_TO_ROBO_CENTER_HEIGHT + Shooter.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(targetDegrees) + Shooter.PIVOT_TO_ENTRANCE_OFFSET * Math.cos(targetDegrees));
+    for (int i = 0; i < 5; i++) {
+      // sets height and distance of NOTE based on angle (which changes where the note is)
+      double d =
+          Math.sqrt(Math.pow((x - Shooter.Measurements.SPEAKER_X), 2) + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2))
+              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH
+              + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.cos(targetDegrees)
+              - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(targetDegrees);
+      double h =
+          Shooter.Measurements.SPEAKER_HEIGHT
+              - (Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT
+                  + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(targetDegrees)
+                  + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET * Math.cos(targetDegrees));
 
-    // difference between distance to speaker now and after 1 second to find v to speaker
-    double velocityToSpeaker =
-    Math.sqrt((Math.pow((x - Shooter.SPEAKER_X), 2)
-    + Math.pow((y - Shooter.SPEAKER_Y), 2)))
-    - Math.sqrt((Math.pow((x + xV - Shooter.SPEAKER_X), 2)
-    + Math.pow((y + yV - Shooter.SPEAKER_Y), 2)));
-System.out.println(velocityToSpeaker);
-    double v = Shooter.NOTE_SPEED + velocityToSpeaker;
-    
+      // difference between distance to speaker now and after 1 second to find v to speaker
+      double velocityToSpeaker =
+          Math.sqrt((Math.pow((x - Shooter.Measurements.SPEAKER_X), 2) + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2)))
+              - Math.sqrt(
+                  (Math.pow((x + xV - Shooter.Measurements.SPEAKER_X), 2)
+                      + Math.pow((y + yV - Shooter.Measurements.SPEAKER_Y), 2)));
+      System.out.println(velocityToSpeaker);
+      double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
 
-    double interiorMath = (v*v*v*v)-g*((g*d*d)+(2*h*v*v));
-    if (interiorMath>0){
-      targetDegrees = 180/Math.PI*(Math.atan(((v*v)-Math.sqrt(interiorMath))/(g*d)));
-      inRange = true;
+      double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
+      if (interiorMath > 0) {
+        targetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
+        inRange = true;
+      } else {
+        inRange = false;
+      }
     }
-    else{
-      inRange = false;
-    }
-
   }
 
-  }
-
-  
   private static double degreesToRotations(double angle) {
-    return (angle/360) * (Shooter.WRIST_GEAR_RATIO);
+    return (angle / 360) * (Shooter.Measurements.WRIST_GEAR_RATIO);
   }
 
   private static double rotationsToDegrees(double rotations) {
-    return (((rotations / (Shooter.WRIST_GEAR_RATIO)) * 360));
+    return (rotations / (Shooter.Measurements.WRIST_GEAR_RATIO)) * 360;
   }
 
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
     wristMotor.set(
-          -MathUtil.clamp(
-              wristMotorPower + getFeedForward(),
-              -0.09,
-              0.09)); // you allways need to incorperate feed foreward
+        -MathUtil.clamp(
+            wristMotorPower + getFeedForward(),
+            -0.09,
+            0.09)); // you always need to incorperate feed foreward
 
     if (isReadyToShoot()) {
       rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);

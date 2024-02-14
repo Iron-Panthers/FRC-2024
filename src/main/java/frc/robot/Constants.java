@@ -357,6 +357,7 @@ public final class Constants {
 
   public static final class Shooter {
     //ports
+    public static final class Ports {
     public static final int WRIST_MOTOR_PORT = 0; 
     public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
     public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
@@ -364,7 +365,9 @@ public final class Constants {
     public static final int CANCODER_PORT = 57;
     // public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
     public static final int BEAM_BREAK_SENSOR_PORT = 9;
-    //measurements
+    }
+    // measurements
+    public static final class Measurements {
     public static final double WRIST_GEAR_RATIO = (60/8)*(60/16)*(72/15); // fix me
     public static final double TICKS = 2048;
     public static final double X_DISTANCE = 4; // meters
@@ -379,10 +382,10 @@ public final class Constants {
     public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; //meters
     public static final double ANGLE_OFFSET = 5.319; //degrees
     public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-    //power
+    }
+    // power
     public static final double ROLLER_MOTOR_POWER = 0.5;
     public static final double ACCELERATOR_MOTOR_POWER = 0.5;
     public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
-
   }
 }
