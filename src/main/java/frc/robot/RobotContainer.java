@@ -177,7 +177,7 @@ public class RobotContainer {
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony.y().onTrue(new ManualShooterCommand(shooterSubsystem, intakeSubsystem));
-    anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    // anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     anthony.x().onTrue(new StoreShooterCommand(shooterSubsystem));
 
     anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
