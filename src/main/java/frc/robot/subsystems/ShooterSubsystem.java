@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,7 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetDegrees;
   private double wristMotorPower;
   private Pose2d pose;
-  private DigitalInput noteSensor;
+  // private DigitalInput noteSensor;
   private boolean inRange;
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
@@ -35,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
-    noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
+    // noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
 
     wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
@@ -94,21 +93,21 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(getCurrentError()) < 1;
   }
 
-  private boolean isBeamBreakSensorTriggered() {
-    // if is triggered return true
-    return noteSensor.get();
-  }
+  // private boolean isBeamBreakSensorTriggered() {
+  //   // if is triggered return true
+  //   return noteSensor.get();
+  // }
 
-  public boolean isDone() {
-    return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
-  }
+  // public boolean isDone() {
+  //   return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
+  // }
 
-  public boolean isReadyToShoot() {
-    return inRange
-        && isAtTargetDegrees()
-        && isBeamBreakSensorTriggered(); // && rotationsToDegrees(getCurrentAngle())>0
-    // &&rotationsToDegrees(getCurrentAngle())<90;
-  }
+  // public boolean isReadyToShoot() {
+  //   return inRange
+  //       && isAtTargetDegrees()
+  //       && isBeamBreakSensorTriggered(); // && rotationsToDegrees(getCurrentAngle())>0
+  //   // &&rotationsToDegrees(getCurrentAngle())<90;
+  // }
 
   public void setTargetDegrees(double degrees) {
     targetDegrees = degrees;
@@ -123,7 +122,9 @@ public class ShooterSubsystem extends SubsystemBase {
     for (int i = 0; i < 5; i++) {
       // sets height and distance of NOTE based on angle (which changes where the note is)
       double d =
-          Math.sqrt(Math.pow((x - Shooter.Measurements.SPEAKER_X), 2) + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2))
+          Math.sqrt(
+                  Math.pow((x - Shooter.Measurements.SPEAKER_X), 2)
+                      + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2))
               - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH
               + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.cos(targetDegrees)
               - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(targetDegrees);
@@ -135,7 +136,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
       // difference between distance to speaker now and after 1 second to find v to speaker
       double velocityToSpeaker =
-          Math.sqrt((Math.pow((x - Shooter.Measurements.SPEAKER_X), 2) + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2)))
+          Math.sqrt(
+                  (Math.pow((x - Shooter.Measurements.SPEAKER_X), 2)
+                      + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2)))
               - Math.sqrt(
                   (Math.pow((x + xV - Shooter.Measurements.SPEAKER_X), 2)
                       + Math.pow((y + yV - Shooter.Measurements.SPEAKER_Y), 2)));
