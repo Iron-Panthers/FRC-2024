@@ -46,8 +46,8 @@ public class ShooterSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
 
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
-    wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; 
+    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive; // counter clockwise is default, false is counter clockwise
     wristCANcoderConfig.MagnetSensor.MagnetOffset = 0;
     wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
 
@@ -59,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     wristMotor.getConfigurator().apply(wristMotorConfig);
 
-    wristMotor.setPosition(0);
+    //wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     wristMotor.set(0);
 
@@ -109,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getCurrentAngle() {
-    return wristMotor.getPosition().getValue();
+    return rotationsToDegrees(wristMotor.getPosition().getValue()) - Shooter.Measurements.WRIST_CANCODER_OFFSET;
   }
 
   public boolean isAtTargetDegrees() {
@@ -175,11 +175,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private static double degreesToRotations(double angle) {
-    return (angle / 360) * (Shooter.Measurements.WRIST_GEAR_RATIO);
+    return (angle / 360);
   }
 
   private static double rotationsToDegrees(double rotations) {
-    return (rotations / (Shooter.Measurements.WRIST_GEAR_RATIO)) * 360;
+    return (rotations * 360);
   }
 
   @Override
