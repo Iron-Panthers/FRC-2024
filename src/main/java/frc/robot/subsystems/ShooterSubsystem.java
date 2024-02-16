@@ -44,11 +44,10 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
-
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; 
-    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive; // counter clockwise is default, false is counter clockwise
-    wristCANcoderConfig.MagnetSensor.MagnetOffset = 0;
+    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // counter clockwise is default, false is counter clockwise
+    wristCANcoderConfig.MagnetSensor.MagnetOffset = Shooter.Measurements.WRIST_CANCODER_OFFSET;
     wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
 
     TalonFXConfiguration wristMotorConfig = new TalonFXConfiguration();
@@ -99,7 +98,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getCurrentAngle() {
-    return rotationsToDegrees(wristMotor.getPosition().getValue()) - Shooter.Measurements.WRIST_CANCODER_OFFSET;
+    return rotationsToDegrees(wristMotor.getPosition().getValue());
   }
 
   public boolean isAtTargetDegrees() {
@@ -187,9 +186,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
-
+    
     wristMotor.set(
-        -MathUtil.clamp(
+        MathUtil.clamp(
             wristMotorPower + Shooter.Measurements.WRIST_FEEDFORWARD,
             -0.1,
             0.1)); // you always need to incorperate feed foreward

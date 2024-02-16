@@ -368,7 +368,7 @@ public final class Constants {
     }
     // measurements
     public static final class Measurements {
-    public static final double WRIST_GEAR_RATIO = (60/8)*(60/16)*(72/15); // fix me
+    public static final double WRIST_GEAR_RATIO = (60/8)*(60/16)*(72/15); 
     public static final double TICKS = 2048;
     public static final double X_DISTANCE = 4; // meters
     public static final double SPEAKER_HEIGHT = 1.9; // meters
@@ -380,9 +380,9 @@ public final class Constants {
     public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
     public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; //meters
     public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; //meters
-    public static final double ANGLE_OFFSET = 5.319; //degrees
+    //public static final double ANGLE_OFFSET = 5.319; //degrees
     public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-    public static final double WRIST_CANCODER_OFFSET = -0.434; // fix me
+    public static final double WRIST_CANCODER_OFFSET = 0.438; // fix me
     public static final double WRIST_FEEDFORWARD = 0.35;
     }
     // power
