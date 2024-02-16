@@ -17,10 +17,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
   private TalonFX wristMotor;
@@ -140,18 +143,25 @@ public class ShooterSubsystem extends SubsystemBase {
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.Measurements.GRAVITY;
-    targetDegrees = getCurrentAngle(); 
     double x = pose.getX();
     double y = pose.getY();
-    double distanceToSpeaker =
-        Math.sqrt(
-            Math.pow((x - Shooter.Measurements.SPEAKER_X), 2)
-                + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2));
+    double speakerX;
+    double speakerY;
+    targetDegrees = getCurrentAngle();
+    Optional<Alliance> color = DriverStation.getAlliance();
+
+    if (color.isPresent() && color.get() == Alliance.Blue) {
+      speakerX = Shooter.Measurements.BLUE_SPEAKER_POSE.getX();
+      speakerY = Shooter.Measurements.BLUE_SPEAKER_POSE.getY();
+    } else {
+      speakerX = Shooter.Measurements.RED_SPEAKER_POSE.getX();
+      speakerY = Shooter.Measurements.RED_SPEAKER_POSE.getY();
+    }
+    double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
 
     for (int i = 0; i < 5; i++) {
       // Finds the height and distance of NOTE from the speaker based on angle (which changes where
       // the note is)
-      // FIXME add a way to find the distance to the red alliance speaker
 
       double d =
           distanceToSpeaker
@@ -170,11 +180,7 @@ public class ShooterSubsystem extends SubsystemBase {
       // difference between distance to speaker now and after 1 second to find v to speaker
       double velocityToSpeaker =
           distanceToSpeaker
-              - Math.sqrt(
-                  (Math.pow((x + xV - Shooter.Measurements.SPEAKER_X), 2)
-                      + Math.pow(
-                          (y + yV - Shooter.Measurements.SPEAKER_Y),
-                          2))); 
+              - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
 
       System.out.println(velocityToSpeaker);
       double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
@@ -206,7 +212,7 @@ public class ShooterSubsystem extends SubsystemBase {
             wristMotorPower + getFeedForward(),
             -0.09,
             0.09)); // you always need to incorperate feed foreward
-            // FIXME change clamp values
+    // FIXME change clamp values
 
     if (isReadyToShoot()) {
       rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);

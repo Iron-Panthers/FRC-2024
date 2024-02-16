@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -372,10 +373,10 @@ public final class Constants {
           (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
       public static final double X_DISTANCE = 4; // meters
       public static final double SPEAKER_HEIGHT = 1.9; // meters
-      public static final double NOTE_SPEED = 40; // meters per second
+      public static final double NOTE_SPEED = 40; // meters per second FIXME not actually a verified speed
       public static final double GRAVITY = 9.80665; // meters per second
-      public static final double SPEAKER_X = 0.2; // coords
-      public static final double SPEAKER_Y = 5.6; // coords
+      public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
+      public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
       public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
       public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
       public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
