@@ -13,8 +13,6 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private Pose2d pose;
   private DigitalInput noteSensor;
   private boolean inRange;
-    private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
+  private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   public ShooterSubsystem() {
@@ -46,8 +44,10 @@ public class ShooterSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
 
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
-    wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; 
-    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive; // counter clockwise is default, false is counter clockwise
+    wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    wristCANcoderConfig.MagnetSensor.SensorDirection =
+        SensorDirectionValue
+            .CounterClockwise_Positive; // counter clockwise is default, false is counter clockwise
     wristCANcoderConfig.MagnetSensor.MagnetOffset = 0;
     wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
 
@@ -59,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     wristMotor.getConfigurator().apply(wristMotorConfig);
 
-    //wristMotor.setPosition(0);
+    // wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     wristMotor.set(0);
 
@@ -109,7 +109,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getCurrentAngle() {
-    return rotationsToDegrees(wristMotor.getPosition().getValue()) - Shooter.Measurements.WRIST_CANCODER_OFFSET;
+    return rotationsToDegrees(wristMotor.getPosition().getValue())
+        - Shooter.Measurements.WRIST_CANCODER_OFFSET;
   }
 
   public boolean isAtTargetDegrees() {
@@ -139,32 +140,47 @@ public class ShooterSubsystem extends SubsystemBase {
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.Measurements.GRAVITY;
-    targetDegrees = getCurrentAngle();
+    targetDegrees = getCurrentAngle(); 
     double x = pose.getX();
     double y = pose.getY();
+    double distanceToSpeaker =
+        Math.sqrt(
+            Math.pow((x - Shooter.Measurements.SPEAKER_X), 2)
+                + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2));
+
     for (int i = 0; i < 5; i++) {
-      // sets height and distance of NOTE based on angle (which changes where the note is)
+      // Finds the height and distance of NOTE from the speaker based on angle (which changes where
+      // the note is)
+      // FIXME add a way to find the distance to the red alliance speaker
+
       double d =
-          Math.sqrt(Math.pow((x - Shooter.Measurements.SPEAKER_X), 2) + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2))
+          distanceToSpeaker
               - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH
               + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.cos(targetDegrees)
-              - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET * Math.sin(targetDegrees);
+              - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
+                  * Math.sin(targetDegrees); // FIXME maybe change to cos()?
+
       double h =
           Shooter.Measurements.SPEAKER_HEIGHT
               - (Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT
                   + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(targetDegrees)
-                  + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET * Math.cos(targetDegrees));
+                  + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
+                      * Math.cos(targetDegrees)); // FIXME maybe change to sin() for height?
 
       // difference between distance to speaker now and after 1 second to find v to speaker
       double velocityToSpeaker =
-          Math.sqrt((Math.pow((x - Shooter.Measurements.SPEAKER_X), 2) + Math.pow((y - Shooter.Measurements.SPEAKER_Y), 2)))
+          distanceToSpeaker
               - Math.sqrt(
                   (Math.pow((x + xV - Shooter.Measurements.SPEAKER_X), 2)
-                      + Math.pow((y + yV - Shooter.Measurements.SPEAKER_Y), 2)));
+                      + Math.pow(
+                          (y + yV - Shooter.Measurements.SPEAKER_Y),
+                          2))); 
+
       System.out.println(velocityToSpeaker);
       double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
 
       double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
+
       if (interiorMath > 0) {
         targetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
         inRange = true;
@@ -190,6 +206,7 @@ public class ShooterSubsystem extends SubsystemBase {
             wristMotorPower + getFeedForward(),
             -0.09,
             0.09)); // you always need to incorperate feed foreward
+            // FIXME change clamp values
 
     if (isReadyToShoot()) {
       rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
