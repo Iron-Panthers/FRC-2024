@@ -145,7 +145,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
               .withDriveMotorClosedLoopOutput(Modules.Params.DRIVE_CLOSED_LOOP_OUTPUT)
               .withSteerMotorClosedLoopOutput(Modules.Params.STEER_CLOSED_LOOP_OUTPUT)
               .withFeedbackSource(Modules.Params.FEEDBACK_SOURCE)
-              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS);
+              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS)
+              .withSteerMotorInverted(Modules.Params.STEER_MOTOR_INVERTED);
 
       // module wheel positions taken from kinematics object
       final SwerveModuleConstants frontLeft =
