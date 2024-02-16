@@ -266,7 +266,7 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(3, 1).withPosition(0, 0);
+    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(4, 1).withPosition(7, 2);
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 
