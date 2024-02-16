@@ -47,10 +47,8 @@ public class ShooterSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-    wristCANcoderConfig.MagnetSensor.SensorDirection =
-        SensorDirectionValue
-            .CounterClockwise_Positive; // counter clockwise is default, false is counter clockwise
-    wristCANcoderConfig.MagnetSensor.MagnetOffset = 0;
+    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // counter clockwise is default, false is counter clockwise
+    wristCANcoderConfig.MagnetSensor.MagnetOffset = Shooter.Measurements.WRIST_CANCODER_OFFSET;
     wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
 
     TalonFXConfiguration wristMotorConfig = new TalonFXConfiguration();
@@ -102,8 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getCurrentAngle() {
-    return rotationsToDegrees(wristMotor.getPosition().getValue())
-        - Shooter.Measurements.WRIST_CANCODER_OFFSET;
+    return rotationsToDegrees(wristMotor.getPosition().getValue());
   }
 
   public boolean isAtTargetDegrees() {
@@ -211,8 +208,8 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
     
     wristMotor.set(
-        -MathUtil.clamp(
-            wristMotorPower + getFeedForward(),
+        MathUtil.clamp(
+            wristMotorPower + Shooter.Measurements.WRIST_CANCODER_OFFSET,
             -0.09,
             0.09)); // you always need to incorperate feed foreward
     // FIXME change clamp values
