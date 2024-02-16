@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -356,34 +357,33 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    //ports
+    // ports
     public static final class Ports {
-    public static final int WRIST_MOTOR_PORT = 0; 
-    public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
-    public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
-    public static final int ACCELERATOR_MOTOR_PORT = 6;
-    public static final int CANCODER_PORT = 57;
-    // public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
-    public static final int BEAM_BREAK_SENSOR_PORT = 9;
+      public static final int WRIST_MOTOR_PORT = 0;
+      public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
+      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
+      public static final int ACCELERATOR_MOTOR_PORT = 6;
+      public static final int CANCODER_PORT = 57;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+      public static final int BEAM_BREAK_SENSOR_PORT = 9;
     }
     // measurements
     public static final class Measurements {
-    public static final double WRIST_GEAR_RATIO = (60/8)*(60/16)*(72/15); 
-    public static final double TICKS = 2048;
-    public static final double X_DISTANCE = 4; // meters
-    public static final double SPEAKER_HEIGHT = 1.9; // meters
-    public static final double NOTE_SPEED = 40; // meters per second
-    public static final double GRAVITY = 9.80665; // meters per second
-    public static final double SPEAKER_X = 0.2; // cords
-    public static final double SPEAKER_Y = 5.6; // cords
-    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
-    public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
-    public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; //meters
-    public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; //meters
-    //public static final double ANGLE_OFFSET = 5.319; //degrees
-    public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-    public static final double WRIST_CANCODER_OFFSET = 0.438; // fix me
-    public static final double WRIST_FEEDFORWARD = 0.35;
+      public static final double WRIST_GEAR_RATIO =
+          (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
+      public static final double X_DISTANCE = 4; // meters
+      public static final double SPEAKER_HEIGHT = 1.9; // meters
+      public static final double NOTE_SPEED = 40; // meters per second FIXME not actually a verified speed
+      public static final double GRAVITY = 9.80665; // meters per second
+      public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
+      public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
+      public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
+      public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
+      public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
+      public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
+      public static final double ANGLE_OFFSET = 5.319; // degrees
+      public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
+      public static final double WRIST_CANCODER_OFFSET = 0.17; // FIXME placeholder value
     }
     // power
     public static final double ROLLER_MOTOR_POWER = 0.5;

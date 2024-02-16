@@ -24,16 +24,15 @@ public class ShooterTargetLockCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      shooterSubsystem.calculateWristTargetDegrees(
-      drivebaseSubsystem.getPose(),
-      drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,
-      drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
+    shooterSubsystem.calculateWristTargetDegrees(
+        drivebaseSubsystem.getPose(),
+        drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,
+        drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
   }
 
   // Called once the command ends or is interrupted.
