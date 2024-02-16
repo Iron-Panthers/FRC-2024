@@ -56,9 +56,14 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
     wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.WRIST_GEAR_RATIO;
+    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(-0.2);
+    wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(-0.434);
+    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
+    wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
+    wristMotorConfig.Voltage.withPeakForwardVoltage(1);
+    wristMotorConfig.Voltage.withPeakReverseVoltage(-1);
 
     wristMotor.getConfigurator().apply(wristMotorConfig);
-
     //wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     wristMotor.set(0);
@@ -88,21 +93,6 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Error PID", pidController::getPositionError);
   }
 
-  private double getFeedForward() {
-
-    // get the radians of the arm
-    // getAngle() returns degrees
-    double theta = Math.toRadians(getCurrentAngle());
-    // get a range of 0 to 1 to multiply by feedforward.
-    // when in horizontal position, value should be 1
-    // when in vertical up or down position, value should be 0
-    double gravityCompensation = Math.cos(theta);
-    // horizontalHoldOutput is the minimum power required to hold the arm up when horizontal
-    double feedForward = gravityCompensation * Shooter.HORIZONTAL_HOLD_OUTPUT;
-
-    return 0.017; // FIXME: WHY NORA???
-  }
-
   // wrist methods
   private double getCurrentError() {
     return targetDegrees - getCurrentAngle();
@@ -114,6 +104,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean isAtTargetDegrees() {
     return Math.abs(getCurrentError()) < 1;
+  }
+
+  public boolean isShooterUpToSpeed(){
+    return rollerMotorBottom.getVelocity().getValueAsDouble()>50 && rollerMotorTop.getVelocity().getValueAsDouble()>50;
   }
 
   private boolean isBeamBreakSensorTriggered() {
@@ -134,6 +128,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setTargetDegrees(double degrees) {
     targetDegrees = degrees;
+  }
+
+  public void startShooterMotor(){
+    rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
+  }
+
+  public void startAcceleratorMotor(){
+      acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
   }
 
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
@@ -185,15 +187,13 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
+
     wristMotor.set(
         -MathUtil.clamp(
-            wristMotorPower + getFeedForward(),
-            -0.09,
-            0.09)); // you always need to incorperate feed foreward
+            wristMotorPower + Shooter.Measurements.WRIST_FEEDFORWARD,
+            -0.1,
+            0.1)); // you always need to incorperate feed foreward
 
-    if (isReadyToShoot()) {
-      rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
-      acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
-    }
+
   }
 }

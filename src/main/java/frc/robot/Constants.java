@@ -382,7 +382,8 @@ public final class Constants {
     public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; //meters
     public static final double ANGLE_OFFSET = 5.319; //degrees
     public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-    public static final double WRIST_CANCODER_OFFSET = 0.17; // fix me
+    public static final double WRIST_CANCODER_OFFSET = -0.434; // fix me
+    public static final double WRIST_FEEDFORWARD = 0.35;
     }
     // power
     public static final double ROLLER_MOTOR_POWER = 0.5;
