@@ -174,8 +174,8 @@ public class RobotContainer {
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
-    anthony.x().onTrue(new WristAngleCommand(shooterSubsystem, 0));
-    anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 20));
+    jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
+    jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
     // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
     // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
     // anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
