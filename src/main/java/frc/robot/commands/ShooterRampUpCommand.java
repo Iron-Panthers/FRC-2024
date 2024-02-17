@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class StoreShooterCommand extends Command {
-  /** Creates a new StoreShooterCommand. */
-  ShooterSubsystem shooterSubsystem;
+public class ShooterRampUpCommand extends Command {
+  private ShooterSubsystem shooterSubsystem;
 
-  public StoreShooterCommand(ShooterSubsystem shooterSubsystem) {
+  /** Creates a new ShooterRampUpCommand. */
+  public ShooterRampUpCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(shooterSubsystem);
@@ -20,8 +20,9 @@ public class StoreShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTargetDegrees(0);
+    shooterSubsystem.startShooterMotor();
   }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
