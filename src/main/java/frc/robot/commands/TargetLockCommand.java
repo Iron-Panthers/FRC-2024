@@ -41,6 +41,8 @@ public class TargetLockCommand extends Command {
     this.translationYSupplier = translationYSupplier;
     this.targetPoint = targetPoint;
 
+    this.pose = () -> this.drivebaseSubsystem.getPose();
+
     targetAngle = 0;
 
     addRequirements(drivebaseSubsystem);
