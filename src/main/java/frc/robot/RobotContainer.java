@@ -29,9 +29,9 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
-import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -106,13 +106,13 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    drivebaseSubsystem.setDefaultCommand(
-        new DefaultDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            // anthony.rightBumper(),
-            anthony.leftBumper()));
+    // drivebaseSubsystem.setDefaultCommand(
+    //     new DefaultDriveCommand(
+    //         drivebaseSubsystem,
+    //         translationXSupplier,
+    //         translationYSupplier,
+    //         // anthony.rightBumper(),
+    //         anthony.leftBumper()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
@@ -182,9 +182,11 @@ public class RobotContainer {
     anthony.leftTrigger().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
     anthony.a().onTrue(new ShootCommand(shooterSubsystem));
     anthony.b().onTrue(new ShooterRampUpCommand(shooterSubsystem));
+    anthony.x().onTrue(new StopIntakeCommand(intakeSubsystem, shooterSubsystem));
 
     anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
-    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+
+    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));\
 
     // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
     // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
@@ -197,29 +199,29 @@ public class RobotContainer {
     // anthony.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
     // anthony.y().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.REVERSE));
 
-    DoubleSupplier rotation =
-        exponential(
-            () ->
-                ControllerUtil.deadband(
-                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-            2);
+    // DoubleSupplier rotation =
+    //     exponential(
+    //         () ->
+    //             ControllerUtil.deadband(
+    //                 (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+    //         2);
 
-    DoubleSupplier rotationVelocity =
-        () ->
-            -rotation.getAsDouble()
-                * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                *
-                /** percent of fraction power */
-                (anthony.getHID().getAButton() ? .3 : .8);
+    // DoubleSupplier rotationVelocity =
+    //     () ->
+    //         -rotation.getAsDouble()
+    //             * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    //             *
+    //             /** percent of fraction power */
+    //             (anthony.getHID().getAButton() ? .3 : .8);
 
-    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-        .whileTrue(
-            new RotateVelocityDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                rotationVelocity,
-                anthony.rightBumper()));
+    // new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
+    //     .whileTrue(
+    //         new RotateVelocityDriveCommand(
+    //             drivebaseSubsystem,
+    //             translationXSupplier,
+    //             translationYSupplier,
+    //             rotationVelocity,
+    //             anthony.rightBumper()));
 
     // new Trigger(
     //         () ->

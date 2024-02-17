@@ -375,7 +375,7 @@ public final class Constants {
     public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
         new IntakeSubsystemModeSettings(.5d, .5d);
     public static final IntakeSubsystemModeSettings OUTTAKE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(0, .2d);
+        new IntakeSubsystemModeSettings(0, .1d);
     public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
         new IntakeSubsystemModeSettings(0, 0d);
     public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =

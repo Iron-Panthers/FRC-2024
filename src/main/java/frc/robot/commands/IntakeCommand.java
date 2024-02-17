@@ -26,9 +26,9 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTargetDegrees(30);
+    // shooterSubsystem.prepareForIntake();
     intakeSubsystem.setIntakeMode(Modes.INTAKE);
-    shooterSubsystem.setAcceleratorMotorSpeed(.2);
+    shooterSubsystem.setAcceleratorMotorSpeed(.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +38,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (intakeSubsystem.isUsingIntakeSensor) {
+    if (intakeSubsystem.isUsingIntakeSensor()) {
       intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
       shooterSubsystem.setAcceleratorMotorSpeed(0);
     }
@@ -47,7 +47,7 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (intakeSubsystem.isUsingIntakeSensor) {
+    if (intakeSubsystem.isUsingIntakeSensor()) {
       return intakeSubsystem.getSensorOutput();
     }
     return true;

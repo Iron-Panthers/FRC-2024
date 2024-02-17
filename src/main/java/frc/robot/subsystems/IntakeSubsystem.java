@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX leftIntakeMotor; // FOLLOWER
   private final TalonFX serializerMotor;
   private final DigitalInput acceleratorSensor;
-  public boolean isUsingIntakeSensor = true;
+  private boolean isUsingIntakeSensor = true;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
@@ -53,6 +53,8 @@ public class IntakeSubsystem extends SubsystemBase {
     rightIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
     leftIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
     serializerMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightIntakeMotor.setInverted(true);
+    serializerMotor.setInverted(true);
 
     leftIntakeMotor.setControl(
         new Follower(
@@ -77,6 +79,10 @@ public class IntakeSubsystem extends SubsystemBase {
   // GETTERS
   public boolean getSensorOutput() {
     return !acceleratorSensor.get();
+  }
+
+  public boolean isUsingIntakeSensor() {
+    return isUsingIntakeSensor;
   }
 
   // SETTERS

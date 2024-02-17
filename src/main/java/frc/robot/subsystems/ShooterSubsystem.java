@@ -130,12 +130,10 @@ public class ShooterSubsystem extends SubsystemBase {
   //   return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
   // }
 
-  public boolean isPreparedForIntake() {
-    if (getCurrentAngle() > 20) {
-      setTargetDegrees(20);
-      return false;
+  public void prepareForIntake() {
+    if (getCurrentAngle() >= 30) {
+      setTargetDegrees(30);
     }
-    return true;
   }
 
   public boolean isReadyToShoot() {
@@ -235,12 +233,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
 
-    wristMotor.set(
-        MathUtil.clamp(
-            wristMotorPower + Shooter.Measurements.WRIST_CANCODER_OFFSET,
-            -0.09,
-            0.09)); // you always need to incorperate feed foreward
+    // wristMotor.set(
+    //     MathUtil.clamp(
+    //         wristMotorPower + Shooter.Measurements.WRIST_CANCODER_OFFSET,
+    //         -0.09,
+    //         0.09)); // you always need to incorperate feed foreward
     // FIXME change clamp values
+    
 
   }
 }
