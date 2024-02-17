@@ -5,9 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -29,14 +26,19 @@ import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ManualShooterCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.StoreShooterCommand;
 import frc.robot.commands.TargetLockCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -46,7 +48,6 @@ import frc.util.NodeSelectorUtility.Height;
 import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
 import frc.util.Util;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -63,6 +64,8 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
+
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
@@ -87,6 +90,8 @@ public class RobotContainer {
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
+
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -180,17 +185,13 @@ public class RobotContainer {
         .whileTrue(
             new TargetLockCommand(
                 drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER));
-
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
-    anthony
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () ->
-                    drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.45, 5.5), new Rotation2d(0))),
-                drivebaseSubsystem));
+    anthony.y().onTrue(new ManualShooterCommand(shooterSubsystem, intakeSubsystem));
+    // anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    anthony.x().onTrue(new StoreShooterCommand(shooterSubsystem));
+
+    anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
 
     DoubleSupplier rotation =
         exponential(
