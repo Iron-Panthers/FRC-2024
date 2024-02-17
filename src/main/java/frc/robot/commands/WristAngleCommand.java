@@ -10,7 +10,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class WristAngleCommand extends Command {
   /** Creates a new StoreShooterCommand. */
   ShooterSubsystem shooterSubsystem;
+
   double angle;
+
   public WristAngleCommand(ShooterSubsystem shooterSubsystem, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angle = angle;

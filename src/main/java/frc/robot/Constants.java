@@ -368,7 +368,8 @@ public final class Constants {
           (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
       public static final double X_DISTANCE = 4; // meters
       public static final double SPEAKER_HEIGHT = 1.9; // meters
-      public static final double NOTE_SPEED = 40; // meters per second FIXME not actually a verified speed
+      public static final double NOTE_SPEED =
+          40; // meters per second FIXME not actually a verified speed
       public static final double GRAVITY = 9.80665; // meters per second
       public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
       public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
@@ -376,9 +377,9 @@ public final class Constants {
       public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
       public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
       public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
-      //public static final double ANGLE_OFFSET = 5.319; // degrees
+      // public static final double ANGLE_OFFSET = 5.319; // degrees
       public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-      public static final double WRIST_CANCODER_OFFSET = 0.438; 
+      public static final double WRIST_CANCODER_OFFSET = 0.438;
     }
     // power
     public static final double ROLLER_MOTOR_POWER = 0.5;

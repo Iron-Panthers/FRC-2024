@@ -50,7 +50,9 @@ public class ShooterSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-    wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // counter clockwise is default, false is counter clockwise
+    wristCANcoderConfig.MagnetSensor.SensorDirection =
+        SensorDirectionValue
+            .Clockwise_Positive; // counter clockwise is default, false is counter clockwise
     wristCANcoderConfig.MagnetSensor.MagnetOffset = Shooter.Measurements.WRIST_CANCODER_OFFSET;
     wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
 
@@ -95,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Error", this::getCurrentError);
     WristTab.addNumber("target", this::getTargetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
-    WristTab.addNumber("Applied Voltage",() -> wristMotor.getMotorVoltage().getValueAsDouble());
+    WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
     WristTab.add(pidController);
   }
 
@@ -108,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return rotationsToDegrees(wristMotor.getPosition().getValue());
   }
 
-  private double getTargetDegrees(){
+  private double getTargetDegrees() {
     return targetDegrees;
   }
 
@@ -116,8 +118,9 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(getCurrentError()) < 1;
   }
 
-  public boolean isShooterUpToSpeed(){
-    return rollerMotorBottom.getVelocity().getValueAsDouble()>50 && rollerMotorTop.getVelocity().getValueAsDouble()>50;
+  public boolean isShooterUpToSpeed() {
+    return rollerMotorBottom.getVelocity().getValueAsDouble() > 50
+        && rollerMotorTop.getVelocity().getValueAsDouble() > 50;
   }
 
   private boolean isBeamBreakSensorTriggered() {
@@ -129,8 +132,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
   }
 
-  public boolean prepareForIntake(){
-    if (getCurrentAngle()>20){
+  public boolean prepareForIntake() {
+    if (getCurrentAngle() > 20) {
       setTargetDegrees(20);
       return false;
     }
@@ -148,12 +151,12 @@ public class ShooterSubsystem extends SubsystemBase {
     this.targetDegrees = degrees;
   }
 
-  public void startShooterMotor(){
+  public void startShooterMotor() {
     rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
   }
 
-  public void setAcceleratorMotorSpeed(double speed){
-      acceleratorMotor.set(speed);
+  public void setAcceleratorMotorSpeed(double speed) {
+    acceleratorMotor.set(speed);
   }
 
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
@@ -223,14 +226,13 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
-    
+
     wristMotor.set(
         MathUtil.clamp(
             wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
             -0.09,
             0.09)); // you always need to incorperate feed foreward
     // FIXME change clamp values
-
 
   }
 }

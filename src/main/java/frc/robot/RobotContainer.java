@@ -29,11 +29,8 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShooterRampUpCommand;
-import frc.robot.commands.ShooterTargetLockCommand;
-import frc.robot.commands.WristAngleCommand;
 import frc.robot.commands.VibrateHIDCommand;
+import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
@@ -176,14 +173,12 @@ public class RobotContainer {
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    //anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     anthony.x().onTrue(new WristAngleCommand(shooterSubsystem, 0));
     anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 20));
-    //anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
-    //anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    //anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
-  
-
+    // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
+    // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
+    // anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
