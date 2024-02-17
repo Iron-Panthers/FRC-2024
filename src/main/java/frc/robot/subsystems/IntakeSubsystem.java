@@ -29,7 +29,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public enum Modes {
     INTAKE(Intake.INTAKE_MODE_SETTINGS),
-    OUTTAKE(Intake.OUTTAKE_MODE_SETTINGS),
     HOLD(Intake.HOLD_MODE_SETTINGS),
     REVERSE(Intake.REVERSE_MODE_SETTINGS);
 

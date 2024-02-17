@@ -28,7 +28,6 @@ public class ManualShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.setIntakeMode(Modes.OUTTAKE);
     shooterSubsystem.manualShoot();
   }
 
