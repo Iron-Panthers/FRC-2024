@@ -8,11 +8,12 @@ import static frc.util.MacUtil.IS_COMP_BOT;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -43,19 +44,13 @@ import java.util.Set;
 public final class Constants {
 
   public static final class Config {
-    /** turn this off before comp. */
-    public static final boolean RUN_PATHPLANNER_SERVER =
-        // never run pathplanner server in simulation, it will fail unit tests (???)
-        Config.SHOW_SHUFFLEBOARD_DEBUG_DATA
-            && HALUtil.getHALRuntimeType() != HALUtil.RUNTIME_SIMULATION;
-
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
             new PIDConstants(5, 0, 0),
             new PIDConstants(5, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
-            Math.sqrt(Math.pow(Dims.BUMPER_WIDTH_METERS, 2) * 2),
+            Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
             new ReplanningConfig());
 
     /** turn this off before comp. */
@@ -74,7 +69,7 @@ public final class Constants {
   }
 
   public static final class Drive {
-    public static final int PIGEON_PORT = 0; // FIXME placeholder
+    public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
 
     // max voltage delivered to drivebase
@@ -85,8 +80,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6380.0 // falcon 500 free speed rpm
             / 60.0
-            //      * SdsModuleConfigurations.MK4_L2.getDriveReduction()
-            //      * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+            * 0.10033
+            * (1 / 6.12) // mk4i l3 16t falcon drive reduction (sourced from adrian)
             * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally
@@ -106,7 +101,8 @@ public final class Constants {
           .5207; // 20.5 inches (source: cad) converted to meters
       public static final double WHEELBASE_METERS = TRACKWIDTH_METERS; // robot is square
 
-      public static final double BUMPER_WIDTH_METERS = .851;
+      public static final double BUMPER_WIDTH_METERS_X = .9779;
+      public static final double BUMPER_WIDTH_METERS_Y = .8382;
     }
 
     /*
@@ -144,72 +140,69 @@ public final class Constants {
       public static final class Params {
         // FIXME ALL PLACEHOLDERS
         /* Currently use L2 gearing for alphabot, will use L3 for comp bot? Not decided? Check w/ engie */
-        public static final double WHEEL_RADIUS = 2; // FIXME
-        public static final double COUPLING_GEAR_RATIO = 3.5714285714285716; // optional
-        public static final double DRIVE_GEAR_RATIO = 6.746031746031747; // unsure?
-        public static final double STEER_GEAR_RATIO = 12.8; // FIXME
+        public static final double WHEEL_RADIUS = 2; // also in INCHES
+        public static final double COUPLING_GEAR_RATIO = 3.125;
+        public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
+        public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs()
-                .withKP(0.2)
-                .withKI(0)
-                .withKD(0)
-                .withKS(0)
-                .withKV(0)
-                .withKA(0); // placeholder
+            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(10).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.TorqueCurrentFOC;
+            ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.TorqueCurrentFOC;
-        public static final SteerFeedbackType FEEDBACK_SOURCE =
-            SteerFeedbackType.FusedCANcoder; // dunno if this is the best option
-        public static final double SPEED_TWELVE_VOLTS = 0;
-        public static final double SLIP_CURRENT = 0; // optional
+            ClosedLoopOutputType.Voltage;
+        public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.FusedCANcoder;
+        public static final double SPEED_TWELVE_VOLTS = MAX_VELOCITY_METERS_PER_SECOND;
+        public static final double SLIP_CURRENT = 0; // optional, unused rn
+        public static final boolean STEER_MOTOR_INVERTED = true;
+
+        public static final DriveRequestType driveRequestType = DriveRequestType.OpenLoopVoltage;
+        public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagic;
       }
 
-      public static final class Module1 { // historically front right
+      public static final class Module1 { // back left
         public static final int DRIVE_MOTOR = CAN.at(4, "module 1 drive motor");
         public static final int STEER_MOTOR = CAN.at(3, "module 1 steer motor");
         public static final int STEER_ENCODER = CAN.at(24, "module 1 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(0) // comp bot offset
-                : -Math.toRadians(0); // practice bot offset
+                ? 0.07470703125 // comp bot offset
+                : 0.067626953125; // practice bot offset
       }
 
-      public static final class Module2 { // historically front left
+      public static final class Module2 { // back right
         public static final int DRIVE_MOTOR = CAN.at(11, "module 2 drive motor");
         public static final int STEER_MOTOR = CAN.at(10, "module 2 steer motor");
         public static final int STEER_ENCODER = CAN.at(25, "module 2 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(0) // comp bot offset
-                : -Math.toRadians(0); // practice bot offset
+                ? 0.308349609375 // comp bot offset
+                : 0.308349609375; // practice bot offset
       }
 
-      public static final class Module3 { // historically back left
+      public static final class Module3 { // front right
         public static final int DRIVE_MOTOR = CAN.at(13, "module 3 drive motor");
         public static final int STEER_MOTOR = CAN.at(12, "module 3 steer motor");
         public static final int STEER_ENCODER = CAN.at(26, "module 3 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(0) // comp bot offset
-                : -Math.toRadians(0); // practice bot offset
+                ? -0.223388671875 // comp bot offset
+                : -0.23291015625; // practice bot offset
       }
 
-      public static final class Module4 { // historically back right
+      public static final class Module4 { // front left
         public static final int DRIVE_MOTOR = CAN.at(2, "module 4 drive motor");
         public static final int STEER_MOTOR = CAN.at(1, "module 4 steer motor");
         public static final int STEER_ENCODER = CAN.at(27, "module 4 steer encoder");
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -Math.toRadians(0) // comp bot offset
-                : -Math.toRadians(0); // practice bot offset
+                ? -0.3671875 // comp bot offset
+                : -0.379150390625; // practice bot offset
       }
     }
   }
@@ -360,7 +353,7 @@ public final class Constants {
   public static final class Intake {
     public static final class Ports {
       public static final int RIGHT_INTAKE_MOTOR_PORT = 19;
-      public static final int LEFT_INTAKE_MOTOR_PORT = 16;
+      public static final int LEFT_INTAKE_MOTOR_PORT = 15;
       public static final int SERIALIZER_MOTOR_PORT = 20;
       public static final int INTAKE_SENSOR_PORT = 9;
     }
@@ -386,5 +379,39 @@ public final class Constants {
 
 
 
+  }
+
+  public static final class Shooter {
+    // ports
+    public static final class Ports {
+      public static final int WRIST_MOTOR_PORT = 0;
+      public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
+      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
+      public static final int ACCELERATOR_MOTOR_PORT = 6;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+      public static final int BEAM_BREAK_SENSOR_PORT = 9;
+      public static final int CANCODER_PORT = 0;
+    }
+    // measurements
+    public static final class Measurements {
+      public static final double WRIST_GEAR_RATIO = 128; // fix me
+      public static final double TICKS = 2048;
+      public static final double X_DISTANCE = 4; // meters
+      public static final double SPEAKER_HEIGHT = 1.9; // meters
+      public static final double NOTE_SPEED = 40; // meters per second
+      public static final double GRAVITY = 9.80665; // meters per second
+      public static final double SPEAKER_X = 0.2; // cords
+      public static final double SPEAKER_Y = 5.6; // cords
+      public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
+      public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
+      public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
+      public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
+      public static final double ANGLE_OFFSET = 5.319; // degrees
+      public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
+    }
+    // power
+    public static final double ROLLER_MOTOR_POWER = 0.8;
+    public static final double ACCELERATOR_MOTOR_POWER = 0.8;
+    public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
   }
 }

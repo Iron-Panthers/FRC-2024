@@ -22,7 +22,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX serializerMotor;
   private final DigitalInput noteSensor;
   public boolean isUsingIntakeSensor = true;
-  
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
@@ -75,15 +74,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-
-  //GETTERS
+  // GETTERS
   public boolean getSensorOutput() {
     return !noteSensor.get();
   }
 
-  //SETTERS
+  // SETTERS
 
-  public void setUsingIntakeSensor(boolean isUsingIntakeSensor){
+  public void setUsingIntakeSensor(boolean isUsingIntakeSensor) {
     this.isUsingIntakeSensor = isUsingIntakeSensor;
   }
 

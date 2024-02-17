@@ -35,14 +35,14 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(intakeSubsystem.isUsingIntakeSensor)
+    if (intakeSubsystem.isUsingIntakeSensor)
       intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(intakeSubsystem.isUsingIntakeSensor){
+    if (intakeSubsystem.isUsingIntakeSensor) {
       if (intakeMode == IntakeSubsystem.Modes.INTAKE) {
         return intakeSubsystem.getSensorOutput();
       } else if (intakeMode == IntakeSubsystem.Modes.OUTTAKE) {

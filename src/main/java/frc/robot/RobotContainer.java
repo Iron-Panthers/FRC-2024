@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
@@ -26,14 +26,17 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.RotateVectorDriveCommand;
+import frc.robot.commands.ManualShooterCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
+import frc.robot.commands.StoreShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -42,7 +45,6 @@ import frc.util.NodeSelectorUtility;
 import frc.util.NodeSelectorUtility.Height;
 import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
-import frc.util.Util;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -80,11 +82,13 @@ public class RobotContainer {
   private final CommandXboxController anthony = new CommandXboxController(0);
 
   /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
+  private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
 
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
+
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -170,10 +174,11 @@ public class RobotContainer {
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-
-    anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+
+    anthony.y().onTrue(new ManualShooterCommand(shooterSubsystem, intakeSubsystem));
+    // anthony.a().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    anthony.x().onTrue(new StoreShooterCommand(shooterSubsystem));
 
     anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
     anthony.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.HOLD));
@@ -190,7 +195,7 @@ public class RobotContainer {
 
     DoubleSupplier rotationVelocity =
         () ->
-            rotation.getAsDouble()
+            -rotation.getAsDouble()
                 * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
                 *
                 /** percent of fraction power */
@@ -205,18 +210,18 @@ public class RobotContainer {
                 rotationVelocity,
                 anthony.rightBumper()));
 
-    new Trigger(
-            () ->
-                Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
-                    > Drive.ROTATE_VECTOR_MAGNITUDE)
-        .onTrue(
-            new RotateVectorDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                anthony::getRightY,
-                anthony::getRightX,
-                anthony.rightBumper()));
+    // new Trigger(
+    //         () ->
+    //             Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
+    //                 > Drive.ROTATE_VECTOR_MAGNITUDE)
+    //     .onTrue(
+    //         new RotateVectorDriveCommand(
+    //             drivebaseSubsystem,
+    //             translationXSupplier,
+    //             translationYSupplier,
+    //             anthony::getRightY,
+    //             anthony::getRightX,
+    //             anthony.rightBumper()));
 
     // FIXME reference if you want to use scoremap
     /*var scoreCommandMap = new HashMap<NodeSelectorUtility.ScoreTypeIdentifier, Command>();
@@ -266,13 +271,7 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    if (Config.RUN_PATHPLANNER_SERVER) {
-      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
-    }
-
-    driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
-
-    final Map<String, Command> eventMap = Map.of();
+    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(3, 1).withPosition(0, 0);
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 
@@ -292,11 +291,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    double delay = autoDelay.getDouble(0);
+    return delay == 0
+        ? autoSelector.getSelected()
+        : new WaitCommand(delay).andThen(autoSelector.getSelected());
   }
 
   /**
