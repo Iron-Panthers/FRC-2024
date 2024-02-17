@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand.java"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -32,20 +26,8 @@
                 "data": {
                   "name": "IntakeCommand.java"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "RampUpCommand.java"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand.java"
           }
         }
       ]
