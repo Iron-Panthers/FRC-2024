@@ -47,7 +47,7 @@ public final class Constants {
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(20, 0, 0),
             new PIDConstants(5, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
             Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
