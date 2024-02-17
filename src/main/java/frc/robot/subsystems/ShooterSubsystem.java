@@ -42,8 +42,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
+    rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
+    rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
+    acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
@@ -93,11 +96,11 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("target", this::getTargetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
     WristTab.addNumber("Applied Voltage",() -> wristMotor.getMotorVoltage().getValueAsDouble());
+    WristTab.add(pidController);
   }
 
   // wrist methods
   private double getCurrentError() {
-    
     return targetDegrees - getCurrentAngle();
   }
 
@@ -223,7 +226,7 @@ public class ShooterSubsystem extends SubsystemBase {
     
     wristMotor.set(
         MathUtil.clamp(
-            wristMotorPower + Shooter.Measurements.WRIST_CANCODER_OFFSET,
+            wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
             -0.09,
             0.09)); // you always need to incorperate feed foreward
     // FIXME change clamp values
