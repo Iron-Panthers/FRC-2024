@@ -339,7 +339,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * @return The current angle of the robot, relative to boot position.
    */
   public Rotation2d getConsistentGyroscopeRotation() {
-    return Rotation2d.fromDegrees(Util.normalizeDegrees(-swerveDrivetrain.getPigeon2().getAngle()));
+    return Rotation2d.fromDegrees(Util.normalizeDegrees(swerveDrivetrain.getPigeon2().getAngle()));
   }
 
   /**

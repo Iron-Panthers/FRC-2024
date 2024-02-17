@@ -35,9 +35,6 @@ public class RotateVectorDriveCommand extends Command {
 
   private double angle = 0;
 
-  // private static final double[] angles = {0, 45, 90, 135, 180, 225, 270, 315};
-  private static final double[] angles = {0, 90, 180, 270};
-
   /** Creates a new DefaultDriveCommand. */
   public RotateVectorDriveCommand(
       DrivebaseSubsystem drivebaseSubsystem,
@@ -72,14 +69,14 @@ public class RotateVectorDriveCommand extends Command {
     double rotY = rotationYSupplier.getAsDouble();
     boolean isRobotRelative = isRobotRelativeSupplier.getAsBoolean();
 
-    double targetAngle = Util.angleSnap(Util.vectorToAngle(-rotX, -rotY), angles);
+    double targetAngle = Util.vectorToAngle(-rotX, -rotY);
 
     // if stick magnitude is greater then rotate angle mag
     if (Util.vectorMagnitude(rotX, rotY) > Drive.ROTATE_VECTOR_MAGNITUDE) {
       angle = isRobotRelative ? Util.normalizeDegrees(targetAngle + initialAngle) : targetAngle;
     }
 
-    drivebaseSubsystem.driveAngle(new Pair<>(x, y), angle);
+    drivebaseSubsystem.driveAngle(new Pair<>(x, y), -angle);
   }
 
   // Called once the command ends or is interrupted.
