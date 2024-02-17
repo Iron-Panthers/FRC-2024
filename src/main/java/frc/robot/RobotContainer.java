@@ -26,13 +26,10 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ManualShooterCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShooterRampUpCommand;
-import frc.robot.commands.ShooterTargetLockCommand;
-import frc.robot.commands.WristAngleCommand;
 import frc.robot.commands.VibrateHIDCommand;
+import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -82,6 +79,8 @@ public class RobotContainer {
   private final Layer jacobLayer = new Layer(jacob.rightBumper());
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
+  /** controller 0 layer */
+  private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
   private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
@@ -176,19 +175,28 @@ public class RobotContainer {
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    //anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    anthony.rightTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
+    anthony.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
     anthony.x().onTrue(new WristAngleCommand(shooterSubsystem, 0));
     anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 20));
-    //anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
-    //anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    //anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
-  
 
+    anthonyLayer
+        .on(anthony.leftBumper())
+        .onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
+    anthonyLayer.on(anthony.rightBumper()).onTrue(new ShootCommand(shooterSubsystem));
+    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
 
-    anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
+    // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
+    // anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
 
+    // anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+
+    // anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
+    // anthony.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.HOLD));
+    // anthony.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
+    // anthony.y().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.REVERSE));
 
     DoubleSupplier rotation =
         exponential(

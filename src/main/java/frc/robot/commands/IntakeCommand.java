@@ -6,14 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Modes;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeCommand extends Command {
 
   IntakeSubsystem intakeSubsystem;
   ShooterSubsystem shooterSubsystem;
-
 
   /** Creates a new IntakeCommand. */
   public IntakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
@@ -38,7 +37,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (intakeSubsystem.isUsingIntakeSensor){
+    if (intakeSubsystem.isUsingIntakeSensor) {
       intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
       shooterSubsystem.setAcceleratorMotorSpeed(0);
     }
@@ -48,7 +47,7 @@ public class IntakeCommand extends Command {
   @Override
   public boolean isFinished() {
     if (intakeSubsystem.isUsingIntakeSensor) {
-        return intakeSubsystem.getSensorOutput();
+      return intakeSubsystem.getSensorOutput();
     }
     return true;
   }

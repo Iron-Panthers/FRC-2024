@@ -40,7 +40,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     rightIntakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);
@@ -65,7 +64,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // BEAM BRAKE SENSORS
     acceleratorSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
-
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> rightIntakeMotor.getMotorVoltage().getValueAsDouble());
