@@ -354,11 +354,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public Rotation2d getDriverGyroscopeRotation() {
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes
     // the angle increase.
-    double angle = Util.normalizeDegrees(-swerveDrivetrain.getPigeon2().getAngle());
+    Rotation2d angle = getConsistentGyroscopeRotation();
 
     // We need to subtract the offset here so that the robot drives forward based on auto
     // positioning or manual reset
-    return Rotation2d.fromDegrees(angle).minus(driverGyroOffset);
+    return angle.minus(driverGyroOffset);
   }
 
   public double getRotVelocity() {
