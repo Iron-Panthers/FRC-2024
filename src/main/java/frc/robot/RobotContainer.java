@@ -178,6 +178,8 @@ public class RobotContainer {
     anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
     anthony.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.HOLD));
     anthony.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
+    anthony.y().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.REVERSE));
+
 
     DoubleSupplier rotation =
         exponential(

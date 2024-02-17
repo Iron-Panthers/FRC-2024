@@ -47,7 +47,7 @@ public class IntakeCommand extends Command {
         return intakeSubsystem.getSensorOutput();
       } else if (intakeMode == IntakeSubsystem.Modes.OUTTAKE) {
         return !intakeSubsystem.getSensorOutput();
-    }
+      }
     }
     return true;
   }

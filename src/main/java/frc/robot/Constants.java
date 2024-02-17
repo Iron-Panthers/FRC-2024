@@ -367,14 +367,24 @@ public final class Constants {
 
     public static final boolean IS_BEAMBREAK = true;
 
-    // INTAKE MOTOR SPEEDS
-    public static final double INTAKE_MOTOR_INTAKE_SPEED = -0.8;
-    public static final double INTAKE_MOTOR_OUTTAKE_SPEED = 0;
-    public static final double INTAKE_MOTOR_HOLD_SPEED = 0;
+    public static class IntakeSubsystemModeSettings{
+      public final double INTAKE_MOTOR_SPEED;
+      public final double SERIALIZER_MOTOR_SPEED;
+      
+      public IntakeSubsystemModeSettings(double INTAKE_MOTOR_SPEED, double SERIALIZER_MOTOR_SPEED){
+        this.INTAKE_MOTOR_SPEED = INTAKE_MOTOR_SPEED;
+        this.SERIALIZER_MOTOR_SPEED = SERIALIZER_MOTOR_SPEED;
+      }
+ 
+    }
 
-    // SERIALIZER MOTOR SPEEDS
-    public static final double SERIALIZER_MOTOR_INTAKE_SPEED = -0.8;
-    public static final double SERIALIZER_MOTOR_OUTTAKE_SPEED = -0.4;
-    public static final double SERIALIZER_MOTOR_HOLD_SPEED = 0;
+    // MODE SETTINGS
+    public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS = new IntakeSubsystemModeSettings(.5d, .5d);    
+    public static final IntakeSubsystemModeSettings OUTTAKE_MODE_SETTINGS = new IntakeSubsystemModeSettings(0, .2d);
+    public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS = new IntakeSubsystemModeSettings(0, 0d);
+    public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS = new IntakeSubsystemModeSettings(-.5d, -.5d);
+
+
+
   }
 }

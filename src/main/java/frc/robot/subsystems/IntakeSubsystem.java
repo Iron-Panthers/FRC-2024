@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Intake;
+import frc.robot.Constants.Intake.IntakeSubsystemModeSettings;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -28,16 +29,15 @@ public class IntakeSubsystem extends SubsystemBase {
   private Modes intakeMode;
 
   public enum Modes {
-    INTAKE(Intake.INTAKE_MOTOR_INTAKE_SPEED, Intake.SERIALIZER_MOTOR_INTAKE_SPEED),
-    OUTTAKE(Intake.INTAKE_MOTOR_OUTTAKE_SPEED, Intake.SERIALIZER_MOTOR_OUTTAKE_SPEED),
-    HOLD(Intake.INTAKE_MOTOR_HOLD_SPEED, Intake.SERIALIZER_MOTOR_HOLD_SPEED);
+    INTAKE(Intake.INTAKE_MODE_SETTINGS),
+    OUTTAKE(Intake.OUTTAKE_MODE_SETTINGS),
+    HOLD(Intake.HOLD_MODE_SETTINGS),
+    REVERSE(Intake.REVERSE_MODE_SETTINGS);
 
-    public final double intakeMotorSpeed;
-    public final double serializerMotorSpeed;
+    public final IntakeSubsystemModeSettings modeSettings;
 
-    private Modes(double intakeMotorSpeed, double serializerMotorSpeed) {
-      this.intakeMotorSpeed = intakeMotorSpeed;
-      this.serializerMotorSpeed = serializerMotorSpeed;
+    private Modes(IntakeSubsystemModeSettings modeSettings) {
+      this.modeSettings = modeSettings;
     }
   }
 
@@ -92,8 +92,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
-    rightIntakeMotor.set(intakeMode.intakeMotorSpeed);
-    serializerMotor.set(intakeMode.serializerMotorSpeed);
+    rightIntakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
+    serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }
 
   @Override
