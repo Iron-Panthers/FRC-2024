@@ -9,14 +9,13 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Modes;
 
-public class IntakeCommand extends Command {
+public class UnstuckIntakeCommand extends Command {
 
   IntakeSubsystem intakeSubsystem;
   ShooterSubsystem shooterSubsystem;
 
-
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+  /** Creates a new UnstuckIntakeCommand. */
+  public UnstuckIntakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.shooterSubsystem = shooterSubsystem;
 
@@ -27,8 +26,8 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.setIntakeMode(Modes.INTAKE);
-    shooterSubsystem.setAcceleratorMotorSpeed(.2);
+    intakeSubsystem.setIntakeMode(Modes.REVERSE);
+    shooterSubsystem.setAcceleratorMotorSpeed(-.2d);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,19 +36,11 @@ public class IntakeCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    if (intakeSubsystem.isUsingIntakeSensor){
-      intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
-      shooterSubsystem.setAcceleratorMotorSpeed(0);
-    }
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (intakeSubsystem.isUsingIntakeSensor) {
-        return intakeSubsystem.getSensorOutput();
-    }
     return true;
   }
 }

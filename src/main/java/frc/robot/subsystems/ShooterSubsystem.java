@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetDegrees;
   private double wristMotorPower;
   private Pose2d pose;
-  // private DigitalInput noteSensor;
+  private DigitalInput noteSensor;
   private boolean inRange;
   private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");

@@ -20,7 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX rightIntakeMotor; // LEADER
   private final TalonFX leftIntakeMotor; // FOLLOWER
   private final TalonFX serializerMotor;
-  private final DigitalInput noteSensor;
+  private final DigitalInput acceleratorSensor;
   public boolean isUsingIntakeSensor = true;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
@@ -39,6 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
       this.modeSettings = modeSettings;
     }
   }
+
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -62,8 +63,9 @@ public class IntakeSubsystem extends SubsystemBase {
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
 
-    // BEAM BRAKE SENSOR - once the beam is broken we need to hold the piece in place.
-    noteSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
+    // BEAM BRAKE SENSORS
+    acceleratorSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
+
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> rightIntakeMotor.getMotorVoltage().getValueAsDouble());
@@ -76,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // GETTERS
   public boolean getSensorOutput() {
-    return !noteSensor.get();
+    return !acceleratorSensor.get();
   }
 
   // SETTERS
