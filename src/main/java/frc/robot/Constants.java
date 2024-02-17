@@ -384,6 +384,6 @@ public final class Constants {
     // power
     public static final double ROLLER_MOTOR_POWER = 0.5;
     public static final double ACCELERATOR_MOTOR_POWER = 0.1;
-    public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
+    public static final double HORIZONTAL_HOLD_OUTPUT = 0.35;
   }
 }

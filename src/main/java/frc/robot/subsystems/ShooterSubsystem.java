@@ -42,11 +42,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
-    rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
+    //rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
-    rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
+    //rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
-    acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
+    //acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
@@ -61,7 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
     wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.WRIST_GEAR_RATIO;
-    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(-0.2);
+    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(-0.27);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(-0.434);
     wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
@@ -228,11 +228,11 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
 
     wristMotor.set(
-        MathUtil.clamp(
+        -MathUtil.clamp(
             wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
             -0.09,
             0.09)); // you always need to incorperate feed foreward
-    // FIXME change clamp values
+
 
   }
 }
