@@ -126,6 +126,14 @@ public class ShooterSubsystem extends SubsystemBase {
     return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
   }
 
+  public boolean prepareForIntake(){
+    if (getCurrentAngle()>20){
+      setTargetDegrees(20);
+      return false;
+    }
+    return true;
+  }
+
   public boolean isReadyToShoot() {
     return inRange
         && isAtTargetDegrees()
@@ -141,8 +149,8 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
   }
 
-  public void startAcceleratorMotor(){
-      acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
+  public void setAcceleratorMotorSpeed(double speed){
+      acceleratorMotor.set(speed);
   }
 
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {

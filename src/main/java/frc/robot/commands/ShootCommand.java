@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.Constants.Shooter;
 
 public class ShootCommand extends Command {
   private ShooterSubsystem shooterSubsystem;
@@ -20,7 +21,7 @@ public class ShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.startAcceleratorMotor();
+    shooterSubsystem.setAcceleratorMotorSpeed(Shooter.ACCELERATOR_MOTOR_POWER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
