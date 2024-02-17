@@ -13,6 +13,7 @@ public class WristAngleCommand extends Command {
   double angle;
   public WristAngleCommand(ShooterSubsystem shooterSubsystem, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.angle = angle;
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(shooterSubsystem);
   }

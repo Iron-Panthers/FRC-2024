@@ -80,7 +80,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
 
-    pidController = new PIDController(0.1, 0, 0);
+    pidController = new PIDController(80, 0, 0);
 
     targetDegrees = 0;
     wristMotorPower = 0;
@@ -90,17 +90,23 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Motor Power", () -> wristMotorPower);
     WristTab.addBoolean("Is at target", this::isAtTargetDegrees);
     WristTab.addNumber("Error", this::getCurrentError);
-    WristTab.addNumber("target", () -> targetDegrees);
+    WristTab.addNumber("target", this::getTargetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
+    WristTab.addNumber("Applied Voltage",() -> wristMotor.getMotorVoltage().getValueAsDouble());
   }
 
   // wrist methods
   private double getCurrentError() {
+    
     return targetDegrees - getCurrentAngle();
   }
 
   private double getCurrentAngle() {
     return rotationsToDegrees(wristMotor.getPosition().getValue());
+  }
+
+  private double getTargetDegrees(){
+    return targetDegrees;
   }
 
   public boolean isAtTargetDegrees() {
@@ -128,7 +134,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setTargetDegrees(double degrees) {
-    targetDegrees = degrees;
+    this.targetDegrees = degrees;
   }
 
   public void startShooterMotor(){
