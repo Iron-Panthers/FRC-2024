@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -42,8 +44,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
+    //rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
+    //rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
+    //acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
@@ -55,15 +60,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
     TalonFXConfiguration wristMotorConfig = new TalonFXConfiguration();
     wristMotorConfig.Feedback.FeedbackRemoteSensorID = wristCANcoder.getDeviceID();
-    wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
     wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.WRIST_GEAR_RATIO;
-    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(-0.2);
+    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(-0.27);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(-0.434);
     wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
-    wristMotorConfig.Voltage.withPeakForwardVoltage(1);
-    wristMotorConfig.Voltage.withPeakReverseVoltage(-1);
+    wristMotorConfig.Voltage.withPeakForwardVoltage(1.5);
+    wristMotorConfig.Voltage.withPeakReverseVoltage(-1.5);
 
     wristMotor.getConfigurator().apply(new TalonFXConfiguration()); // Applies factory defaults
     wristMotor.getConfigurator().apply(wristMotorConfig);
@@ -71,6 +76,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     wristMotor.set(0);
+
 
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
@@ -83,7 +89,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
 
-    pidController = new PIDController(80, 0, 0);
+    pidController = new PIDController(0.13, 0, 0);
 
     targetDegrees = 0;
     wristMotorPower = 0;
@@ -96,11 +102,12 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("target", this::getTargetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
     WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
+    WristTab.add(pidController);
   }
 
   // wrist methods
   private double getCurrentError() {
-
+    
     return targetDegrees - getCurrentAngle();
   }
 
@@ -130,9 +137,10 @@ public class ShooterSubsystem extends SubsystemBase {
   //   return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
   // }
 
-  public void prepareForIntake() {
-    if (getCurrentAngle() >= 30) {
-      setTargetDegrees(30);
+  public boolean prepareForIntake() {
+    if (getCurrentAngle() > 20) {
+      setTargetDegrees(20);
+      return false;
     }
   }
 
@@ -232,14 +240,11 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
-
-    // wristMotor.set(
-    //     MathUtil.clamp(
-    //         wristMotorPower + Shooter.Measurements.WRIST_CANCODER_OFFSET,
-    //         -0.09,
-    //         0.09)); // you always need to incorperate feed foreward
-    // FIXME change clamp values
-    
+    wristMotor.set(
+        -MathUtil.clamp(
+            wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
+            -0.15,
+            0.15)); // you always need to incorperate feed foreward
 
   }
 }

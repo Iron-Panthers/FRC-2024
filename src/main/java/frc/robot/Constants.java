@@ -396,7 +396,7 @@ public final class Constants {
       public static final double WRIST_GEAR_RATIO =
           (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
       public static final double X_DISTANCE = 4; // meters
-      public static final double SPEAKER_HEIGHT = 1.9; // meters
+      public static final double SPEAKER_HEIGHT = 2; // meters
       public static final double NOTE_SPEED =
           40; // meters per second FIXME not actually a verified speed
       public static final double GRAVITY = 9.80665; // meters per second

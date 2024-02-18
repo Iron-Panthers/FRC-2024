@@ -31,7 +31,10 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
+import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
+import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -178,15 +181,17 @@ public class RobotContainer {
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
+    jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
+    jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
     anthony.rightTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
     anthony.leftTrigger().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
-    anthony.a().onTrue(new ShootCommand(shooterSubsystem));
-    anthony.b().onTrue(new ShooterRampUpCommand(shooterSubsystem));
     anthony.x().onTrue(new StopIntakeCommand(intakeSubsystem, shooterSubsystem));
 
-    anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
 
-    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));\
+    anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
     // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
