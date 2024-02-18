@@ -5,26 +5,26 @@
       "x": 1.0,
       "y": 7.0
     },
-    "rotation": -118.25999999999999
+    "rotation": 60.49
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCommand.java"
-                }
-              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCommand.java"
                 }
               }
             ]
