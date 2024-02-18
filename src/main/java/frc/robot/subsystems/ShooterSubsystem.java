@@ -67,8 +67,8 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(-0.434);
     wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
-    wristMotorConfig.Voltage.withPeakForwardVoltage(1);
-    wristMotorConfig.Voltage.withPeakReverseVoltage(-1);
+    wristMotorConfig.Voltage.withPeakForwardVoltage(1.5);
+    wristMotorConfig.Voltage.withPeakReverseVoltage(-1.5);
 
     wristMotor.getConfigurator().apply(wristMotorConfig);
 
@@ -88,7 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
 
-    pidController = new PIDController(80, 0, 0);
+    pidController = new PIDController(0.13, 0, 0);
 
     targetDegrees = 0;
     wristMotorPower = 0;
@@ -232,8 +232,8 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotor.set(
         -MathUtil.clamp(
             wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
-            -0.09,
-            0.09)); // you always need to incorperate feed foreward
+            -0.15,
+            0.15)); // you always need to incorperate feed foreward
 
 
   }
