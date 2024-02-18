@@ -172,12 +172,12 @@ public class RobotContainer {
     .back()
     .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
-    anthony.x().onTrue(new DefenseModeCommand(drivebaseSubsystem));
+    anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony
-        .povUp()
+        .y()
         .onTrue(
             new RotateAngleDriveCommand(
                 drivebaseSubsystem,
@@ -186,7 +186,7 @@ public class RobotContainer {
                 Setpoints.SOURCE_DEGREES));
 
     anthony
-        .povDown()
+        .a()
         .onTrue(
             new RotateAngleDriveCommand(
                 drivebaseSubsystem,
@@ -195,13 +195,13 @@ public class RobotContainer {
                 Setpoints.SPEAKER_DEGREES));
 
     anthony
-        .povLeft()
+        .x()
         .onTrue(
             new RotateAngleDriveCommand(
                 drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
 
     anthony
-        .povRight()
+        .b()
         .onTrue(
             new RotateAngleDriveCommand(
                 drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
