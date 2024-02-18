@@ -340,7 +340,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * @return The current angle of the robot, relative to boot position.
    */
   public Rotation2d getConsistentGyroscopeRotation() {
-    return Rotation2d.fromDegrees(Util.normalizeDegrees(swerveDrivetrain.getPigeon2().getAngle()));
+    if (Config.FLIP_GYROSCOPE) {
+      return Rotation2d.fromDegrees(
+          Util.normalizeDegrees(-swerveDrivetrain.getPigeon2().getAngle()));
+    } else {
+      return Rotation2d.fromDegrees(
+          Util.normalizeDegrees(swerveDrivetrain.getPigeon2().getAngle()));
+    }
   }
 
   /**
@@ -429,7 +435,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   // called in drive to angle mode
   private void driveAnglePeriodic() {
     double angularDifference =
-        -Util.relativeAngularDifference(getDriverGyroscopeRotation(), targetAngle);
+        -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
 
     double rotationValue = rotController.calculate(angularDifference);
 

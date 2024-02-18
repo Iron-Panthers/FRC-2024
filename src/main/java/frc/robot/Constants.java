@@ -60,6 +60,9 @@ public final class Constants {
     /** turn this off! only use on practice eboard testing. */
     public static final boolean DISABLE_SWERVE_INIT = false;
 
+    /** keep this on for pigeon, disable if absolutely necessary */
+    public static final boolean FLIP_GYROSCOPE = true;
+
     /** def turn this off unless you are using it, generates in excess of 100k rows for a match. */
     public static final boolean WRITE_APRILTAG_DATA = false;
 
