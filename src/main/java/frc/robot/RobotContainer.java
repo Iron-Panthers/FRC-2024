@@ -29,6 +29,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
@@ -176,9 +177,7 @@ public class RobotContainer {
     // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
     jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
-    // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
-    // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    // anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
+    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
