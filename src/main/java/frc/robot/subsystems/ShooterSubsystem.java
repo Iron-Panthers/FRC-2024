@@ -106,6 +106,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   // wrist methods
+  private double getFeedForward(){
+    return Math.cos(Math.toRadians(getCurrentAngle()))*Shooter.HORIZONTAL_HOLD_OUTPUT;
+  }
   private double getCurrentError() {
     
     return targetDegrees - getCurrentAngle();
@@ -142,6 +145,7 @@ public class ShooterSubsystem extends SubsystemBase {
       setTargetDegrees(20);
       return false;
     }
+    return true;
   }
 
   public boolean isReadyToShoot() {
@@ -162,7 +166,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setAcceleratorMotorSpeed(double speed) {
     acceleratorMotor.set(speed);
   }
-
+  public double addStatorLimit(double power){
+    if (power > 1){
+      return power + Shooter.STATOR_LIMIT;
+    }
+    return power - Shooter.STATOR_LIMIT;
+  }
   public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.Measurements.GRAVITY;
@@ -239,12 +248,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
-    wristMotor.set(
-        -MathUtil.clamp(
-            wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
+    wristMotorPower = -MathUtil.clamp(
+            pidController.calculate(getCurrentAngle(), targetDegrees) + getFeedForward(),
             -0.15,
-            0.15)); // you always need to incorperate feed foreward
-
+            0.15);
+    wristMotor.set(addStatorLimit(wristMotorPower)); 
   }
 }

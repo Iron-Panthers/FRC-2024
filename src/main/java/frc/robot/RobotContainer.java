@@ -181,28 +181,15 @@ public class RobotContainer {
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
-    jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
-    jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
-    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
-    anthony.rightTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
-    anthony.leftTrigger().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
-    anthony.x().onTrue(new StopIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
+    anthony.povUp().onTrue(new WristAngleCommand(shooterSubsystem, 22));
+    //jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem, shooterSubsystem)));
+    jacob.rightTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem).andThen(new ShooterRampUpCommand(shooterSubsystem)));
+    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
 
 
-    anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-
-    // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));
-    // anthony.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    // anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem));
-
-    // anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-
-    // anthony.b().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.INTAKE));
-    // anthony.a().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.HOLD));
-    // anthony.x().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.OUTTAKE));
-    // anthony.y().onTrue(new IntakeCommand(intakeSubsystem, IntakeSubsystem.Modes.REVERSE));
 
     // DoubleSupplier rotation =
     //     exponential(

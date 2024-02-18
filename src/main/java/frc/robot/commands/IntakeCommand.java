@@ -26,7 +26,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // shooterSubsystem.prepareForIntake();
+    shooterSubsystem.prepareForIntake();
     intakeSubsystem.setIntakeMode(Modes.INTAKE);
     shooterSubsystem.setAcceleratorMotorSpeed(.5);
   }
