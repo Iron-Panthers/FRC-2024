@@ -12,9 +12,9 @@ public class WristAngleCommand extends Command {
   /** Creates a new StoreShooterCommand. */
   ShooterSubsystem shooterSubsystem;
 
-  DoubleSupplier angle;
+  double angle;
 
-  public WristAngleCommand(ShooterSubsystem shooterSubsystem, DoubleSupplier angle) {
+  public WristAngleCommand(ShooterSubsystem shooterSubsystem, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angle = angle;
     this.shooterSubsystem = shooterSubsystem;
@@ -24,12 +24,11 @@ public class WristAngleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // shooterSubsystem.setTargetDegrees(angle);
+    shooterSubsystem.setTargetDegrees(angle);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setTargetDegrees(angle.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
