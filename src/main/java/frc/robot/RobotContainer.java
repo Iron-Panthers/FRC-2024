@@ -31,7 +31,6 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
-import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.WristAngleCommand;

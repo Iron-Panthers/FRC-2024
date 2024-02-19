@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Modes;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeCommand extends Command {
@@ -28,7 +29,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     shooterSubsystem.prepareForIntake();
     intakeSubsystem.setIntakeMode(Modes.INTAKE);
-    shooterSubsystem.setAcceleratorMotorSpeed(.5);
+    shooterSubsystem.setShooterMode(ShooterMode.Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +41,7 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     if (intakeSubsystem.isUsingIntakeSensor()) {
       intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
-      shooterSubsystem.setAcceleratorMotorSpeed(0);
+      shooterSubsystem.setShooterMode(ShooterMode.Idle);
     }
   }
 

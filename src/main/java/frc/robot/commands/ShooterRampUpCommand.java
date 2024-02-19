@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 
 public class ShooterRampUpCommand extends Command {
   private ShooterSubsystem shooterSubsystem;
@@ -20,7 +21,7 @@ public class ShooterRampUpCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.startShooterMotor();
+    shooterSubsystem.setShooterMode(ShooterMode.Ramping);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,6 +35,6 @@ public class ShooterRampUpCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return shooterSubsystem.isReadyToShoot();
   }
 }

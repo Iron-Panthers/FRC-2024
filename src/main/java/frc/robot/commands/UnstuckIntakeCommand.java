@@ -27,7 +27,6 @@ public class UnstuckIntakeCommand extends Command {
   @Override
   public void initialize() {
     intakeSubsystem.setIntakeMode(Modes.REVERSE);
-    shooterSubsystem.setAcceleratorMotorSpeed(-.1d);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Modes;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class StopIntakeCommand extends Command {
@@ -27,7 +28,7 @@ public class StopIntakeCommand extends Command {
   @Override
   public void initialize() {
     intakeSubsystem.setIntakeMode(Modes.HOLD);
-    shooterSubsystem.setAcceleratorMotorSpeed(0);
+    shooterSubsystem.setShooterMode(ShooterMode.Idle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
