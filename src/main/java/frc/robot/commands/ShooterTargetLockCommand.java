@@ -42,7 +42,6 @@ public class ShooterTargetLockCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return shooterSubsystem.isDone();
-    return false;
+    return shooterSubsystem.isDone();
   }
 }

@@ -5,6 +5,9 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -25,19 +28,13 @@ import frc.robot.Constants.Drive;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShooterRampUpCommand;
-import frc.robot.commands.StopIntakeCommand;
-import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -66,8 +63,6 @@ public class RobotContainer {
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
   private final NetworkWatchdogSubsystem networkWatchdogSubsystem =
@@ -84,8 +79,6 @@ public class RobotContainer {
   private final Layer jacobLayer = new Layer(jacob.rightBumper());
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
-  /** controller 0 layer */
-  private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
   private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
@@ -109,13 +102,13 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    // drivebaseSubsystem.setDefaultCommand(
-    //     new DefaultDriveCommand(
-    //         drivebaseSubsystem,
-    //         translationXSupplier,
-    //         translationYSupplier,
-    //         // anthony.rightBumper(),
-    //         anthony.leftBumper()));
+    drivebaseSubsystem.setDefaultCommand(
+        new DefaultDriveCommand(
+            drivebaseSubsystem,
+            translationXSupplier,
+            translationYSupplier,
+            // anthony.rightBumper(),
+            anthony.leftBumper()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
@@ -180,40 +173,48 @@ public class RobotContainer {
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
+
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
-    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    anthony.povUp().onTrue(new WristAngleCommand(shooterSubsystem, 22));
-    //jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
-    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem, shooterSubsystem)));
-    jacob.rightTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem).andThen(new ShooterRampUpCommand(shooterSubsystem)));
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
+    jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
 
+    anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
+    anthony
+        .b()
+        .onTrue(
+            new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.45, 5.5), new Rotation2d(0))),
+                drivebaseSubsystem));
 
-    // DoubleSupplier rotation =
-    //     exponential(
-    //         () ->
-    //             ControllerUtil.deadband(
-    //                 (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-    //         2);
+    DoubleSupplier rotation =
+        exponential(
+            () ->
+                ControllerUtil.deadband(
+                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+            2);
 
-    // DoubleSupplier rotationVelocity =
-    //     () ->
-    //         -rotation.getAsDouble()
-    //             * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    //             *
-    //             /** percent of fraction power */
-    //             (anthony.getHID().getAButton() ? .3 : .8);
+    DoubleSupplier rotationVelocity =
+        () ->
+            -rotation.getAsDouble()
+                * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                *
+                /** percent of fraction power */
+                (anthony.getHID().getAButton() ? .3 : .8);
 
-    // new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-    //     .whileTrue(
-    //         new RotateVelocityDriveCommand(
-    //             drivebaseSubsystem,
-    //             translationXSupplier,
-    //             translationYSupplier,
-    //             rotationVelocity,
-    //             anthony.rightBumper()));
+    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
+        .whileTrue(
+            new RotateVelocityDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                rotationVelocity,
+                anthony.rightBumper()));
 
     // new Trigger(
     //         () ->
