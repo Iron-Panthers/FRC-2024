@@ -154,7 +154,7 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.set(speed);
   }
 
-  public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
+  public void calculateAndSetWristTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.Measurements.GRAVITY;
     double x = pose.getX();

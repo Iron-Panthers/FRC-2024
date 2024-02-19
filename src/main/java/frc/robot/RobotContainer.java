@@ -40,6 +40,7 @@ import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
+import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -113,13 +114,14 @@ public class RobotContainer {
     // reigster commands for pathplanner
     NamedCommands.registerCommand(
         "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem));
-    NamedCommands.registerCommand("hello", Commands.print("hello"));
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterTargetLockCommand",
         new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "WristAngleCommand", new WristAngleCommand(shooterSubsystem, 60));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
