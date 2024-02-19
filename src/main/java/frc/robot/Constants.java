@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.subsystems.NetworkWatchdogSubsystem.IPv4;
 import frc.robot.subsystems.RGBSubsystem.RGBColor;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem.TagCountDeviation;
 import frc.robot.subsystems.VisionSubsystem.UnitDeviationParams;
 import frc.util.CAN;
@@ -354,11 +355,11 @@ public final class Constants {
   public static final class Shooter {
     // ports
     public static final class Ports {
-      public static final int WRIST_MOTOR_PORT = 0;
-      public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
-      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
-      public static final int ACCELERATOR_MOTOR_PORT = 6;
-      public static final int CANCODER_PORT = 57;
+      public static final int WRIST_MOTOR_PORT = 18;
+      public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
+      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
+      public static final int ACCELERATOR_MOTOR_PORT = 17;
+      public static final int CANCODER_PORT = 28;
       public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
       public static final int BEAM_BREAK_SENSOR_PORT = 1;
     }
@@ -368,7 +369,8 @@ public final class Constants {
           (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
       public static final double X_DISTANCE = 4; // meters
       public static final double SPEAKER_HEIGHT = 2; // meters
-      public static final double NOTE_SPEED = 40; // meters per second FIXME not actually a verified speed
+      public static final double NOTE_SPEED =
+          40; // meters per second FIXME not actually a verified speed
       public static final double GRAVITY = 9.80665; // meters per second
       public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
       public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
@@ -378,29 +380,20 @@ public final class Constants {
       public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
       // public static final double ANGLE_OFFSET = 5.319; // degrees
       public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-      public static final double WRIST_CANCODER_OFFSET = 0.438;
+      public static final double WRIST_CANCODER_OFFSET = 0.308105;
     }
 
-    public static final class ShooterModeSettings{
-      public final double ROLLER_MOTOR_POWER;
-      public final double ACCELERATOR_MOTOR_POWER;
+    // voltage
+    public static final double GRAVITY_VOLTAGE = 0.34;
 
-      public ShooterModeSettings(double ROLLER_MOTOR_POWER, double ACCELERATOR_MOTOR_POWER){
-        this.ROLLER_MOTOR_POWER = ROLLER_MOTOR_POWER;
-        this.ACCELERATOR_MOTOR_POWER = ACCELERATOR_MOTOR_POWER;
-      }
-    }
-
-    // power
-    public static final double FEED_FOREWARD = 0.03;
-
-    //mode settings
-    public static final ShooterModeSettings INTAKE_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(0, .5);
-    public static final ShooterModeSettings IDLE_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(0, 0);
-    public static final ShooterModeSettings RAMPING_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(.5, 0);
-    public static final ShooterModeSettings SHOOTING_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(.5, .1);
-
-
-    
+    // mode settings
+    public static final ShooterSubsystem.ShooterPowers INTAKE_SHOOTER_MODE_CONFIGS =
+        new ShooterSubsystem.ShooterPowers(0, .5);
+    public static final ShooterSubsystem.ShooterPowers IDLE_SHOOTER_MODE_CONFIGS =
+        new ShooterSubsystem.ShooterPowers(0, 0);
+    public static final ShooterSubsystem.ShooterPowers RAMPING_SHOOTER_MODE_CONFIGS =
+        new ShooterSubsystem.ShooterPowers(.5, 0);
+    public static final ShooterSubsystem.ShooterPowers SHOOTING_SHOOTER_MODE_CONFIGS =
+        new ShooterSubsystem.ShooterPowers(.5, .1);
   }
 }

@@ -4,71 +4,83 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
-import frc.robot.Constants.Shooter.ShooterModeSettings;
-
-import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private TalonFX wristMotor;
-  private TalonFX rollerMotorBottom;
-  private TalonFX rollerMotorTop;
-  private TalonFX acceleratorMotor;
-  private PIDController pidController;
-  private double targetDegrees;
-  private double wristMotorPower;
-  private ShooterMode mode;
-  private Pose2d pose;
-  private DigitalInput noteSensor;
-  private boolean inRange;
+  private final TalonFX wristMotor;
+  private final TalonFX rollerMotorBottom;
+  private final TalonFX rollerMotorTop;
+  private final TalonFX acceleratorMotor;
+
   private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
+  private DigitalInput noteSensor;
+
+  private PIDController pidController;
+
+  private ShooterMode mode;
+  private double targetDegrees;
+  private double wristPower;
+  private double pidOutput;
+  private boolean inRange;
+
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
-  public enum ShooterMode{
+  public enum ShooterMode {
     Idle(Shooter.IDLE_SHOOTER_MODE_CONFIGS),
     Ramping(Shooter.RAMPING_SHOOTER_MODE_CONFIGS),
     Shooting(Shooter.SHOOTING_SHOOTER_MODE_CONFIGS);
 
-    public final ShooterModeSettings modeSettings;
+    public final ShooterPowers modeSettings;
 
-    private ShooterMode(ShooterModeSettings modeSettings){
+    private ShooterMode(ShooterPowers modeSettings) {
       this.modeSettings = modeSettings;
     }
+  }
 
+  public static final class ShooterModeSettings {
+    public final double ROLLER_MOTOR_POWER;
+    public final double ACCELERATOR_MOTOR_POWER;
+
+    public ShooterModeSettings(double ROLLER_MOTOR_POWER, double ACCELERATOR_MOTOR_POWER) {
+      this.ROLLER_MOTOR_POWER = ROLLER_MOTOR_POWER;
+      this.ACCELERATOR_MOTOR_POWER = ACCELERATOR_MOTOR_POWER;
+    }
+  }
+
+  public record ShooterPowers(double roller, double accelerator) {
+    public ShooterPowers(double roller, double accelerator) {
+      this.roller = roller;
+      this.accelerator = accelerator;
+    }
   }
 
   public ShooterSubsystem() {
-    //PORTS
+    // PORTS
     wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
-    //rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
+    // rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
-    //rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
+    // rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
-    //acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
+    // acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
 
-    //WRIST CONFIG
+    // WRIST CONFIG
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     wristCANcoderConfig.MagnetSensor.SensorDirection =
@@ -91,10 +103,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     wristMotor.getConfigurator().apply(wristMotorConfig);
 
-    // wristMotor.setPosition(0);
     wristMotor.clearStickyFaults();
     wristMotor.set(0);
-
 
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
@@ -107,27 +117,31 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
 
-    //PID
-    pidController = new PIDController(0.13, 0, 0);
+    // PID
+    pidController = new PIDController(1, 0, 0);
 
     targetDegrees = 0;
-    wristMotorPower = 0;
+    pidOutput = 0;
+    wristPower = 0;
 
-    //SHUFFLEBOARD
+    mode = ShooterMode.Idle;
+
+    // SHUFFLEBOARD
     WristTab.addNumber("Current Motor Position", () -> wristMotor.getPosition().getValueAsDouble());
     WristTab.addNumber("Current motor angle", this::getCurrentAngle);
-    WristTab.addNumber("Motor Power", () -> wristMotorPower);
+    WristTab.addNumber("pid Power", () -> pidOutput);
     WristTab.addBoolean("Is at target", this::isAtTargetDegrees);
     WristTab.addNumber("Error", this::getCurrentError);
     WristTab.addNumber("target", this::getTargetDegrees);
     WristTab.addNumber("Error PID", pidController::getPositionError);
     WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
+    WristTab.addDouble("pivot voltage", () -> wristPower);
     WristTab.add(pidController);
   }
 
-  //GETTERS
-  private double getFeedForward(){
-    return Math.cos(Math.toRadians(getCurrentAngle()))*Shooter.FEED_FOREWARD;
+  // GETTERS
+  private double getFeedForward() {
+    return Math.cos(Math.toRadians(getCurrentAngle())) * Shooter.GRAVITY_VOLTAGE;
   }
 
   private double getCurrentError() {
@@ -157,13 +171,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isReadyToShoot() {
-    return inRange
-        && isAtTargetDegrees()
-        && isBeamBreakSensorTriggered()
-        && isShooterUpToSpeed();
+    return inRange && isAtTargetDegrees() && isBeamBreakSensorTriggered() && isShooterUpToSpeed();
   }
 
-  //returns wheather or not a change was needed
+  // returns wheather or not a change was needed
   public boolean prepareForIntake() {
     if (getCurrentAngle() > 20) {
       setTargetDegrees(20);
@@ -172,12 +183,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return true;
   }
 
-  //SETTERS
+  // SETTERS
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = degrees;
   }
 
-  public void setShooterMode(ShooterMode newMode){
+  public void setShooterMode(ShooterMode newMode) {
     this.mode = newMode;
   }
 
@@ -192,18 +203,23 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    //wrist motor power
-    wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
-    wristMotor.setVoltage(
-        -MathUtil.clamp(
-            wristMotorPower + getFeedForward(),
-            -0.15,
-            0.15)); // you always need to incorperate feed foreward
-    
-    //shooter motor power
-    rollerMotorTop.set(mode.modeSettings.ROLLER_MOTOR_POWER);
-    acceleratorMotor.set(mode.modeSettings.ACCELERATOR_MOTOR_POWER);
+    if (targetDegrees > 90 || getCurrentAngle() > 90) {
+      targetDegrees = 89;
+    }
 
+    if (targetDegrees < 0 || getCurrentAngle() < 0) {
+      targetDegrees = 1;
+    }
 
+    // wrist motor power
+    pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
+
+    wristPower = -MathUtil.clamp(pidOutput + getFeedForward(), -5, 5);
+
+    wristMotor.setVoltage(wristPower);
+
+    // shooter motor power
+    rollerMotorTop.set(mode.modeSettings.roller());
+    acceleratorMotor.set(mode.modeSettings.accelerator());
   }
 }

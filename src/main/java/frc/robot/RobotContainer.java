@@ -111,6 +111,9 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
+    shooterSubsystem.setDefaultCommand(
+        new WristAngleCommand(shooterSubsystem, () -> (-jacob.getLeftY() + 1) * 45));
+
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
@@ -177,14 +180,12 @@ public class RobotContainer {
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
-    jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
-    jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
+    // jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
+    // jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
 
     jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
     jacob.y().onTrue(new ShooterRampUpCommand(shooterSubsystem));
     jacob.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
-
-    
 
     anthony
         .b()

@@ -11,6 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 public class StopShooterCommand extends Command {
   /** Creates a new StopShooterCommand. */
   ShooterSubsystem shooterSubsystem;
+
   public StopShooterCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
