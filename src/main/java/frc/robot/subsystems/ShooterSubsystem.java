@@ -53,16 +53,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public static final class ShooterModeSettings {
-    public final double ROLLER_MOTOR_POWER;
-    public final double ACCELERATOR_MOTOR_POWER;
-
-    public ShooterModeSettings(double ROLLER_MOTOR_POWER, double ACCELERATOR_MOTOR_POWER) {
-      this.ROLLER_MOTOR_POWER = ROLLER_MOTOR_POWER;
-      this.ACCELERATOR_MOTOR_POWER = ACCELERATOR_MOTOR_POWER;
-    }
-  }
-
   public record ShooterPowers(double roller, double accelerator) {
     public ShooterPowers(double roller, double accelerator) {
       this.roller = roller;
