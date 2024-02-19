@@ -218,16 +218,6 @@ public class ShooterSubsystem extends SubsystemBase {
     return (rotations * 360);
   }
 
-  public void manualShoot() {
-    rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
-    acceleratorMotor.set(Shooter.ACCELERATOR_MOTOR_POWER);
-  }
-
-  public void manualHold() {
-    rollerMotorTop.set(0);
-    acceleratorMotor.set(0);
-  }
-
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
