@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import frc.robot.Constants.Shooter.ShooterModeSettings;
+
 import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -35,13 +37,28 @@ public class ShooterSubsystem extends SubsystemBase {
   private PIDController pidController;
   private double targetDegrees;
   private double wristMotorPower;
+  private ShooterMode mode;
   private Pose2d pose;
   private DigitalInput noteSensor;
   private boolean inRange;
   private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
-  private double feedForward;
+
+  public enum ShooterMode{
+    Idle(Shooter.IDLE_SHOOTER_MODE_CONFIGS),
+    Ramping(Shooter.RAMPING_SHOOTER_MODE_CONFIGS),
+    Shooting(Shooter.SHOOTING_SHOOTER_MODE_CONFIGS);
+
+    public final ShooterModeSettings modeSettings;
+
+    private ShooterMode(ShooterModeSettings modeSettings){
+      this.modeSettings = modeSettings;
+    }
+
+  }
+
   public ShooterSubsystem() {
+    //PORTS
     wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
     //rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
@@ -50,6 +67,8 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
     //acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
+
+    //WRIST CONFIG
     CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
     wristCANcoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     wristCANcoderConfig.MagnetSensor.SensorDirection =
@@ -88,11 +107,13 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
 
+    //PID
     pidController = new PIDController(0.13, 0, 0);
 
     targetDegrees = 0;
     wristMotorPower = 0;
 
+    //SHUFFLEBOARD
     WristTab.addNumber("Current Motor Position", () -> wristMotor.getPosition().getValueAsDouble());
     WristTab.addNumber("Current motor angle", this::getCurrentAngle);
     WristTab.addNumber("Motor Power", () -> wristMotorPower);
@@ -103,14 +124,12 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
     WristTab.add(pidController);
   }
-  private void setFeedForward(double feedForward){
-    this.feedForward = feedForward;
+
+  //GETTERS
+  private double getFeedForward(){
+    return Math.cos(Math.toRadians(getCurrentAngle()))*Shooter.FEED_FOREWARD;
   }
 
-  private double getFeedForward(){
-    return Math.cos(Math.toRadians(getCurrentAngle()))*feedForward;
-  }
-  // wrist methods
   private double getCurrentError() {
     return targetDegrees - getCurrentAngle();
   }
@@ -128,19 +147,23 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterUpToSpeed() {
-    return rollerMotorBottom.getVelocity().getValueAsDouble() > 50
-        && rollerMotorTop.getVelocity().getValueAsDouble() > 50;
+    return rollerMotorBottom.getVelocity().getValueAsDouble() >= Shooter.Measurements.NOTE_SPEED
+        && rollerMotorTop.getVelocity().getValueAsDouble() >= Shooter.Measurements.NOTE_SPEED;
   }
 
-  private boolean isBeamBreakSensorTriggered() {
+  public boolean isBeamBreakSensorTriggered() {
     // if is triggered return true
     return noteSensor.get();
   }
 
-  public boolean isDone() {
-    return isBeamBreakSensorTriggered() || pose.getX() > 8.4;
+  public boolean isReadyToShoot() {
+    return inRange
+        && isAtTargetDegrees()
+        && isBeamBreakSensorTriggered()
+        && isShooterUpToSpeed();
   }
 
+  //returns wheather or not a change was needed
   public boolean prepareForIntake() {
     if (getCurrentAngle() > 20) {
       setTargetDegrees(20);
@@ -149,79 +172,13 @@ public class ShooterSubsystem extends SubsystemBase {
     return true;
   }
 
-  public boolean isReadyToShoot() {
-    return inRange
-        && isAtTargetDegrees()
-        && isBeamBreakSensorTriggered(); // && rotationsToDegrees(getCurrentAngle())>0
-    // &&rotationsToDegrees(getCurrentAngle())<90;
-  }
-
+  //SETTERS
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = degrees;
   }
 
-  public void startShooterMotor() {
-    rollerMotorTop.set(Shooter.ROLLER_MOTOR_POWER);
-  }
-
-  public void setAcceleratorMotorSpeed(double speed) {
-    acceleratorMotor.set(speed);
-  }
-
-  public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
-    this.pose = pose;
-    double g = Shooter.Measurements.GRAVITY;
-    double x = pose.getX();
-    double y = pose.getY();
-    double speakerX;
-    double speakerY;
-    targetDegrees = getCurrentAngle();
-    Optional<Alliance> color = DriverStation.getAlliance();
-
-    if (color.isPresent() && color.get() == Alliance.Blue) {
-      speakerX = Shooter.Measurements.BLUE_SPEAKER_POSE.getX();
-      speakerY = Shooter.Measurements.BLUE_SPEAKER_POSE.getY();
-    } else {
-      speakerX = Shooter.Measurements.RED_SPEAKER_POSE.getX();
-      speakerY = Shooter.Measurements.RED_SPEAKER_POSE.getY();
-    }
-    double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
-
-    for (int i = 0; i < 5; i++) {
-      // Finds the height and distance of NOTE from the speaker based on angle (which changes where
-      // the note is)
-
-      double d =
-          distanceToSpeaker
-              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH
-              + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.cos(targetDegrees)
-              - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
-                  * Math.sin(targetDegrees); // FIXME maybe change to cos()?
-
-      double h =
-          Shooter.Measurements.SPEAKER_HEIGHT
-              - (Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT
-                  + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(targetDegrees)
-                  + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
-                      * Math.cos(targetDegrees)); // FIXME maybe change to sin() for height?
-
-      // difference between distance to speaker now and after 1 second to find v to speaker
-      double velocityToSpeaker =
-          distanceToSpeaker
-              - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
-
-      System.out.println(velocityToSpeaker);
-      double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
-
-      double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
-
-      if (interiorMath > 0) {
-        targetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-        inRange = true;
-      } else {
-        inRange = false;
-      }
-    }
+  public void setShooterMode(ShooterMode newMode){
+    this.mode = newMode;
   }
 
   private static double degreesToRotations(double angle) {
@@ -234,6 +191,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    //wrist motor power
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
     wristMotor.setVoltage(
         -MathUtil.clamp(
@@ -241,6 +200,10 @@ public class ShooterSubsystem extends SubsystemBase {
             -0.15,
             0.15)); // you always need to incorperate feed foreward
     
+    //shooter motor power
+    rollerMotorTop.set(mode.modeSettings.ROLLER_MOTOR_POWER);
+    acceleratorMotor.set(mode.modeSettings.ACCELERATOR_MOTOR_POWER);
+
 
   }
 }

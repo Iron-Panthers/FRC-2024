@@ -360,7 +360,7 @@ public final class Constants {
       public static final int ACCELERATOR_MOTOR_PORT = 6;
       public static final int CANCODER_PORT = 57;
       public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
-      public static final int BEAM_BREAK_SENSOR_PORT = 9;
+      public static final int BEAM_BREAK_SENSOR_PORT = 1;
     }
     // measurements
     public static final class Measurements {
@@ -368,8 +368,7 @@ public final class Constants {
           (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
       public static final double X_DISTANCE = 4; // meters
       public static final double SPEAKER_HEIGHT = 2; // meters
-      public static final double NOTE_SPEED =
-          40; // meters per second FIXME not actually a verified speed
+      public static final double NOTE_SPEED = 40; // meters per second FIXME not actually a verified speed
       public static final double GRAVITY = 9.80665; // meters per second
       public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
       public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
@@ -381,9 +380,27 @@ public final class Constants {
       public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
       public static final double WRIST_CANCODER_OFFSET = 0.438;
     }
+
+    public static final class ShooterModeSettings{
+      public final double ROLLER_MOTOR_POWER;
+      public final double ACCELERATOR_MOTOR_POWER;
+
+      public ShooterModeSettings(double ROLLER_MOTOR_POWER, double ACCELERATOR_MOTOR_POWER){
+        this.ROLLER_MOTOR_POWER = ROLLER_MOTOR_POWER;
+        this.ACCELERATOR_MOTOR_POWER = ACCELERATOR_MOTOR_POWER;
+      }
+    }
+
     // power
-    public static final double ROLLER_MOTOR_POWER = 0.5;
-    public static final double ACCELERATOR_MOTOR_POWER = 0.1;
-    public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
+    public static final double FEED_FOREWARD = 0.03;
+
+    //mode settings
+    public static final ShooterModeSettings INTAKE_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(0, .5);
+    public static final ShooterModeSettings IDLE_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(0, 0);
+    public static final ShooterModeSettings RAMPING_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(.5, 0);
+    public static final ShooterModeSettings SHOOTING_SHOOTER_MODE_CONFIGS = new ShooterModeSettings(.5, .1);
+
+
+    
   }
 }

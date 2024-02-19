@@ -29,7 +29,8 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
-import frc.robot.commands.ShooterTargetLockCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.WristAngleCommand;
@@ -173,15 +174,17 @@ public class RobotContainer {
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
+    anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
-    anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
     jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
-    jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+
     jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
+    jacob.y().onTrue(new ShooterRampUpCommand(shooterSubsystem));
+    jacob.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
+
     
-    anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony
         .b()
