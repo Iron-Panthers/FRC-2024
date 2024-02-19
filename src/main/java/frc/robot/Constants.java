@@ -351,6 +351,35 @@ public final class Constants {
     }
   }
 
+  public static final class Intake {
+    public static final class Ports {
+      public static final int RIGHT_INTAKE_MOTOR_PORT = 19;
+      public static final int LEFT_INTAKE_MOTOR_PORT = 15;
+      public static final int SERIALIZER_MOTOR_PORT = 20;
+      public static final int INTAKE_SENSOR_PORT = 1;
+    }
+
+    public static final boolean IS_BEAMBREAK = true;
+
+    public static class IntakeSubsystemModeSettings {
+      public final double INTAKE_MOTOR_SPEED;
+      public final double SERIALIZER_MOTOR_SPEED;
+
+      public IntakeSubsystemModeSettings(double INTAKE_MOTOR_SPEED, double SERIALIZER_MOTOR_SPEED) {
+        this.INTAKE_MOTOR_SPEED = INTAKE_MOTOR_SPEED;
+        this.SERIALIZER_MOTOR_SPEED = SERIALIZER_MOTOR_SPEED;
+      }
+    }
+
+    // MODE SETTINGS
+    public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
+        new IntakeSubsystemModeSettings(.5d, .5d);
+    public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
+        new IntakeSubsystemModeSettings(0, 0d);
+    public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =
+        new IntakeSubsystemModeSettings(-.5d, -.5d);
+  }
+
   public static final class Shooter {
     // ports
     public static final class Ports {
@@ -385,5 +414,6 @@ public final class Constants {
     public static final double ROLLER_MOTOR_POWER = 0.5;
     public static final double ACCELERATOR_MOTOR_POWER = 0.1;
     public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
+    public static final double STATOR_LIMIT = 0.01;
   }
 }
