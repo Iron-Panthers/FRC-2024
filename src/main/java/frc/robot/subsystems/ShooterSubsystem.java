@@ -94,8 +94,8 @@ public class ShooterSubsystem extends SubsystemBase {
     wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
     wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.WRIST_GEAR_RATIO;
-    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(-0.27);
-    wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(-0.434);
+    wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(0.25);
+    wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
     wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true);
     wristMotorConfig.Voltage.withPeakForwardVoltage(1.5);
