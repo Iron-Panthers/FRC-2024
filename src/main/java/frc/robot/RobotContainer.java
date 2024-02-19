@@ -114,14 +114,19 @@ public class RobotContainer {
     // reigster commands for pathplanner
     NamedCommands.registerCommand(
         "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem));
-    NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterTargetLockCommand",
         new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
     NamedCommands.registerCommand(
-        "WristAngleCommand", new WristAngleCommand(shooterSubsystem, 60));
+        "AngleAtSpeaker", new WristAngleCommand(shooterSubsystem, 60));
+    NamedCommands.registerCommand(
+        "AngleAt1", new WristAngleCommand(shooterSubsystem, 25));
+    NamedCommands.registerCommand(
+        "AngleAt2", new WristAngleCommand(shooterSubsystem, 20));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
