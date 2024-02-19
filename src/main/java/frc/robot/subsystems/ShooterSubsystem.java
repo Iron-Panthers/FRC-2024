@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean inRange;
   private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
-
+  private double feedForward;
   public ShooterSubsystem() {
     wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
@@ -103,7 +103,13 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
     WristTab.add(pidController);
   }
+  private void setFeedForward(double feedForward){
+    this.feedForward = feedForward;
+  }
 
+  private double getFeedForward(){
+    return Math.cos(Math.toRadians(getCurrentAngle()))*feedForward;
+  }
   // wrist methods
   private double getCurrentError() {
     return targetDegrees - getCurrentAngle();
@@ -229,12 +235,12 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     wristMotorPower = pidController.calculate(getCurrentAngle(), targetDegrees);
-    wristMotor.set(
+    wristMotor.setVoltage(
         -MathUtil.clamp(
-            wristMotorPower + Shooter.HORIZONTAL_HOLD_OUTPUT,
+            wristMotorPower + getFeedForward(),
             -0.15,
             0.15)); // you always need to incorperate feed foreward
-
+    
 
   }
 }

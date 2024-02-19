@@ -180,7 +180,7 @@ public class RobotContainer {
     jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
     jacob.leftBumper().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
-
+    
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony
