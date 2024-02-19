@@ -1,16 +1,16 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.0,
-      "y": 7.0
-    },
-    "rotation": 60.49
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": null
+          }
+        },
         {
           "type": "parallel",
           "data": {
@@ -24,10 +24,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeCommand.java"
+                  "name": "IntakeCommand"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "return"
           }
         }
       ]

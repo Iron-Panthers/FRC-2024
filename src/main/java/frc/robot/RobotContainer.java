@@ -4,14 +4,13 @@
 
 package frc.robot;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,16 +23,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
@@ -51,6 +54,9 @@ import frc.util.NodeSelectorUtility;
 import frc.util.NodeSelectorUtility.Height;
 import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -87,7 +93,7 @@ public class RobotContainer {
   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
+  private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
 
@@ -103,6 +109,18 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // reigster commands for pathplanner
+    NamedCommands.registerCommand(
+        "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem));
+    NamedCommands.registerCommand("hello", Commands.print("hello"));
+    NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "ShooterTargetLockCommand",
+        new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
+
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
     // Left stick Y axis -> forward and backwards movement
@@ -116,12 +134,14 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
+    // Configure the button bindings
+    configureButtonBindings();
+
+    autoSelector = AutoBuilder.buildAutoChooser();
+
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
-
-    // Configure the button bindings
-    configureButtonBindings();
 
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
@@ -178,23 +198,26 @@ public class RobotContainer {
         .back()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
+    // anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    anthony.rightTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
-    anthony.leftTrigger().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    anthony.leftBumper().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
+    anthony.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
     // anthony.a().onTrue(new ShootCommand(shooterSubsystem));
     // anthony.b().onTrue(new ShooterRampUpCommand(shooterSubsystem));
     anthony.x().onTrue(new StopIntakeCommand(intakeSubsystem, shooterSubsystem));
 
-    anthony.a().onTrue(AutoBuilder.pathfindThenFollowPath(
-        PathPlannerPath.fromPathFile("alignToShoot"),
-        new PathConstraints(
-        3.0, 4.0,
-        Units.degreesToRadians(540), Units.degreesToRadians(720)),
-        3.0) // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-        );
+    anthony
+        .a()
+        .onTrue(
+            AutoBuilder.pathfindThenFollowPath(
+                PathPlannerPath.fromPathFile("alignToShoot"),
+                new PathConstraints(
+                    3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720)),
+                3.0) // Rotation delay distance in meters. This is how far the robot should travel
+            // before attempting to rotate.
+            );
 
-    anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
+    // anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
 
     anthony
         .b()
@@ -202,7 +225,7 @@ public class RobotContainer {
             new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1, 7), new Rotation2d(-118.26))),
+                        new Pose2d(new Translation2d(1, 7), new Rotation2d(60.49))),
                 drivebaseSubsystem));
 
     // anthony.b().onTrue(new WristAngleCommand(shooterSubsystem, 0.2));

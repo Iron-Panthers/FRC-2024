@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -239,7 +238,6 @@ public class ShooterSubsystem extends SubsystemBase {
     //         -0.09,
     //         0.09)); // you always need to incorperate feed foreward
     // FIXME change clamp values
-    
 
   }
 }
