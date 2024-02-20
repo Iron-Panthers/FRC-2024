@@ -39,18 +39,14 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (intakeSubsystem.isUsingIntakeSensor()) {
       intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
       shooterSubsystem.setShooterMode(ShooterMode.Idle);
-    }
+      shooterSubsystem.stopAccelerator();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (intakeSubsystem.isUsingIntakeSensor()) {
-      return intakeSubsystem.getSensorOutput();
-    }
-    return true;
+    return shooterSubsystem.isBeamBreakSensorTriggered();
   }
 }

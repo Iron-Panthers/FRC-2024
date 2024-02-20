@@ -354,9 +354,9 @@ public final class Constants {
   
   public static final class Intake {
     public static final class Ports {
-      public static final int RIGHT_INTAKE_MOTOR_PORT = 19;
+      public static final int RIGHT_INTAKE_MOTOR_PORT = 14;
       public static final int LEFT_INTAKE_MOTOR_PORT = 15;
-      public static final int SERIALIZER_MOTOR_PORT = 20;
+      public static final int SERIALIZER_MOTOR_PORT = 16;
       public static final int INTAKE_SENSOR_PORT = 1;
     }
 
@@ -418,12 +418,12 @@ public final class Constants {
 
     // mode settings
     public static final ShooterSubsystem.ShooterPowers INTAKE_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(0, .5);
+        new ShooterSubsystem.ShooterPowers(0, .2);
     public static final ShooterSubsystem.ShooterPowers IDLE_SHOOTER_MODE_CONFIGS =
         new ShooterSubsystem.ShooterPowers(0, 0);
     public static final ShooterSubsystem.ShooterPowers RAMPING_SHOOTER_MODE_CONFIGS =
         new ShooterSubsystem.ShooterPowers(.5, 0);
     public static final ShooterSubsystem.ShooterPowers SHOOTING_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(.5, .1);
+        new ShooterSubsystem.ShooterPowers(.5, .5);
   }
 }

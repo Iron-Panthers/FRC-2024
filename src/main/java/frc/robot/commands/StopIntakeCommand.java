@@ -13,22 +13,19 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class StopIntakeCommand extends Command {
 
   IntakeSubsystem intakeSubsystem;
-  ShooterSubsystem shooterSubsystem;
 
   /** Creates a new StopIntakeCommand. */
-  public StopIntakeCommand(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
+  public StopIntakeCommand(IntakeSubsystem intakeSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
-    this.shooterSubsystem = shooterSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, shooterSubsystem);
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     intakeSubsystem.setIntakeMode(Modes.HOLD);
-    shooterSubsystem.setShooterMode(ShooterMode.Idle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

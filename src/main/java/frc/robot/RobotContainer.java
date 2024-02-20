@@ -183,10 +183,12 @@ public class RobotContainer {
     anthony.povUp().onTrue(new WristAngleCommand(shooterSubsystem, 22));
 
 
-    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem, shooterSubsystem)));
-    jacob.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem).andThen(new ShooterRampUpCommand(shooterSubsystem)));
+    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem)));
+    jacob.y().onTrue(new WristAngleCommand(shooterSubsystem, 17));
+    jacob.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.leftBumper().onTrue(new ShooterRampUpCommand(shooterSubsystem));
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
 
 
 

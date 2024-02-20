@@ -101,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.clearStickyFaults();
     rollerMotorBottom.clearStickyFaults();
 
-    rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), true));
+    rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -109,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
 
     // PID
-    pidController = new PIDController(1, 0, 0);
+    pidController = new PIDController(0.2, 0, 0);
 
     targetDegrees = 0;
     pidOutput = 0;
@@ -120,6 +120,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // SHUFFLEBOARD
     WristTab.addNumber("Current Motor Position", () -> wristMotor.getPosition().getValueAsDouble());
     WristTab.addNumber("Current motor angle", this::getCurrentAngle);
+    WristTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
     WristTab.addNumber("pid Power", () -> pidOutput);
     WristTab.addBoolean("Is at target", this::isAtTargetDegrees);
     WristTab.addNumber("Error", this::getCurrentError);
@@ -158,7 +159,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean isBeamBreakSensorTriggered() {
     // if is triggered return true
-    return noteSensor.get();
+    return !noteSensor.get();
   }
 
   public boolean isReadyToShoot() {
@@ -172,6 +173,10 @@ public class ShooterSubsystem extends SubsystemBase {
       return false;
     }
     return true;
+  }
+
+  public void stopAccelerator(){
+    acceleratorMotor.set(0);
   }
 
   // SETTERS
@@ -193,14 +198,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    if (targetDegrees > 90 || getCurrentAngle() > 90) {
-      targetDegrees = 89;
-    }
-
-    if (targetDegrees < 0 || getCurrentAngle() < 0) {
-      targetDegrees = 1;
-    }
 
     // wrist motor power
     pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
