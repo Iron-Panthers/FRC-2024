@@ -32,6 +32,7 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -86,8 +87,6 @@ public class RobotContainer {
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-
   private final SharedReference<NodeSelection> currentNodeSelection =
       new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
 
@@ -123,9 +122,6 @@ public class RobotContainer {
         "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem));
     NamedCommands.registerCommand(
         "ShootCommand", new ShootCommand(shooterSubsystem));
-    NamedCommands.registerCommand(
-        "ShooterTargetLockCommand",
-        new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
     NamedCommands.registerCommand(
