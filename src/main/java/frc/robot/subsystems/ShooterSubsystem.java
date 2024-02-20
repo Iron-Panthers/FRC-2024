@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -19,6 +20,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,6 +43,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private double wristPower;
   private double pidOutput;
   private boolean inRange;
+  private double mathedTargetDegrees;
+
+  private Pose2d pose;
 
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
@@ -131,6 +137,7 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
     WristTab.addDouble("pivot voltage", () -> wristPower);
     WristTab.addDouble("Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
+    WristTab.addDouble("Math angle", () -> mathedTargetDegrees);
     WristTab.add(pidController);
   }
 
@@ -182,6 +189,62 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.set(0);
   }
 
+  public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
+    this.pose = pose;
+    double g = Shooter.Measurements.GRAVITY;
+    double x = pose.getX();
+    double y = pose.getY();
+    double speakerX;
+    double speakerY;
+    mathedTargetDegrees = getCurrentAngle();
+    Optional<Alliance> color = DriverStation.getAlliance();
+
+    if (color.isPresent() && color.get() == Alliance.Red) {
+      speakerX = Shooter.Measurements.RED_SPEAKER_POSE.getX();
+      speakerY = Shooter.Measurements.RED_SPEAKER_POSE.getY();
+    } else {
+      speakerX = Shooter.Measurements.BLUE_SPEAKER_POSE.getX();
+      speakerY = Shooter.Measurements.BLUE_SPEAKER_POSE.getY();
+    }
+    double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
+
+    for (int i = 0; i < 5; i++) {
+      // Finds the height and distance of NOTE from the speaker based on angle (which changes where
+      // the note is)
+
+      double d =
+          distanceToSpeaker
+              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH
+              + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.cos(mathedTargetDegrees)
+              - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
+                  * Math.sin(mathedTargetDegrees); // FIXME maybe change to cos()?
+
+      double h =
+          Shooter.Measurements.SPEAKER_HEIGHT
+              - (Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT
+                  + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(mathedTargetDegrees)
+                  + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
+                      * Math.cos(mathedTargetDegrees)); // FIXME maybe change to sin() for height?
+
+      // difference between distance to speaker now and after 1 second to find v to speaker
+      double velocityToSpeaker =
+          distanceToSpeaker
+              - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
+
+      System.out.println(velocityToSpeaker);
+      double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
+
+      double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
+
+      if (interiorMath > 0) {
+        mathedTargetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
+        inRange = true;
+      } else {
+        inRange = false;
+      }
+    }
+  }
+  
   // SETTERS
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = degrees;
