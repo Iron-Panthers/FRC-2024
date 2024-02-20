@@ -28,6 +28,7 @@ import frc.robot.Constants.Drive;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
@@ -38,6 +39,7 @@ import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -72,6 +74,8 @@ public class RobotContainer {
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
+
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final SharedReference<NodeSelection> currentNodeSelection =
       new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
