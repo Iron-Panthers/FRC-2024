@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
+import java.util.function.DoubleSupplier;
 
 public class WristAngleCommand extends Command {
   /** Creates a new StoreShooterCommand. */
@@ -27,7 +28,8 @@ public class WristAngleCommand extends Command {
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -381,7 +381,6 @@ public final class Constants {
         new IntakeSubsystemModeSettings(-.5d, -.5d);
   }
 
-
   public static final class Shooter {
     // ports
     public static final class Ports {
