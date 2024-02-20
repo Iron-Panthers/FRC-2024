@@ -5,9 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -25,15 +22,19 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
+import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.RotateAngleDriveCommand;
+import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -42,6 +43,7 @@ import frc.util.NodeSelectorUtility;
 import frc.util.NodeSelectorUtility.Height;
 import frc.util.NodeSelectorUtility.NodeSelection;
 import frc.util.SharedReference;
+import frc.util.Util;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -58,6 +60,8 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
+
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
@@ -82,6 +86,8 @@ public class RobotContainer {
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
+
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -162,104 +168,56 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    anthony
-        .back()
-        .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
+    /*anthony
+    .back()
+    .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
-    anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-
-    anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony
-        .b()
+        .y()
         .onTrue(
-            new InstantCommand(
-                () ->
-                    drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.45, 5.5), new Rotation2d(0))),
-                drivebaseSubsystem));
-
-    DoubleSupplier rotation =
-        exponential(
-            () ->
-                ControllerUtil.deadband(
-                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-            2);
-
-    DoubleSupplier rotationVelocity =
-        () ->
-            -rotation.getAsDouble()
-                * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                *
-                /** percent of fraction power */
-                (anthony.getHID().getAButton() ? .3 : .8);
-
-    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-        .whileTrue(
-            new RotateVelocityDriveCommand(
+            new RotateAngleDriveCommand(
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                rotationVelocity,
-                anthony.rightBumper()));
-
-    // new Trigger(
-    //         () ->
-    //             Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
-    //                 > Drive.ROTATE_VECTOR_MAGNITUDE)
-    //     .onTrue(
-    //         new RotateVectorDriveCommand(
-    //             drivebaseSubsystem,
-    //             translationXSupplier,
-    //             translationYSupplier,
-    //             anthony::getRightY,
-    //             anthony::getRightX,
-    //             anthony.rightBumper()));
-
-    // FIXME reference if you want to use scoremap
-    /*var scoreCommandMap = new HashMap<NodeSelectorUtility.ScoreTypeIdentifier, Command>();
-
-    for (var scoreType : Constants.SCORE_STEP_MAP.keySet())
-      scoreCommandMap.put(
-          scoreType,
-          new ScoreCommand(
-              intakeSubsystem,
-              elevatorSubsystem,
-              Constants.SCORE_STEP_MAP.get(scoreType),
-              //   jacob.b()));
-              anthony.povRight()));
+                Setpoints.SOURCE_DEGREES));
 
     anthony
-        .povRight()
-        // jacob
-        //     .b()
+        .a()
         .onTrue(
-            new HashMapCommand<>(
-                scoreCommandMap, () -> currentNodeSelection.get().getScoreTypeIdentifier()));
+            new RotateAngleDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                Setpoints.SPEAKER_DEGREES));
 
-    jacob.povRight().onTrue(new InstantCommand(() -> currentNodeSelection.apply(n -> n.shift(1))));
-    jacob.povLeft().onTrue(new InstantCommand(() -> currentNodeSelection.apply(n -> n.shift(-1))));
+    anthony
+        .x()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
 
-    // control the lights
-    currentNodeSelection.subscribe(
-        nodeSelection ->
-            currentNodeSelection.subscribeOnce(
-                rgbSubsystem.showMessage(
-                        nodeSelection.nodeStack().type() == NodeSelectorUtility.NodeType.CUBE
-                            ? Constants.Lights.Colors.PURPLE
-                            : Constants.Lights.Colors.YELLOW,
-                        RGBSubsystem.PatternTypes.PULSE,
-                        RGBSubsystem.MessagePriority.F_NODE_SELECTION_COLOR)
-                    ::expire));
+    anthony
+        .b()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
 
-    // show the current node selection
-    driverView
-        .addString("Node Selection", () -> currentNodeSelection.get().toString())
-        .withPosition(0, 1)
-        .withSize(2, 1);
-    */
+    new Trigger(
+            () ->
+                Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
+                    > Drive.ROTATE_VECTOR_MAGNITUDE)
+        .onTrue(
+            new RotateVectorDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                anthony::getRightY,
+                anthony::getRightX,
+                anthony.rightBumper()));
   }
 
   /**

@@ -18,6 +18,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -58,6 +59,9 @@ public final class Constants {
 
     /** turn this off! only use on practice eboard testing. */
     public static final boolean DISABLE_SWERVE_INIT = false;
+
+    /** keep this on for pigeon, disable if absolutely necessary */
+    public static final boolean FLIP_GYROSCOPE = true;
 
     /** def turn this off unless you are using it, generates in excess of 100k rows for a match. */
     public static final boolean WRITE_APRILTAG_DATA = false;
@@ -205,6 +209,13 @@ public final class Constants {
                 : -0.379150390625; // practice bot offset
       }
     }
+
+    public static final class Setpoints {
+      public static final Translation2d SPEAKER = new Translation2d(0, 104.64);
+
+      public static final int SOURCE_DEGREES = 39;
+      public static final int SPEAKER_DEGREES = 11;
+    }
   }
 
   public static final class Vision {
@@ -348,5 +359,60 @@ public final class Constants {
       public static final RGBColor TEAL = new RGBColor(0, 255, 255);
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
+  }
+
+  public static final class Intake {
+    public static final class Ports {
+      public static final int RIGHT_INTAKE_MOTOR_PORT = 19;
+      public static final int LEFT_INTAKE_MOTOR_PORT = 15;
+      public static final int SERIALIZER_MOTOR_PORT = 20;
+      public static final int INTAKE_SENSOR_PORT = 9;
+    }
+
+    public static final boolean IS_BEAMBREAK = true;
+
+    // INTAKE MOTOR SPEEDS
+    public static final double INTAKE_MOTOR_INTAKE_SPEED = -0.8;
+    public static final double INTAKE_MOTOR_OUTTAKE_SPEED = 0;
+    public static final double INTAKE_MOTOR_HOLD_SPEED = 0;
+
+    // SERIALIZER MOTOR SPEEDS
+    public static final double SERIALIZER_MOTOR_INTAKE_SPEED = -0.8;
+    public static final double SERIALIZER_MOTOR_OUTTAKE_SPEED = -0.4;
+    public static final double SERIALIZER_MOTOR_HOLD_SPEED = 0;
+  }
+
+  public static final class Shooter {
+    // ports
+    public static final class Ports {
+      public static final int WRIST_MOTOR_PORT = 0;
+      public static final int TOP_SHOOTER_MOTOR_PORT = 16; // top
+      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 17;
+      public static final int ACCELERATOR_MOTOR_PORT = 6;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+      public static final int BEAM_BREAK_SENSOR_PORT = 9;
+      public static final int CANCODER_PORT = 0;
+    }
+    // measurements
+    public static final class Measurements {
+      public static final double WRIST_GEAR_RATIO = 128; // fix me
+      public static final double TICKS = 2048;
+      public static final double X_DISTANCE = 4; // meters
+      public static final double SPEAKER_HEIGHT = 1.9; // meters
+      public static final double NOTE_SPEED = 40; // meters per second
+      public static final double GRAVITY = 9.80665; // meters per second
+      public static final double SPEAKER_X = 0.2; // cords
+      public static final double SPEAKER_Y = 5.6; // cords
+      public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
+      public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
+      public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
+      public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
+      public static final double ANGLE_OFFSET = 5.319; // degrees
+      public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
+    }
+    // power
+    public static final double ROLLER_MOTOR_POWER = 0.8;
+    public static final double ACCELERATOR_MOTOR_POWER = 0.8;
+    public static final double HORIZONTAL_HOLD_OUTPUT = 0.03;
   }
 }
