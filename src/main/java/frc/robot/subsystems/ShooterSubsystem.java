@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -187,6 +189,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterMode(ShooterMode newMode) {
     this.mode = newMode;
+  }
+
+  public void setPivotVoltage(double voltage) {
+    wristMotor.setVoltage(MathUtil.clamp(voltage + getFeedForward(), -4, 4));
   }
 
   private static double degreesToRotations(double angle) {

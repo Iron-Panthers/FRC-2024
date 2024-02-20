@@ -3,25 +3,25 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Shooter;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class PivotManualCommand extends Command {
 
   ShooterSubsystem shooterSubsystem;
 
-  DoubleSupplier targetRate;
+  DoubleSupplier voltage;
 
-  public PivotManualCommand(ShooterSubsystem shooterSubsystem, DoubleSupplier targetRate) {
+  public PivotManualCommand(ShooterSubsystem shooterSubsystem, DoubleSupplier voltage) {
     this.shooterSubsystem = shooterSubsystem;
-    this.targetRate = targetRate;
+    this.voltage = voltage;
 
     addRequirements(shooterSubsystem);
   }
 
   @Override
   public void execute() {
-    double currentAngle = shooterSubsystem.getCurrentAngle();
-    shooterSubsystem.setTargetDegrees(currentAngle + targetRate.getAsDouble());
+    shooterSubsystem.setPivotVoltage(voltage.getAsDouble() * Shooter.PIVOT_MAX_VOLTAGE);
   }
   
   @Override

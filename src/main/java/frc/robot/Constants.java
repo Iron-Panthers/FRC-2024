@@ -425,6 +425,7 @@ public final class Constants {
 
     // voltage
     public static final double GRAVITY_VOLTAGE = 0.34;
+    public static final double PIVOT_MAX_VOLTAGE = 3.5;
 
     // mode settings
     public static final ShooterSubsystem.ShooterPowers INTAKE_SHOOTER_MODE_CONFIGS =
