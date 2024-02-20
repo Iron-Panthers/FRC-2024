@@ -187,8 +187,6 @@ public class RobotContainer {
     .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
     anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-    anthony.povUp().onTrue(new WristAngleCommand(shooterSubsystem, 22));
-
 
     jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem)));
     jacob.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem)
@@ -196,8 +194,8 @@ public class RobotContainer {
     .andThen(new ShooterRampUpCommand(shooterSubsystem)));
     jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     anthony
