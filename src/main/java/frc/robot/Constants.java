@@ -19,6 +19,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -60,6 +61,9 @@ public final class Constants {
 
     /** turn this off! only use on practice eboard testing. */
     public static final boolean DISABLE_SWERVE_INIT = false;
+
+    /** keep this on for pigeon, disable if absolutely necessary */
+    public static final boolean FLIP_GYROSCOPE = true;
 
     /** def turn this off unless you are using it, generates in excess of 100k rows for a match. */
     public static final boolean WRITE_APRILTAG_DATA = false;
@@ -206,6 +210,13 @@ public final class Constants {
                 ? -0.3671875 // comp bot offset
                 : -0.379150390625; // practice bot offset
       }
+    }
+
+    public static final class Setpoints {
+      public static final Translation2d SPEAKER = new Translation2d(0, 104.64);
+
+      public static final int SOURCE_DEGREES = 39;
+      public static final int SPEAKER_DEGREES = 11;
     }
   }
 

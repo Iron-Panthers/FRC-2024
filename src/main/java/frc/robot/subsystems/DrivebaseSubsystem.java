@@ -225,7 +225,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         },
         this);
 
-    rotController = new PIDController(0.03, 0.001, 0.003);
+    rotController = new PIDController(0.0115, 0, 0);
     rotController.setSetpoint(0);
     rotController.setTolerance(ANGULAR_ERROR); // degrees error
 
@@ -339,7 +339,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * @return The current angle of the robot, relative to boot position.
    */
   public Rotation2d getConsistentGyroscopeRotation() {
-    return Rotation2d.fromDegrees(Util.normalizeDegrees(-swerveDrivetrain.getPigeon2().getAngle()));
+    if (Config.FLIP_GYROSCOPE) {
+      return Rotation2d.fromDegrees(
+          Util.normalizeDegrees(-swerveDrivetrain.getPigeon2().getAngle()));
+    } else {
+      return Rotation2d.fromDegrees(
+          Util.normalizeDegrees(swerveDrivetrain.getPigeon2().getAngle()));
+    }
   }
 
   /**
@@ -354,11 +360,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public Rotation2d getDriverGyroscopeRotation() {
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes
     // the angle increase.
-    double angle = Util.normalizeDegrees(-swerveDrivetrain.getPigeon2().getAngle());
+    Rotation2d angle = getConsistentGyroscopeRotation();
 
     // We need to subtract the offset here so that the robot drives forward based on auto
     // positioning or manual reset
-    return Rotation2d.fromDegrees(angle).minus(driverGyroOffset);
+    return angle.minus(driverGyroOffset);
   }
 
   public double getRotVelocity() {
@@ -428,7 +434,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   // called in drive to angle mode
   private void driveAnglePeriodic() {
     double angularDifference =
-        -Util.relativeAngularDifference(getDriverGyroscopeRotation(), targetAngle);
+        -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
 
     double rotationValue = rotController.calculate(angularDifference);
 
