@@ -141,7 +141,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetDegrees - getCurrentAngle();
   }
 
-  private double getCurrentAngle() {
+  public double getCurrentAngle() {
     return rotationsToDegrees(wristMotor.getPosition().getValue());
   }
 

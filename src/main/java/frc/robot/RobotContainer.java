@@ -32,6 +32,7 @@ import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
@@ -121,8 +122,8 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    //shooterSubsystem.setDefaultCommand(
-    //    new WristAngleCommand(shooterSubsystem, () -> (-jacob.getLeftY() + 1) * 45));
+    shooterSubsystem.setDefaultCommand(
+      new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
