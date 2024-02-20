@@ -127,6 +127,7 @@ public class ShooterSubsystem extends SubsystemBase {
     WristTab.addNumber("Error PID", pidController::getPositionError);
     WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
     WristTab.addDouble("pivot voltage", () -> wristPower);
+    WristTab.addDouble("Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
     WristTab.add(pidController);
   }
 
@@ -162,7 +163,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isReadyToShoot() {
-    return inRange && isAtTargetDegrees() && isBeamBreakSensorTriggered() && isShooterUpToSpeed();
+    return isAtTargetDegrees() && isBeamBreakSensorTriggered() && isShooterUpToSpeed();
   }
 
   // returns wheather or not a change was needed

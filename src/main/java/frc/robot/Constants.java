@@ -417,12 +417,12 @@ public final class Constants {
 
     // mode settings
     public static final ShooterSubsystem.ShooterPowers INTAKE_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(0, .2);
+        new ShooterSubsystem.ShooterPowers(0, .15);
     public static final ShooterSubsystem.ShooterPowers IDLE_SHOOTER_MODE_CONFIGS =
         new ShooterSubsystem.ShooterPowers(0, 0);
     public static final ShooterSubsystem.ShooterPowers RAMPING_SHOOTER_MODE_CONFIGS =
         new ShooterSubsystem.ShooterPowers(.5, 0);
     public static final ShooterSubsystem.ShooterPowers SHOOTING_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(.5, .5);
+        new ShooterSubsystem.ShooterPowers(.8, .5);
   }
 }

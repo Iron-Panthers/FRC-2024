@@ -188,21 +188,17 @@ public class RobotContainer {
 
 
     jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem)));
-    jacob.y().onTrue(new WristAngleCommand(shooterSubsystem, 17));
-    jacob.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem));
-    jacob.leftBumper().onTrue(new ShooterRampUpCommand(shooterSubsystem));
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem)
+    .andThen(new WristAngleCommand(shooterSubsystem, 30))
+    .andThen(new ShooterRampUpCommand(shooterSubsystem)));
     jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
+    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
     // anthony.a().whileTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
     // jacob.rightBumper().onTrue(new WristAngleCommand(shooterSubsystem, 0));
     // jacob.rightTrigger().onTrue(new WristAngleCommand(shooterSubsystem, 20));
 
-    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem));
-    jacob.y().onTrue(new ShooterRampUpCommand(shooterSubsystem));
-    jacob.leftTrigger().onTrue(new ShootCommand(shooterSubsystem));
-    jacob.a().onTrue(new WristAngleCommand(shooterSubsystem, 17d));
     anthony
         .b()
         .onTrue(
