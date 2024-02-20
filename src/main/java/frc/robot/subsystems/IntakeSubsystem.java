@@ -20,8 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX rightIntakeMotor; // LEADER
   private final TalonFX leftIntakeMotor; // FOLLOWER
   private final TalonFX serializerMotor;
-  private final DigitalInput acceleratorSensor;
-  private boolean isUsingIntakeSensor = true;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
@@ -63,32 +61,16 @@ public class IntakeSubsystem extends SubsystemBase {
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
 
-    // BEAM BRAKE SENSORS
-    acceleratorSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> rightIntakeMotor.getMotorVoltage().getValueAsDouble());
       tab.addDouble(
           "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
-      tab.addBoolean("Note Sensor Output", this::getSensorOutput);
       tab.addString("Current Mode", () -> intakeMode.toString());
     }
   }
 
-  // GETTERS
-  public boolean getSensorOutput() {
-    return !acceleratorSensor.get();
-  }
-
-  public boolean isUsingIntakeSensor() {
-    return isUsingIntakeSensor;
-  }
-
   // SETTERS
-
-  public void setUsingIntakeSensor(boolean isUsingIntakeSensor) {
-    this.isUsingIntakeSensor = isUsingIntakeSensor;
-  }
 
   public void setIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Modes;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeCommand extends Command {
@@ -26,9 +27,9 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // shooterSubsystem.prepareForIntake();
+    shooterSubsystem.prepareForIntake();
     intakeSubsystem.setIntakeMode(Modes.INTAKE);
-    shooterSubsystem.setAcceleratorMotorSpeed(.5);
+    shooterSubsystem.setShooterMode(ShooterMode.Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,18 +39,14 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (intakeSubsystem.isUsingIntakeSensor()) {
       intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
-      shooterSubsystem.setAcceleratorMotorSpeed(0);
-    }
+      shooterSubsystem.setShooterMode(ShooterMode.Idle);
+      shooterSubsystem.stopAccelerator();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (intakeSubsystem.isUsingIntakeSensor()) {
-      return intakeSubsystem.getSensorOutput();
-    }
-    return true;
+    return shooterSubsystem.isBeamBreakSensorTriggered();
   }
 }
