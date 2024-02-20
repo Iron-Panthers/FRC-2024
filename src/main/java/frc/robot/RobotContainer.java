@@ -198,13 +198,13 @@ public class RobotContainer {
         .x()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
 
     anthony
         .b()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
 
     new Trigger(
             () ->
