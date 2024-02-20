@@ -202,7 +202,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // wrist motor power
     pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
 
-    wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -5, 5);
+    wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
     wristMotor.setVoltage(wristPower);
 

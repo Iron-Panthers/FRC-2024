@@ -186,15 +186,14 @@ public class RobotContainer {
     .back()
     .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
-    anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
 
     jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem)));
-    jacob.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem)
-    .andThen(new WristAngleCommand(shooterSubsystem, 30))
-    .andThen(new ShooterRampUpCommand(shooterSubsystem)));
-    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
     
+    anthony.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem)
+    .andThen(new WristAngleCommand(shooterSubsystem, 30))
+    .andThen(new ShooterRampUpCommand(shooterSubsystem)));
+    anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
 
@@ -220,13 +219,13 @@ public class RobotContainer {
         .x()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
 
     anthony
         .b()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
 
     new Trigger(
             () ->
