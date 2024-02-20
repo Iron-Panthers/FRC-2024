@@ -1,36 +1,16 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.718158338971545,
+      "y": 6.698251892079006
+    },
+    "rotation": 60.316859820876644
+  },
   "command": {
     "type": "sequential",
     "data": {
-      "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCommand"
-                }
-              }
-            ]
-          }
-        }
-      ]
+      "commands": []
     }
   },
   "folder": null,
