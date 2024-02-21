@@ -190,7 +190,7 @@ public class RobotContainer {
             new StopShooterCommand(shooterSubsystem)
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
     // UNSTUCK
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
     anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
