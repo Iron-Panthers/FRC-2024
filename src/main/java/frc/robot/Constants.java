@@ -395,7 +395,7 @@ public final class Constants {
   public static final class Shooter {
     // ports
     public static final class Ports {
-      public static final int WRIST_MOTOR_PORT = 18;
+      public static final int PIVOT_MOTOR_PORT = 18;
       public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
       public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
       public static final int ACCELERATOR_MOTOR_PORT = 17;
@@ -405,7 +405,7 @@ public final class Constants {
     }
     // measurements
     public static final class Measurements {
-      public static final double WRIST_GEAR_RATIO =
+      public static final double PIVOT_GEAR_RATIO =
           (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
       public static final double X_DISTANCE = 4; // meters
       public static final double SPEAKER_HEIGHT = 2; // meters
@@ -420,23 +420,24 @@ public final class Constants {
       public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
       // public static final double ANGLE_OFFSET = 5.319; // degrees
       public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-      public static final double WRIST_CANCODER_OFFSET = 0.308105;
+      public static final double PIVOT_CANCODER_OFFSET = 0.308105;
     }
 
     // voltage
     public static final double GRAVITY_VOLTAGE = 0.34;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
 
-    // mode settings
-    public static final ShooterSubsystem.ShooterPowers INTAKE_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(0, .15);
-    public static final ShooterSubsystem.ShooterPowers IDLE_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(0, 0);
-    public static final ShooterSubsystem.ShooterPowers RAMPING_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(.5, 0);
-    public static final ShooterSubsystem.ShooterPowers SHOOTING_SHOOTER_MODE_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(.8, .5);
-    public static final ShooterSubsystem.ShooterPowers SHOOTER_TARGET_LOCK_CONFIGS =
-        new ShooterSubsystem.ShooterPowers(0, 0);
+    public static final class Modes {
+      public static final ShooterSubsystem.ShooterPowers INTAKE =
+          new ShooterSubsystem.ShooterPowers(0, .15);
+      public static final ShooterSubsystem.ShooterPowers IDLE =
+          new ShooterSubsystem.ShooterPowers(0, 0);
+      public static final ShooterSubsystem.ShooterPowers RAMPING =
+          new ShooterSubsystem.ShooterPowers(.5, 0);
+      public static final ShooterSubsystem.ShooterPowers SHOOTING =
+          new ShooterSubsystem.ShooterPowers(.8, .5);
+      public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
+          new ShooterSubsystem.ShooterPowers(0, 0);
+    }
   }
 }

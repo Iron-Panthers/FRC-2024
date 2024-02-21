@@ -50,11 +50,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
 
   public enum ShooterMode {
-    Intake(Shooter.INTAKE_SHOOTER_MODE_CONFIGS),
-    Idle(Shooter.IDLE_SHOOTER_MODE_CONFIGS),
-    Ramping(Shooter.RAMPING_SHOOTER_MODE_CONFIGS),
-    Shooting(Shooter.SHOOTING_SHOOTER_MODE_CONFIGS),
-    TargetLock(Shooter.SHOOTER_TARGET_LOCK_CONFIGS);
+    Intake(Shooter.Modes.INTAKE),
+    Idle(Shooter.Modes.IDLE),
+    Ramping(Shooter.Modes.RAMPING),
+    Shooting(Shooter.Modes.SHOOTING),
+    TargetLock(Shooter.Modes.TARGET_LOCK);
 
     public final ShooterPowers modeSettings;
 
@@ -72,7 +72,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {
     // PORTS
-    wristMotor = new TalonFX(Shooter.Ports.WRIST_MOTOR_PORT);
+    wristMotor = new TalonFX(Shooter.Ports.PIVOT_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
     // rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
@@ -87,14 +87,14 @@ public class ShooterSubsystem extends SubsystemBase {
     wristCANcoderConfig.MagnetSensor.SensorDirection =
         SensorDirectionValue
             .Clockwise_Positive; // counter clockwise is default, false is counter clockwise
-    wristCANcoderConfig.MagnetSensor.MagnetOffset = Shooter.Measurements.WRIST_CANCODER_OFFSET;
+    wristCANcoderConfig.MagnetSensor.MagnetOffset = Shooter.Measurements.PIVOT_CANCODER_OFFSET;
     wristCANcoder.getConfigurator().apply(wristCANcoderConfig);
 
     TalonFXConfiguration wristMotorConfig = new TalonFXConfiguration();
     wristMotorConfig.Feedback.FeedbackRemoteSensorID = wristCANcoder.getDeviceID();
     wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     wristMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
-    wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.WRIST_GEAR_RATIO;
+    wristMotorConfig.Feedback.RotorToSensorRatio = Shooter.Measurements.PIVOT_GEAR_RATIO;
     wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitThreshold(0.25);
     wristMotorConfig.SoftwareLimitSwitch.withReverseSoftLimitThreshold(0);
     wristMotorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true);
