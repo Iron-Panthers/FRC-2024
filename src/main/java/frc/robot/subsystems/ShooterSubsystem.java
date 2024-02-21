@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Shooter;
+import frc.robot.Constants.Shooter.Setpoints;
+
 import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -212,7 +214,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // SETTERS
   public void setTargetDegrees(double degrees) {
-    this.targetDegrees = degrees;
+    this.targetDegrees = MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
   }
 
   public void setShooterMode(ShooterMode newMode) {
@@ -231,11 +233,31 @@ public class ShooterSubsystem extends SubsystemBase {
     return (rotations * 360);
   }
 
+  private boolean withinAngleRange(double angle) {
+    return angle < Shooter.Setpoints.MAXIMUM_ANGLE
+      && angle > Shooter.Setpoints.MINIMUM_ANGLE;
+  }
+
+  private boolean currentOrTargetAngleUnsafe() {
+    return !withinAngleRange(getCurrentAngle())
+      || !withinAngleRange(targetDegrees);
+  }
+
+  private double computePivotGoal() {
+    if(currentOrTargetAngleUnsafe()) {
+      if(getCurrentAngle() < 45) {
+        return Setpoints.MINIMUM_SAFE_THRESHOLD;
+      }
+      return Setpoints.MAXIMUM_SAFE_THRESHOLD;
+    }
+    return targetDegrees;
+  }
+
   @Override
   public void periodic() {
     // wrist motor power
 
-    pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
+    pidOutput = pidController.calculate(getCurrentAngle(), computePivotGoal());
 
     wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
