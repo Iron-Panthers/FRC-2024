@@ -31,21 +31,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.PivotManualCommand;
-import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
-import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
-import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -145,7 +144,7 @@ public class RobotContainer {
             anthony.leftBumper()));
 
     shooterSubsystem.setDefaultCommand(
-      new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
+        new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -211,16 +210,31 @@ public class RobotContainer {
     .back()
     .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
-
-    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem)));
+    // STOP INTAKE-SHOOTER
+    jacob
+        .x()
+        .onTrue(
+            new StopShooterCommand(shooterSubsystem)
+                .alongWith(new StopIntakeCommand(intakeSubsystem)));
+    // UNSTUCK
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
-    
-    anthony.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem)
-    .andThen(new WristAngleCommand(shooterSubsystem, 30))
-    .andThen(new ShooterRampUpCommand(shooterSubsystem)));
-    anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
+
+    // INTAKE
+    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+
+    // SHOOT
+    anthony
+        .rightTrigger()
+        .onTrue(
+            new ShooterRampUpCommand(shooterSubsystem)
+                .andThen(new ShootCommand(shooterSubsystem))
+                .andThen(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem)));
+    // SHOOT OVERRIDE
+    jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
+
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
 
     // anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
 
