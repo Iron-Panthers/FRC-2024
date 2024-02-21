@@ -204,7 +204,6 @@ public class ShooterSubsystem extends SubsystemBase {
         distanceToSpeaker
             - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
 
-    System.out.println(velocityToSpeaker);
     double v = Shooter.NOTE_SPEED + velocityToSpeaker;
 
     double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));

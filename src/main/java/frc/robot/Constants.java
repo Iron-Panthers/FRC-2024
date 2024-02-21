@@ -484,7 +484,7 @@ public final class Constants {
     public static final double GRAVITY = 9.80665; // meters per second
     public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
 
-    public static final double GRAVITY_VOLTAGE = 0.34;
+    public static final double GRAVITY_VOLTAGE = 0.9;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 }
