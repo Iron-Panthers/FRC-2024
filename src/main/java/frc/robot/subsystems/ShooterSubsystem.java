@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import frc.util.Util;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX wristMotor;
@@ -151,7 +152,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getCurrentAngle() {
-    return rotationsToDegrees(wristMotor.getPosition().getValue());
+    return Util.normalizeDegrees(rotationsToDegrees(wristMotor.getPosition().getValue()));
   }
 
   private double getTargetDegrees() {

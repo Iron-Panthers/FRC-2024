@@ -6,12 +6,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": null
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -28,12 +22,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "return"
           }
         }
       ]

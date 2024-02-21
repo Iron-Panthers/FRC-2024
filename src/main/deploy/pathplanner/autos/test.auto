@@ -5,7 +5,7 @@
       "x": 0.74,
       "y": 6.73
     },
-    "rotation": 60.19
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "rotate"
+            "pathName": "test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
           }
         }
       ]

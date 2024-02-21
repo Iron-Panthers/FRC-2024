@@ -127,7 +127,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "AngleAtSpeaker", new WristAngleCommand(shooterSubsystem, 60));
     NamedCommands.registerCommand(
-        "AngleAt1", new WristAngleCommand(shooterSubsystem, 25));
+        "AngleAt1", new WristAngleCommand(shooterSubsystem, 42.8));
     NamedCommands.registerCommand(
         "AngleAt2", new WristAngleCommand(shooterSubsystem, 20));
 
@@ -248,11 +248,20 @@ public class RobotContainer {
             new RotateAngleDriveCommand(
                 drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
 
+    // anthony
+    //     .b()
+    //     .onTrue(
+    //         new RotateAngleDriveCommand(
+    //             drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+
     anthony
         .b()
         .onTrue(
-            new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+            new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(0.74, 6.73), new Rotation2d(-64.97))),
+                drivebaseSubsystem));
 
     new Trigger(
             () ->
