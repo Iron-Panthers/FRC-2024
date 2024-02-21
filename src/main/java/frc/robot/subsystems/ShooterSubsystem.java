@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -26,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX wristMotor;
@@ -143,6 +141,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   // GETTERS
+
+  private boolean isRedAlliance() {
+    Optional<Alliance> color = DriverStation.getAlliance();
+    return color.isPresent() && color.get() == Alliance.Red;
+  }
+
   private double getFeedForward() {
     return Math.cos(Math.toRadians(getCurrentAngle())) * Shooter.GRAVITY_VOLTAGE;
   }
@@ -186,7 +190,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return true;
   }
 
-  public void stopAccelerator(){
+  public void stopAccelerator() {
     acceleratorMotor.set(0);
   }
 
@@ -198,9 +202,8 @@ public class ShooterSubsystem extends SubsystemBase {
     double speakerX;
     double speakerY;
     mathedTargetDegrees = getCurrentAngle();
-    Optional<Alliance> color = DriverStation.getAlliance();
 
-    if (color.isPresent() && color.get() == Alliance.Red) {
+    if (isRedAlliance()) {
       speakerX = Shooter.Measurements.RED_SPEAKER_POSE.getX();
       speakerY = Shooter.Measurements.RED_SPEAKER_POSE.getY();
     } else {
@@ -209,32 +212,30 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
 
-      double d =
-          distanceToSpeaker
-              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH;
-      double h =
-          Shooter.Measurements.SPEAKER_HEIGHT
-              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT;
+    double d = distanceToSpeaker - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH;
+    double h =
+        Shooter.Measurements.SPEAKER_HEIGHT - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT;
 
-      // difference between distance to speaker now and after 1 second to find v to speaker
-      double velocityToSpeaker =
-          distanceToSpeaker
-              - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
+    // difference between distance to speaker now and after 1 second to find v to speaker
+    double velocityToSpeaker =
+        distanceToSpeaker
+            - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
 
-      System.out.println(velocityToSpeaker);
-      double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
+    System.out.println(velocityToSpeaker);
+    double v = Shooter.Measurements.NOTE_SPEED + velocityToSpeaker;
 
-      double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
+    double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
 
-      if (interiorMath > 0) {
-        mathedTargetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-        targetDegrees = mathedTargetDegrees;
-        inRange = true;
-      } else {
-        inRange = false;
-      }
+    if (interiorMath > 0) {
+      mathedTargetDegrees =
+          180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
+      targetDegrees = mathedTargetDegrees;
+      inRange = true;
+    } else {
+      inRange = false;
+    }
   }
-  
+
   // SETTERS
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = degrees;
