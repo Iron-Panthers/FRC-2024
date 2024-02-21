@@ -39,6 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double pidOutput;
   private boolean inRange;
   private double mathedTargetDegrees;
+  private double computedAngleGoal = 0;
 
   private Pose2d pose;
 
@@ -118,6 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
       WristTab.addDouble("Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
       WristTab.addDouble("Math angle", () -> mathedTargetDegrees);
       WristTab.add(pidController);
+      WristTab.addDouble("computed angle", () -> computedAngleGoal);
     }
   }
 
@@ -260,8 +262,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // wrist motor power
+    computedAngleGoal = computePivotGoal();
 
-    pidOutput = pidController.calculate(getCurrentAngle(), computePivotGoal());
+    pidOutput = pidController.calculate(getCurrentAngle(), computedAngleGoal);
 
     wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

@@ -443,9 +443,9 @@ public final class Constants {
       public static final SoftwareLimitSwitchConfigs PIVOT_SOFTWARE_LIMIT =
           new SoftwareLimitSwitchConfigs()
               .withForwardSoftLimitThreshold(0.25)
-              .withReverseSoftLimitThreshold(0)
-              .withForwardSoftLimitEnable(true)
-              .withReverseSoftLimitEnable(true);
+              .withReverseSoftLimitThreshold(-0.015)
+              .withForwardSoftLimitEnable(false)
+              .withReverseSoftLimitEnable(false);
       public static final VoltageConfigs PIVOT_VOLTAGE =
           new VoltageConfigs().withPeakForwardVoltage(1.5).withPeakReverseVoltage(-1.5);
       public static final TalonFXConfiguration PIVOT_CONFIG =
@@ -466,7 +466,7 @@ public final class Constants {
       public static final int SPEAKER = 30;
     }
 
-    public static final double PIVOT_CANCODER_OFFSET = 0.308105;
+    public static final double PIVOT_CANCODER_OFFSET = 0.3081051;
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 
