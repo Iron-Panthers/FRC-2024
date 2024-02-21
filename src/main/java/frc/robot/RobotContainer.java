@@ -24,6 +24,7 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.AdvancedIntakeCommand;
+import frc.robot.Constants.Shooter;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
