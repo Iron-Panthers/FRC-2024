@@ -53,7 +53,8 @@ public class ShooterSubsystem extends SubsystemBase {
     Intake(Shooter.INTAKE_SHOOTER_MODE_CONFIGS),
     Idle(Shooter.IDLE_SHOOTER_MODE_CONFIGS),
     Ramping(Shooter.RAMPING_SHOOTER_MODE_CONFIGS),
-    Shooting(Shooter.SHOOTING_SHOOTER_MODE_CONFIGS);
+    Shooting(Shooter.SHOOTING_SHOOTER_MODE_CONFIGS),
+    TargetLock(Shooter.SHOOTER_TARGET_LOCK_CONFIGS);
 
     public final ShooterPowers modeSettings;
 
@@ -208,23 +209,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
 
-    for (int i = 0; i < 5; i++) {
-      // Finds the height and distance of NOTE from the speaker based on angle (which changes where
-      // the note is)
-
       double d =
           distanceToSpeaker
-              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH
-              + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.cos(mathedTargetDegrees)
-              - Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
-                  * Math.sin(mathedTargetDegrees); // FIXME maybe change to cos()?
-
+              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_LENGTH;
       double h =
           Shooter.Measurements.SPEAKER_HEIGHT
-              - (Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT
-                  + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(mathedTargetDegrees)
-                  + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
-                      * Math.cos(mathedTargetDegrees)); // FIXME maybe change to sin() for height?
+              - Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT;
 
       // difference between distance to speaker now and after 1 second to find v to speaker
       double velocityToSpeaker =
@@ -238,11 +228,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
       if (interiorMath > 0) {
         mathedTargetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
+        targetDegrees = mathedTargetDegrees;
         inRange = true;
       } else {
         inRange = false;
       }
-    }
   }
   
   // SETTERS
@@ -269,6 +259,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // wrist motor power
+
     pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
 
     wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);

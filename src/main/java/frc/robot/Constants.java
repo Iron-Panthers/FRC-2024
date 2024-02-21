@@ -436,5 +436,7 @@ public final class Constants {
         new ShooterSubsystem.ShooterPowers(.5, 0);
     public static final ShooterSubsystem.ShooterPowers SHOOTING_SHOOTER_MODE_CONFIGS =
         new ShooterSubsystem.ShooterPowers(.8, .5);
+    public static final ShooterSubsystem.ShooterPowers SHOOTER_TARGET_LOCK_CONFIGS =
+        new ShooterSubsystem.ShooterPowers(0, 0);
   }
 }

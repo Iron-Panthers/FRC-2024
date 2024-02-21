@@ -36,6 +36,7 @@ import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
@@ -197,6 +198,9 @@ public class RobotContainer {
     anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+
+    
 
     anthony
         .y()
