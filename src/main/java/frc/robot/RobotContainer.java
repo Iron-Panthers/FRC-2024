@@ -5,9 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -26,20 +23,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.Constants.Shooter;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.RotateAngleDriveCommand;
-import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotManualCommand;
-import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.RotateAngleDriveCommand;
+import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
-import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
@@ -124,7 +121,7 @@ public class RobotContainer {
             anthony.leftBumper()));
 
     shooterSubsystem.setDefaultCommand(
-      new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
+        new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
@@ -188,19 +185,26 @@ public class RobotContainer {
     .back()
     .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
-
-    jacob.x().onTrue(new StopShooterCommand(shooterSubsystem).alongWith(new StopIntakeCommand(intakeSubsystem)));
+    jacob
+        .x()
+        .onTrue(
+            new StopShooterCommand(shooterSubsystem)
+                .alongWith(new StopIntakeCommand(intakeSubsystem)));
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
-    
-    anthony.leftTrigger().onTrue(new IntakeCommand(intakeSubsystem, shooterSubsystem)
-    .andThen(new WristAngleCommand(shooterSubsystem, 30))
-    .andThen(new ShooterRampUpCommand(shooterSubsystem)));
-    anthony.rightTrigger().onTrue(new ShooterRampUpCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
+
+    anthony
+        .leftTrigger()
+        .onTrue(
+            new IntakeCommand(intakeSubsystem, shooterSubsystem)
+                .andThen(new WristAngleCommand(shooterSubsystem, Shooter.Setpoints.SPEAKER))
+                .andThen(new ShooterRampUpCommand(shooterSubsystem)));
+    anthony
+        .rightTrigger()
+        .onTrue(
+            new ShooterRampUpCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
-
-    
 
     anthony
         .y()
