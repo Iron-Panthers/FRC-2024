@@ -36,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);
+    intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
 
     intakeMotor.clearStickyFaults();
