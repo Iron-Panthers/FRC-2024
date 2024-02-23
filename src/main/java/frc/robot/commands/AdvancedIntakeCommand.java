@@ -12,10 +12,10 @@ public class AdvancedIntakeCommand extends SequentialCommandGroup {
     addCommands(
         new IntakeCommand(intakeSubsystem, shooterSubsystem),
         new ParallelCommandGroup(
-            new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem)
+            new UnstuckIntakeCommand(intakeSubsystem)
                 .withTimeout(3)
                 .andThen(new StopIntakeCommand(intakeSubsystem)),
-            new WristAngleCommand(shooterSubsystem, 30),
-            new ShooterRampUpCommand(shooterSubsystem)));
+            new WristAngleCommand(shooterSubsystem, 30)
+                .andThen(new ShooterRampUpCommand(shooterSubsystem))));
   }
 }
