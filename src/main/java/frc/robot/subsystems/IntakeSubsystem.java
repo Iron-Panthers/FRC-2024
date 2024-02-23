@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -16,8 +15,7 @@ import frc.robot.Constants.Intake.IntakeSubsystemModeSettings;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX rightIntakeMotor; // LEADER
-  private final TalonFX leftIntakeMotor; // FOLLOWER
+  private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
@@ -38,30 +36,22 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    rightIntakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);
-    leftIntakeMotor = new TalonFX(Intake.Ports.LEFT_INTAKE_MOTOR_PORT);
+    intakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
 
-    rightIntakeMotor.clearStickyFaults();
-    leftIntakeMotor.clearStickyFaults();
+    intakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
 
-    rightIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
-    leftIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    intakeMotor.setNeutralMode(NeutralModeValue.Brake);
     serializerMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightIntakeMotor.setInverted(true);
+    intakeMotor.setInverted(true);
     serializerMotor.setInverted(true);
-
-    leftIntakeMotor.setControl(
-        new Follower(
-            rightIntakeMotor.getDeviceID(),
-            false)); // set left intake motor to follow the right intake motor
 
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("intake voltage", () -> rightIntakeMotor.getMotorVoltage().getValueAsDouble());
+      tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
       tab.addDouble(
           "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
       tab.addString("Current Mode", () -> intakeMode.toString());
@@ -75,7 +65,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
-    rightIntakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
+    intakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
     serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }
 
