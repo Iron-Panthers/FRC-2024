@@ -6,12 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -23,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,6 +31,7 @@ import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -45,6 +42,7 @@ import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
+import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -119,16 +117,12 @@ public class RobotContainer {
     // reigster commands for pathplanner
     NamedCommands.registerCommand(
         "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem));
-    NamedCommands.registerCommand(
-        "ShootCommand", new ShootCommand(shooterSubsystem));
+    NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
-    NamedCommands.registerCommand(
-        "AngleAtSpeaker", new WristAngleCommand(shooterSubsystem, 60));
-    NamedCommands.registerCommand(
-        "AngleAt1", new WristAngleCommand(shooterSubsystem, 42.8));
-    NamedCommands.registerCommand(
-        "AngleAt2", new WristAngleCommand(shooterSubsystem, 20));
+    NamedCommands.registerCommand("AngleAtSpeaker", new WristAngleCommand(shooterSubsystem, 60));
+    NamedCommands.registerCommand("AngleAt1", new WristAngleCommand(shooterSubsystem, 42.8));
+    NamedCommands.registerCommand("AngleAt2", new WristAngleCommand(shooterSubsystem, 20));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
