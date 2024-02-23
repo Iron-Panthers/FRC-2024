@@ -268,6 +268,7 @@ public class ShooterSubsystem extends SubsystemBase {
     wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
     wristMotor.setVoltage(wristPower);
+    
 
     // shooter motor power
     rollerMotorTop.set(mode.modeSettings.roller());
