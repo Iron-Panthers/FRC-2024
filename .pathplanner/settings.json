@@ -3,9 +3,12 @@
   "robotLength": 0.99,
   "holonomicMode": true,
   "pathFolders": [
-    "2ShotClose"
+    "2ShotClose",
+    "Ethan's Paths"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Ethan's Autos"
+  ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
