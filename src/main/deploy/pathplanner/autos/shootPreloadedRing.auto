@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7718481866382481,
+      "y": 6.709614747817872
+    },
+    "rotation": 59.88626684901752
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterRampUpCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Ethan's Autos",
+  "choreoAuto": false
+}
