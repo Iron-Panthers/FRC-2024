@@ -1,0 +1,63 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.8839472315536115,
+        "y": 4.248670953482258
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.2748661086294606,
+        "y": 3.343385132885554
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.519280802972635,
+        "y": 0.8126997707629492
+      },
+      "prevControl": {
+        "x": 3.846700826233733,
+        "y": 0.678964365447528
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Ring Grab",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Mid2",
+  "previewStartingState": {
+    "rotation": -47.862405226111775,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
