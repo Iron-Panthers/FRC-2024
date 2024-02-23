@@ -23,19 +23,19 @@ import frc.robot.Constants.Shooter.Setpoints;
 import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX wristMotor;
+  private final TalonFX pivotMotor;
   private final TalonFX rollerMotorBottom;
   private final TalonFX rollerMotorTop;
   private final TalonFX acceleratorMotor;
 
-  private final CANcoder wristCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
+  private final CANcoder pivotCANcoder;
   private DigitalInput noteSensor;
 
   private PIDController pidController;
 
   private ShooterMode mode;
   private double targetDegrees;
-  private double wristPower;
+  private double pivotPower;
   private double pidOutput;
   private boolean inRange;
   private double mathedTargetDegrees;
@@ -43,7 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private Pose2d pose;
 
-  private final ShuffleboardTab WristTab = Shuffleboard.getTab("Wrist");
+  private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
   public enum ShooterMode {
     Intake(Shooter.Modes.INTAKE),
@@ -68,7 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {
     // PORTS
-    wristMotor = new TalonFX(Shooter.Ports.PIVOT_MOTOR_PORT);
+    pivotMotor = new TalonFX(Shooter.Ports.PIVOT_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
     // rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
@@ -77,12 +77,13 @@ public class ShooterSubsystem extends SubsystemBase {
     // acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
 
-    wristCANcoder.getConfigurator().apply(Shooter.MotorConfigs.CANCODER_CONFIG);
+    pivotCANcoder = new CANcoder(Shooter.Ports.CANCODER_PORT);
+    pivotCANcoder.getConfigurator().apply(Shooter.MotorConfigs.CANCODER_CONFIG);
 
-    wristMotor.getConfigurator().apply(Shooter.MotorConfigs.PIVOT_CONFIG);
-    wristMotor.setInverted(true);
-    wristMotor.clearStickyFaults();
-    wristMotor.set(0);
+    pivotMotor.getConfigurator().apply(Shooter.MotorConfigs.PIVOT_CONFIG);
+    pivotMotor.setInverted(true);
+    pivotMotor.clearStickyFaults();
+    pivotMotor.set(0);
 
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
@@ -90,7 +91,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 
-    wristMotor.setNeutralMode(NeutralModeValue.Brake);
+    pivotMotor.setNeutralMode(NeutralModeValue.Brake);
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
@@ -99,27 +100,27 @@ public class ShooterSubsystem extends SubsystemBase {
 
     targetDegrees = 0;
     pidOutput = 0;
-    wristPower = 0;
+    pivotPower = 0;
 
     mode = ShooterMode.Idle;
 
     // SHUFFLEBOARD
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      WristTab.addNumber(
-          "Current Motor Position", () -> wristMotor.getPosition().getValueAsDouble());
-      WristTab.addNumber("Current motor angle", this::getCurrentAngle);
-      WristTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
-      WristTab.addNumber("pid Power", () -> pidOutput);
-      WristTab.addBoolean("Is at target", this::isAtTargetDegrees);
-      WristTab.addNumber("Error", this::getCurrentError);
-      WristTab.addNumber("target", this::getTargetDegrees);
-      WristTab.addNumber("Error PID", pidController::getPositionError);
-      WristTab.addNumber("Applied Voltage", () -> wristMotor.getMotorVoltage().getValueAsDouble());
-      WristTab.addDouble("pivot voltage", () -> wristPower);
-      WristTab.addDouble("Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
-      WristTab.addDouble("Math angle", () -> mathedTargetDegrees);
-      WristTab.add(pidController);
-      WristTab.addDouble("computed angle", () -> computedAngleGoal);
+      pivotTab.addNumber(
+          "Current Motor Position", () -> pivotMotor.getPosition().getValueAsDouble());
+      pivotTab.addNumber("Current motor angle", this::getCurrentAngle);
+      pivotTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
+      pivotTab.addNumber("pid Power", () -> pidOutput);
+      pivotTab.addBoolean("Is at target", this::isAtTargetDegrees);
+      pivotTab.addNumber("Error", this::getCurrentError);
+      pivotTab.addNumber("target", this::getTargetDegrees);
+      pivotTab.addNumber("Error PID", pidController::getPositionError);
+      pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
+      pivotTab.addDouble("pivot voltage", () -> pivotPower);
+      pivotTab.addDouble("Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
+      pivotTab.addDouble("Math angle", () -> mathedTargetDegrees);
+      pivotTab.add(pidController);
+      pivotTab.addDouble("computed angle", () -> computedAngleGoal);
     }
   }
 
@@ -139,7 +140,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getCurrentAngle() {
-    return rotationsToDegrees(wristMotor.getPosition().getValue());
+    return rotationsToDegrees(pivotMotor.getPosition().getValue());
   }
 
   private double getTargetDegrees() {
@@ -177,7 +178,7 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.set(0);
   }
 
-  public void calculateWristTargetDegrees(Pose2d pose, double xV, double yV) {
+  public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
     double g = Shooter.GRAVITY;
     double x = pose.getX();
@@ -229,7 +230,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPivotVoltage(double voltage) {
-    wristMotor.setVoltage(MathUtil.clamp(voltage + getFeedForward(), -4, 4));
+    pivotMotor.setVoltage(MathUtil.clamp(voltage + getFeedForward(), -4, 4));
   }
 
   private static double degreesToRotations(double angle) {
@@ -260,14 +261,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // wrist motor power
+    // pivot motor power
     computedAngleGoal = computePivotGoal();
 
     pidOutput = pidController.calculate(getCurrentAngle(), computedAngleGoal);
 
-    wristPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
+    pivotPower = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
-    wristMotor.setVoltage(wristPower);
+    pivotMotor.setVoltage(pivotPower);
 
     // shooter motor power
     rollerMotorTop.set(mode.modeSettings.roller());

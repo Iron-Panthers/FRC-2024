@@ -29,7 +29,7 @@ public class ShooterTargetLockCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.calculateWristTargetDegrees(
+    shooterSubsystem.calculatePivotTargetDegrees(
         drivebaseSubsystem.getPose(),
         drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,
         drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
