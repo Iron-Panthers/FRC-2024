@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -18,20 +17,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
+import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.PivotAngleCommand;
+import frc.robot.commands.PivotManualCommand;
+import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
-import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
+import frc.robot.commands.StopIntakeCommand;
+import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -65,6 +77,8 @@ public class RobotContainer {
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
 
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
   private final SharedReference<NodeSelection> currentNodeSelection =
       new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
 
@@ -76,11 +90,13 @@ public class RobotContainer {
   private final CommandXboxController anthony = new CommandXboxController(0);
 
   /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
+  private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
 
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
+
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -161,39 +177,75 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
+    /*anthony
+    .back()
+    .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
+
+    // STOP INTAKE-SHOOTER
+    jacob
+        .x()
+        .onTrue(
+            new StopShooterCommand(shooterSubsystem)
+                .alongWith(new StopIntakeCommand(intakeSubsystem)));
+    // UNSTUCK
+    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
+
+    // INTAKE
+    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+
+    // SHOOT
     anthony
-        .back()
-        .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
+        .rightTrigger()
+        .onTrue(
+            new ShooterRampUpCommand(shooterSubsystem)
+                .andThen(new ShootCommand(shooterSubsystem))
+                .andThen(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem)));
+    // SHOOT OVERRIDE
+    jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
 
-    anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
-
-    anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-
+    anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
 
-    DoubleSupplier rotation =
-        exponential(
-            () ->
-                ControllerUtil.deadband(
-                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-            2);
+    anthony.povUp().onTrue(new PivotAngleCommand(shooterSubsystem, 30));
+    anthony.povLeft().onTrue(new PivotAngleCommand(shooterSubsystem, 60));
+    anthony.povRight().onTrue(new PivotAngleCommand(shooterSubsystem, 75));
+    anthony.povDown().onTrue(new PivotAngleCommand(shooterSubsystem, 10));
 
-    DoubleSupplier rotationVelocity =
-        () ->
-            rotation.getAsDouble()
-                * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                *
-                /** percent of fraction power */
-                (anthony.getHID().getAButton() ? .3 : .8);
+    DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
-    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-        .whileTrue(
-            new RotateVelocityDriveCommand(
+    new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
+        .onTrue(new PivotManualCommand(shooterSubsystem, pivotManualRate));
+
+    anthony
+        .y()
+        .onTrue(
+            new RotateAngleDriveCommand(
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                rotationVelocity,
-                anthony.rightBumper()));
+                Setpoints.SOURCE_DEGREES));
+
+    anthony
+        .a()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                Setpoints.SPEAKER_DEGREES));
+
+    anthony
+        .x()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
+
+    anthony
+        .b()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
 
     new Trigger(
             () ->
@@ -207,62 +259,13 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
-
-    // FIXME reference if you want to use scoremap
-    /*var scoreCommandMap = new HashMap<NodeSelectorUtility.ScoreTypeIdentifier, Command>();
-
-    for (var scoreType : Constants.SCORE_STEP_MAP.keySet())
-      scoreCommandMap.put(
-          scoreType,
-          new ScoreCommand(
-              intakeSubsystem,
-              elevatorSubsystem,
-              Constants.SCORE_STEP_MAP.get(scoreType),
-              //   jacob.b()));
-              anthony.povRight()));
-
-    anthony
-        .povRight()
-        // jacob
-        //     .b()
-        .onTrue(
-            new HashMapCommand<>(
-                scoreCommandMap, () -> currentNodeSelection.get().getScoreTypeIdentifier()));
-
-    jacob.povRight().onTrue(new InstantCommand(() -> currentNodeSelection.apply(n -> n.shift(1))));
-    jacob.povLeft().onTrue(new InstantCommand(() -> currentNodeSelection.apply(n -> n.shift(-1))));
-
-    // control the lights
-    currentNodeSelection.subscribe(
-        nodeSelection ->
-            currentNodeSelection.subscribeOnce(
-                rgbSubsystem.showMessage(
-                        nodeSelection.nodeStack().type() == NodeSelectorUtility.NodeType.CUBE
-                            ? Constants.Lights.Colors.PURPLE
-                            : Constants.Lights.Colors.YELLOW,
-                        RGBSubsystem.PatternTypes.PULSE,
-                        RGBSubsystem.MessagePriority.F_NODE_SELECTION_COLOR)
-                    ::expire));
-
-    // show the current node selection
-    driverView
-        .addString("Node Selection", () -> currentNodeSelection.get().toString())
-        .withPosition(0, 1)
-        .withSize(2, 1);
-    */
   }
 
   /**
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    if (Config.RUN_PATHPLANNER_SERVER) {
-      // PathPlannerServer.startServer(5811); FIXME big pathplanner changes, fix this?
-    }
-
-    driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
-
-    final Map<String, Command> eventMap = Map.of();
+    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(3, 1).withPosition(0, 0);
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 
@@ -282,11 +285,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    double delay = autoDelay.getDouble(0);
+    return delay == 0
+        ? autoSelector.getSelected()
+        : new WaitCommand(delay).andThen(autoSelector.getSelected());
   }
 
   /**
