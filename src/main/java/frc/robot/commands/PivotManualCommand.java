@@ -9,18 +9,18 @@ public class PivotManualCommand extends Command {
 
   ShooterSubsystem shooterSubsystem;
 
-  DoubleSupplier voltage;
+  DoubleSupplier joystickRate;
 
-  public PivotManualCommand(ShooterSubsystem shooterSubsystem, DoubleSupplier voltage) {
+  public PivotManualCommand(ShooterSubsystem shooterSubsystem, DoubleSupplier joystickRate) {
     this.shooterSubsystem = shooterSubsystem;
-    this.voltage = voltage;
+    this.joystickRate = joystickRate;
 
     addRequirements(shooterSubsystem);
   }
 
   @Override
   public void execute() {
-    shooterSubsystem.setPivotVoltage(voltage.getAsDouble() * Shooter.PIVOT_MAX_VOLTAGE);
+    shooterSubsystem.setPivotVoltage(joystickRate.getAsDouble() * Shooter.PIVOT_MAX_VOLTAGE);
   }
 
   @Override

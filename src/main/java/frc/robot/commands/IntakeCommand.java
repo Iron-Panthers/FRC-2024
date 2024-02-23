@@ -29,7 +29,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     shooterSubsystem.prepareForIntake();
     intakeSubsystem.setIntakeMode(Modes.INTAKE);
-    shooterSubsystem.setShooterMode(ShooterMode.Intake);
+    shooterSubsystem.setShooterMode(ShooterMode.INTAKE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +40,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
-    shooterSubsystem.setShooterMode(ShooterMode.Idle);
+    shooterSubsystem.setShooterMode(ShooterMode.IDLE);
     shooterSubsystem.stopAccelerator();
   }
 

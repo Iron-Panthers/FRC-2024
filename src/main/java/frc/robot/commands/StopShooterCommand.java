@@ -21,7 +21,7 @@ public class StopShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.Idle);
+    shooterSubsystem.setShooterMode(ShooterMode.IDLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
