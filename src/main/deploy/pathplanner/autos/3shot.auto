@@ -20,12 +20,6 @@
                 "data": {
                   "name": "ShooterRampUpCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleAt1"
-                }
               }
             ]
           }
@@ -51,20 +45,8 @@
                 "data": {
                   "name": "IntakeCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterRampUpCommand"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AngleAt1"
           }
         },
         {
@@ -88,20 +70,8 @@
                 "data": {
                   "name": "IntakeCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterRampUpCommand"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AngleAt1"
           }
         },
         {
