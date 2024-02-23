@@ -77,7 +77,9 @@ public class RobotContainer {
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(rgbSubsystem);
+
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(rgbSubsystem);
 
   private final SharedReference<NodeSelection> currentNodeSelection =
       new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
@@ -95,8 +97,6 @@ public class RobotContainer {
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
-
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -191,9 +191,7 @@ public class RobotContainer {
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
-    anthony
-        .leftTrigger()
-        .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, rgbSubsystem));
+    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
 
     // SHOOT
     anthony
@@ -201,8 +199,7 @@ public class RobotContainer {
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
-                .andThen(
-                    new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, rgbSubsystem)));
+                .andThen(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem)));
     // SHOOT OVERRIDE
     jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
 

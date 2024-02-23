@@ -18,8 +18,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
+import frc.robot.Constants.Lights.Colors;
 import frc.robot.Constants.Shooter;
 import frc.robot.Constants.Shooter.Setpoints;
+import frc.robot.subsystems.RGBSubsystem.MessagePriority;
+import frc.robot.subsystems.RGBSubsystem.PatternTypes;
 import frc.util.Util;
 import java.util.Optional;
 
@@ -45,6 +48,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private double computedAngleGoal;
 
   private Pose2d pose;
+
+  private RGBSubsystem rgbSubsystem;
+
+  private PatternTypes lightPattern;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
@@ -74,7 +81,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public ShooterSubsystem() {
+  public ShooterSubsystem(RGBSubsystem rgbSubsystem) {
+    this.rgbSubsystem = rgbSubsystem;
     // PORTS
     pivotMotor = new TalonFX(Shooter.Ports.PIVOT_MOTOR_PORT);
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
@@ -113,6 +121,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterMode = ShooterMode.IDLE;
     pivotMode = PivotMode.DRIVETOPOS;
+    lightPattern = PatternTypes.PULSE;
 
     // SHUFFLEBOARD
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
@@ -285,9 +294,28 @@ public class ShooterSubsystem extends SubsystemBase {
     pivotMotor.setVoltage(MathUtil.clamp(pivotVoltage + getFeedForward(), -4, 4));
   }
 
+  private void rgbPeriodic() {
+    if (!isAtTargetDegrees()) {
+      rgbSubsystem.showMessage(Colors.ORANGE, lightPattern, MessagePriority.C_INTAKE_STATE_CHANGE);
+    } else {
+      switch (shooterMode) {
+        case RAMPING:
+          rgbSubsystem.showMessage(
+              Colors.YELLOW, lightPattern, MessagePriority.C_INTAKE_STATE_CHANGE);
+          break;
+        case SHOOTING:
+          rgbSubsystem.showMessage(
+              Colors.MINT, lightPattern, MessagePriority.C_INTAKE_STATE_CHANGE);
+          break;
+        default:
+      }
+    }
+  }
+
   @Override
   public void periodic() {
     applyPivotMode();
+    rgbPeriodic();
 
     // shooter motor power
     rollerMotorTop.set(shooterMode.shooterPowers.roller());

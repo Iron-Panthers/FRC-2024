@@ -12,11 +12,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Intake;
 import frc.robot.Constants.Intake.IntakeSubsystemModeSettings;
+import frc.robot.Constants.Lights.Colors;
+import frc.robot.subsystems.RGBSubsystem.MessagePriority;
+import frc.robot.subsystems.RGBSubsystem.PatternTypes;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
+
+  private RGBSubsystem rgbSubsystem;
+  private PatternTypes lightPattern;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
@@ -35,7 +41,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem() {
+  public IntakeSubsystem(RGBSubsystem rgbSubsystem) {
+    this.rgbSubsystem = rgbSubsystem;
+
     intakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
 
@@ -49,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
+    lightPattern = PatternTypes.PULSE;
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
@@ -69,8 +78,21 @@ public class IntakeSubsystem extends SubsystemBase {
     serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }
 
+  private void RGBPeriodic() {
+    switch (intakeMode) {
+      case INTAKE:
+        rgbSubsystem.showMessage(Colors.RED, lightPattern, MessagePriority.C_INTAKE_STATE_CHANGE);
+      case HOLD:
+        rgbSubsystem.showMessage(Colors.BLUE, lightPattern, MessagePriority.C_INTAKE_STATE_CHANGE);
+      default:
+        rgbSubsystem.showMessage(
+            Colors.TEAL, PatternTypes.BOUNCE, MessagePriority.C_INTAKE_STATE_CHANGE);
+    }
+  }
+
   @Override
   public void periodic() {
     setMotorSpeeds();
+    RGBPeriodic();
   }
 }
