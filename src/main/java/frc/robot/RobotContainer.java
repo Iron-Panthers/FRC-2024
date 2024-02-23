@@ -191,7 +191,9 @@ public class RobotContainer {
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
-    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+    anthony
+        .leftTrigger()
+        .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, rgbSubsystem));
 
     // SHOOT
     anthony
@@ -199,7 +201,8 @@ public class RobotContainer {
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
-                .andThen(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem)));
+                .andThen(
+                    new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, rgbSubsystem)));
     // SHOOT OVERRIDE
     jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
 

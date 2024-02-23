@@ -5,23 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
+import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.RGBSubsystem.MessagePriority;
+import frc.robot.subsystems.RGBSubsystem.PatternTypes;
+import frc.robot.subsystems.RGBSubsystem.RGBColor;
 
-public class ShooterRampUpCommand extends Command {
-  private ShooterSubsystem shooterSubsystem;
+public class RGBCommand extends Command {
 
-  /** Creates a new ShooterRampUpCommand. */
-  public ShooterRampUpCommand(ShooterSubsystem shooterSubsystem) {
+  private RGBSubsystem rgbSubsystem;
+  private RGBColor color;
+  private PatternTypes pattern;
+  private MessagePriority priority;
+
+  /** Creates a new RGBCommand. */
+  public RGBCommand(
+      RGBSubsystem rgbSubsystem, RGBColor color, PatternTypes pattern, MessagePriority priority) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooterSubsystem = shooterSubsystem;
-    addRequirements(shooterSubsystem);
+    this.rgbSubsystem = rgbSubsystem;
+    this.color = color;
+    this.priority = priority;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.RAMPING);
+    rgbSubsystem.showMessage(color, pattern, priority);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,7 +43,6 @@ public class ShooterRampUpCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return true;
-    return shooterSubsystem.isReadyToShoot();
+    return true;
   }
 }
