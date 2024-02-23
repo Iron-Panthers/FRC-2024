@@ -1,10 +1,22 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.74,
+      "y": 6.73
+    },
+    "rotation": 60.19
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AngleAt1"
+          }
+        },
         {
           "type": "parallel",
           "data": {
@@ -20,12 +32,6 @@
                 "data": {
                   "name": "ShooterRampUpCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AngleAt1"
-                }
               }
             ]
           }
@@ -34,6 +40,12 @@
           "type": "named",
           "data": {
             "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterRampUpCommand"
           }
         },
         {
@@ -51,12 +63,6 @@
                 "data": {
                   "name": "IntakeCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterRampUpCommand"
-                }
               }
             ]
           }
@@ -64,7 +70,19 @@
         {
           "type": "named",
           "data": {
+            "name": "AngleAt1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterRampUpCommand"
           }
         },
         {
@@ -82,14 +100,14 @@
                 "data": {
                   "name": "IntakeCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterRampUpCommand"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AngleAt1"
           }
         },
         {

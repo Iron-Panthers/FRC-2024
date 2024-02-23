@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
@@ -33,6 +37,7 @@ import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
@@ -116,7 +121,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
     NamedCommands.registerCommand("AngleAtSpeaker", new WristAngleCommand(shooterSubsystem, 60));
-    NamedCommands.registerCommand("AngleAt1", new WristAngleCommand(shooterSubsystem, 25));
+    NamedCommands.registerCommand("AngleAt1", new WristAngleCommand(shooterSubsystem, 42.8));
     NamedCommands.registerCommand("AngleAt2", new WristAngleCommand(shooterSubsystem, 20));
 
     // Set up the default command for the drivetrain.
@@ -199,25 +204,31 @@ public class RobotContainer {
     .back()
     .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
 
+    // STOP INTAKE-SHOOTER
     jacob
         .x()
         .onTrue(
             new StopShooterCommand(shooterSubsystem)
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem, shooterSubsystem));
+    // UNSTUCK
+    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
-    anthony
-        .leftTrigger()
-        .onTrue(
-            new IntakeCommand(intakeSubsystem, shooterSubsystem)
-                .andThen(new WristAngleCommand(shooterSubsystem, 30))
-                .andThen(new ShooterRampUpCommand(shooterSubsystem)));
+    // INTAKE
+    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+
+    // SHOOT
     anthony
         .rightTrigger()
         .onTrue(
-            new ShooterRampUpCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
+            new ShooterRampUpCommand(shooterSubsystem)
+                .andThen(new ShootCommand(shooterSubsystem))
+                .andThen(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem)));
+    // SHOOT OVERRIDE
+    jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
+
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
 
     // anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
 
@@ -245,11 +256,20 @@ public class RobotContainer {
             new RotateAngleDriveCommand(
                 drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
 
+    // anthony
+    //     .b()
+    //     .onTrue(
+    //         new RotateAngleDriveCommand(
+    //             drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+
     anthony
         .b()
         .onTrue(
-            new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+            new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(0.74, 6.73), new Rotation2d(-64.97))),
+                drivebaseSubsystem));
 
     new Trigger(
             () ->

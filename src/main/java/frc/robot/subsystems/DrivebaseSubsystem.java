@@ -258,7 +258,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
       addSwerveShuffleboard("module 2", 3, swerveModules, tab);
     }
 
-    Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
+    Shuffleboard.getTab("DriverView").add(field).withPosition(0, 0).withSize(8, 5);
   }
 
   /** Return the current pose estimation of the robot */
