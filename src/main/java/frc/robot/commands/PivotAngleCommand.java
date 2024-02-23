@@ -7,13 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class WristAngleCommand extends Command {
+public class PivotAngleCommand extends Command {
   /** Creates a new StoreShooterCommand. */
   ShooterSubsystem shooterSubsystem;
 
   double angle;
 
-  public WristAngleCommand(ShooterSubsystem shooterSubsystem, double angle) {
+  public PivotAngleCommand(ShooterSubsystem shooterSubsystem, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angle = angle;
     this.shooterSubsystem = shooterSubsystem;

@@ -37,7 +37,7 @@ import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
-import frc.robot.commands.WristAngleCommand;
+import frc.robot.commands.PivotAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -210,10 +210,10 @@ public class RobotContainer {
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
 
-    anthony.povUp().onTrue(new WristAngleCommand(shooterSubsystem, 30));
-    anthony.povLeft().onTrue(new WristAngleCommand(shooterSubsystem, 60));
-    anthony.povRight().onTrue(new WristAngleCommand(shooterSubsystem, 75));
-    anthony.povDown().onTrue(new WristAngleCommand(shooterSubsystem, 10));
+    anthony.povUp().onTrue(new PivotAngleCommand(shooterSubsystem, 30));
+    anthony.povLeft().onTrue(new PivotAngleCommand(shooterSubsystem, 60));
+    anthony.povRight().onTrue(new PivotAngleCommand(shooterSubsystem, 75));
+    anthony.povDown().onTrue(new PivotAngleCommand(shooterSubsystem, 10));
 
     anthony
         .y()
