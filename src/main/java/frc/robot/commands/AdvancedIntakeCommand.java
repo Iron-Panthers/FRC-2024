@@ -15,7 +15,7 @@ public class AdvancedIntakeCommand extends SequentialCommandGroup {
             new UnstuckIntakeCommand(intakeSubsystem)
                 .withTimeout(3)
                 .andThen(new StopIntakeCommand(intakeSubsystem)),
-            new WristAngleCommand(shooterSubsystem, 30)
+            new PivotAngleCommand(shooterSubsystem, 30)
                 .andThen(new ShooterRampUpCommand(shooterSubsystem))));
   }
 }
