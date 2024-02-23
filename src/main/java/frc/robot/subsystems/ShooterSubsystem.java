@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -26,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX wristMotor;
@@ -185,7 +183,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return true;
   }
 
-  public void stopAccelerator(){
+  public void stopAccelerator() {
     acceleratorMotor.set(0);
   }
 
@@ -222,7 +220,8 @@ public class ShooterSubsystem extends SubsystemBase {
       double h =
           Shooter.Measurements.SPEAKER_HEIGHT
               - (Shooter.Measurements.PIVOT_TO_ROBO_CENTER_HEIGHT
-                  + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER * Math.sin(mathedTargetDegrees)
+                  + Shooter.Measurements.NOTE_OFFSET_FROM_PIVOT_CENTER
+                      * Math.sin(mathedTargetDegrees)
                   + Shooter.Measurements.PIVOT_TO_ENTRANCE_OFFSET
                       * Math.cos(mathedTargetDegrees)); // FIXME maybe change to sin() for height?
 
@@ -237,14 +236,15 @@ public class ShooterSubsystem extends SubsystemBase {
       double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
 
       if (interiorMath > 0) {
-        mathedTargetDegrees = 180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
+        mathedTargetDegrees =
+            180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
         inRange = true;
       } else {
         inRange = false;
       }
     }
   }
-  
+
   // SETTERS
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = degrees;
