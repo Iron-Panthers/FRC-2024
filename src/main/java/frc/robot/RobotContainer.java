@@ -27,6 +27,7 @@ import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -37,7 +38,6 @@ import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
-import frc.robot.commands.PivotAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -118,9 +118,6 @@ public class RobotContainer {
             translationYSupplier,
             // anthony.rightBumper(),
             anthony.leftBumper()));
-
-    shooterSubsystem.setDefaultCommand(
-        new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
@@ -214,6 +211,11 @@ public class RobotContainer {
     anthony.povLeft().onTrue(new PivotAngleCommand(shooterSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(shooterSubsystem, 75));
     anthony.povDown().onTrue(new PivotAngleCommand(shooterSubsystem, 10));
+
+    DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
+
+    new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
+        .onTrue(new PivotManualCommand(shooterSubsystem, pivotManualRate));
 
     anthony
         .y()

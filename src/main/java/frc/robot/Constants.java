@@ -466,6 +466,8 @@ public final class Constants {
       public static final int SPEAKER = 30;
     }
 
+    public static final int EPSILON = 2;
+
     public static final double PIVOT_CANCODER_OFFSET = 0.3081051;
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
@@ -484,7 +486,7 @@ public final class Constants {
     public static final double GRAVITY = 9.80665; // meters per second
     public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
 
-    public static final double GRAVITY_VOLTAGE = 0.9;
+    public static final double GRAVITY_VOLTAGE = 0.38;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 }

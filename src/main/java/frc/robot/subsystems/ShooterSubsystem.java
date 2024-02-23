@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Shooter;
 import frc.robot.Constants.Shooter.Setpoints;
+import frc.util.Util;
 import java.util.Optional;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -129,6 +130,7 @@ public class ShooterSubsystem extends SubsystemBase {
       pivotTab.addDouble("Math angle", () -> mathedTargetDegrees);
       pivotTab.add(pidController);
       pivotTab.addDouble("computed angle", () -> computedAngleGoal);
+      pivotTab.addString("pivot mode", () -> pivotMode.toString());
     }
   }
 
@@ -149,7 +151,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtTargetDegrees() {
-    return Math.abs(getCurrentError()) < 1;
+    return Util.epsilonEquals(getCurrentAngle(), targetDegrees, Shooter.EPSILON);
   }
 
   public boolean isShooterUpToSpeed() {
@@ -223,6 +225,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setTargetDegrees(double degrees) {
     this.targetDegrees =
         MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
+    this.pivotMode = PivotMode.DRIVETOPOS;
   }
 
   public void setShooterMode(ShooterMode newMode) {
@@ -231,6 +234,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setPivotVoltage(double voltage) {
     this.pivotVoltage = voltage;
+    this.pivotMode = PivotMode.VOLTAGE;
   }
 
   private static double degreesToRotations(double angle) {
@@ -260,7 +264,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void applyPivotMode() {
-    if(pivotMode == PivotMode.DRIVETOPOS) {
+    if (pivotMode == PivotMode.DRIVETOPOS) {
       driveToPosPeriodic();
     } else {
       voltagePeriodic();
