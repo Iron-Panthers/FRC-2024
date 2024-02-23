@@ -119,8 +119,8 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    //shooterSubsystem.setDefaultCommand(
-        //new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
+    shooterSubsystem.setDefaultCommand(
+        new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
