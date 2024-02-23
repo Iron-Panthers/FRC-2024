@@ -1,0 +1,152 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7410296236521675,
+      "y": 6.734845947568001
+    },
+    "rotation": 59.50162917744281
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "centerTop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "centerTopReturn"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleAt1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "centerTop2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "centerTopReturn2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleAt1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootCommand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Ethan's Autos",
+  "choreoAuto": false
+}

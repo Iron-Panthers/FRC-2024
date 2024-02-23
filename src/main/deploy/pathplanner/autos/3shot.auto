@@ -1,20 +1,39 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.74,
-      "y": 6.73
-    },
-    "rotation": 60.19
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleAt1"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "AngleAt1"
+            "name": "ShootCommand"
           }
         },
         {
@@ -24,7 +43,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "shoot"
+                  "pathName": "intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCommand"
                 }
               },
               {
@@ -43,43 +68,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ShooterRampUpCommand"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCommand"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShooterRampUpCommand"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -93,6 +81,12 @@
                 "type": "named",
                 "data": {
                   "name": "IntakeCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
                 }
               }
             ]
