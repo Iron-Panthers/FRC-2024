@@ -64,6 +64,8 @@ public class PivotSubsystem extends SubsystemBase {
 
     pidController = new PIDController(0.2, 0, 0);
 
+    pivotMode = PivotMode.ANGLE;
+
     targetDegrees = 0;
     pidVoltageOutput = 0;
     manualVolatgeOutput = 0;
@@ -125,12 +127,8 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   // returns wheather or not a change was needed
-  public boolean prepareForIntake() {
-    if (getCurrentAngle() > 20) {
+  public void prepareForIntake() {
       setTargetDegrees(20);
-      return false;
-    }
-    return true;
   }
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
