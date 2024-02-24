@@ -12,19 +12,13 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "AngleAtSpeaker"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 2.0
+                  "name": "AngleAtSpeaker"
                 }
               },
               {

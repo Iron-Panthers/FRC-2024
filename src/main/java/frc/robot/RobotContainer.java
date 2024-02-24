@@ -119,13 +119,13 @@ public class RobotContainer {
 
     // reigster commands for pathplanner
     NamedCommands.registerCommand(
-        "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem));
+        "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
-    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(shooterSubsystem, 60));
-    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(shooterSubsystem, 42.8));
-    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(shooterSubsystem, 20));
+    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 60));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 42.8));
+    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 20));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -140,8 +140,8 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    shooterSubsystem.setDefaultCommand(
-        new PivotManualCommand(shooterSubsystem, () -> -jacob.getLeftY()));
+    pivotSubsystem.setDefaultCommand(
+        new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
     // Configure the button bindings
     configureButtonBindings();
