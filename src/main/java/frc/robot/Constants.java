@@ -183,8 +183,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.07470703125 // comp bot offset
-                : 0.4140625; // practice bot offset
+                ? 0.425537109375 // comp bot offset
+                : 0.067626953125; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -195,7 +195,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.308349609375 // comp bot offset
-                : -0.4052734375; // practice bot offset
+                : 0.308349609375; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -206,7 +206,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? -0.223388671875 // comp bot offset
-                : 0.226318359375; // practice bot offset
+                : -0.23291015625; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -217,7 +217,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? -0.3671875 // comp bot offset
-                : 0.294677734375; // practice bot offset
+                : -0.379150390625; // practice bot offset
       }
     }
 
