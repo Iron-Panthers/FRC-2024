@@ -376,7 +376,7 @@ public final class Constants {
     public static final class Ports {
       public static final int INTAKE_MOTOR_PORT = 15;
       public static final int SERIALIZER_MOTOR_PORT = 16;
-      public static final int INTAKE_SENSOR_PORT = 1;
+      public static final int INTAKE_SENSOR_PORT = 9;
     }
 
     public static final boolean IS_BEAMBREAK = true;
@@ -408,7 +408,7 @@ public final class Constants {
       public static final int ACCELERATOR_MOTOR_PORT = 17;
       public static final int CANCODER_PORT = 28;
       public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
-      public static final int BEAM_BREAK_SENSOR_PORT = 1;
+      public static final int BEAM_BREAK_SENSOR_PORT = 8;
     }
 
     public static final class Modes {

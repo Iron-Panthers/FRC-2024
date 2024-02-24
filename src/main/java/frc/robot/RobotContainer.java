@@ -191,10 +191,10 @@ public class RobotContainer {
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
-    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
 
     // SHOOT
-    anthony
+    jacob
         .rightTrigger()
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
