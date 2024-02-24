@@ -31,7 +31,7 @@ import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -214,10 +214,10 @@ public class RobotContainer {
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
-    anthony.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
 
     // SHOOT
-    anthony
+    jacob
         .rightTrigger()
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
@@ -230,7 +230,15 @@ public class RobotContainer {
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
 
-    // anthonyLayer.on(anthony.leftBumper()).onTrue(new ShootCommand(shooterSubsystem));
+    anthony.povUp().onTrue(new PivotAngleCommand(shooterSubsystem, 30));
+    anthony.povLeft().onTrue(new PivotAngleCommand(shooterSubsystem, 60));
+    anthony.povRight().onTrue(new PivotAngleCommand(shooterSubsystem, 75));
+    anthony.povDown().onTrue(new PivotAngleCommand(shooterSubsystem, 10));
+
+    DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
+
+    new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
+        .onTrue(new PivotManualCommand(shooterSubsystem, pivotManualRate));
 
     anthony
         .y()

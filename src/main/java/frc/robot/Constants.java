@@ -183,8 +183,8 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.418212890625 // comp bot offset
-                : 0.4140625; // practice bot offset
+                ? 0.425537109375 // comp bot offset
+                : 0.067626953125; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -374,10 +374,9 @@ public final class Constants {
 
   public static final class Intake {
     public static final class Ports {
-      public static final int RIGHT_INTAKE_MOTOR_PORT = 14;
-      public static final int LEFT_INTAKE_MOTOR_PORT = 15;
+      public static final int INTAKE_MOTOR_PORT = 15;
       public static final int SERIALIZER_MOTOR_PORT = 16;
-      public static final int INTAKE_SENSOR_PORT = 1;
+      public static final int INTAKE_SENSOR_PORT = 9;
     }
 
     public static final boolean IS_BEAMBREAK = true;
@@ -394,7 +393,7 @@ public final class Constants {
 
     // MODE SETTINGS
     public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(.5d, .5d);
+        new IntakeSubsystemModeSettings(.8d, .5d);
     public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
         new IntakeSubsystemModeSettings(0, 0d);
     public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =
@@ -407,9 +406,9 @@ public final class Constants {
       public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
       public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
       public static final int ACCELERATOR_MOTOR_PORT = 17;
-      public static final int CANCODER_PORT = 28;
-      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
-      public static final int BEAM_BREAK_SENSOR_PORT = 1;
+      public static final int CANCODER_PORT = 22;
+      public static final int INDUCTIVE_PROXIMITY_SENSwOR_PORT = 30;
+      public static final int BEAM_BREAK_SENSOR_PORT = 8;
     }
 
     public static final class Modes {
@@ -418,7 +417,7 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMPING =
-          new ShooterSubsystem.ShooterPowers(.5, 0);
+          new ShooterSubsystem.ShooterPowers(.8, 0);
       public static final ShooterSubsystem.ShooterPowers SHOOTING =
           new ShooterSubsystem.ShooterPowers(.8, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
@@ -443,9 +442,9 @@ public final class Constants {
       public static final SoftwareLimitSwitchConfigs PIVOT_SOFTWARE_LIMIT =
           new SoftwareLimitSwitchConfigs()
               .withForwardSoftLimitThreshold(0.25)
-              .withReverseSoftLimitThreshold(0)
-              .withForwardSoftLimitEnable(true)
-              .withReverseSoftLimitEnable(true);
+              .withReverseSoftLimitThreshold(-0.015)
+              .withForwardSoftLimitEnable(false)
+              .withReverseSoftLimitEnable(false);
       public static final VoltageConfigs PIVOT_VOLTAGE =
           new VoltageConfigs().withPeakForwardVoltage(1.5).withPeakReverseVoltage(-1.5);
       public static final TalonFXConfiguration PIVOT_CONFIG =
@@ -460,13 +459,15 @@ public final class Constants {
       public static final int MINIMUM_ANGLE = -5;
       public static final int MAXIMUM_ANGLE = 90;
 
-      public static final int MINIMUM_SAFE_THRESHOLD = 5;
+      public static final int MINIMUM_SAFE_THRESHOLD = 15;
       public static final int MAXIMUM_SAFE_THRESHOLD = 80;
 
-      public static final int SPEAKER = 30;
+      public static final int SPEAKER_ANGLE = 30;
     }
 
-    public static final double PIVOT_CANCODER_OFFSET = 0.308105;
+    public static final int EPSILON = 2;
+
+    public static final double PIVOT_CANCODER_OFFSET = 0.476806640625 + (0.0390625-0.000732421875);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 
@@ -484,7 +485,7 @@ public final class Constants {
     public static final double GRAVITY = 9.80665; // meters per second
     public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
 
-    public static final double GRAVITY_VOLTAGE = 0.34;
+    public static final double GRAVITY_VOLTAGE = 0.38;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 }

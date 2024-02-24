@@ -21,7 +21,7 @@ public class ShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.Shooting);
+    shooterSubsystem.setShooterMode(ShooterMode.SHOOTING);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,7 +31,7 @@ public class ShootCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setShooterMode(ShooterMode.Idle);
+    shooterSubsystem.setShooterMode(ShooterMode.IDLE);
   }
 
   // Returns true when the command should end.
