@@ -393,7 +393,7 @@ public final class Constants {
 
     // MODE SETTINGS
     public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(.5d, .5d);
+        new IntakeSubsystemModeSettings(.8d, .5d);
     public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
         new IntakeSubsystemModeSettings(0, 0d);
     public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =
@@ -406,8 +406,8 @@ public final class Constants {
       public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
       public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
       public static final int ACCELERATOR_MOTOR_PORT = 17;
-      public static final int CANCODER_PORT = 28;
-      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+      public static final int CANCODER_PORT = 22;
+      public static final int INDUCTIVE_PROXIMITY_SENSwOR_PORT = 30;
       public static final int BEAM_BREAK_SENSOR_PORT = 8;
     }
 
@@ -417,7 +417,7 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMPING =
-          new ShooterSubsystem.ShooterPowers(.5, 0);
+          new ShooterSubsystem.ShooterPowers(.8, 0);
       public static final ShooterSubsystem.ShooterPowers SHOOTING =
           new ShooterSubsystem.ShooterPowers(.8, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
@@ -459,15 +459,15 @@ public final class Constants {
       public static final int MINIMUM_ANGLE = -5;
       public static final int MAXIMUM_ANGLE = 90;
 
-      public static final int MINIMUM_SAFE_THRESHOLD = 5;
+      public static final int MINIMUM_SAFE_THRESHOLD = 15;
       public static final int MAXIMUM_SAFE_THRESHOLD = 80;
 
-      public static final int SPEAKER = 30;
+      public static final int SPEAKER_ANGLE = 30;
     }
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET = 0.3081051;
+    public static final double PIVOT_CANCODER_OFFSET = 0.476806640625 + (0.0390625-0.000732421875);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 
