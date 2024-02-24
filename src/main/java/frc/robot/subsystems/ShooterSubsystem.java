@@ -101,8 +101,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     pivotMotor.setNeutralMode(NeutralModeValue.Brake);
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
-    rollerMotorTop.setNeutralMode(NeutralModeValue.Brake);
-    rollerMotorBottom.setNeutralMode(NeutralModeValue.Brake);
+    rollerMotorTop.setNeutralMode(NeutralModeValue.Coast);
+    rollerMotorBottom.setNeutralMode(NeutralModeValue.Coast);
 
     pidController = new PIDController(0.2, 0, 0);
 
