@@ -31,6 +31,7 @@ import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
@@ -42,7 +43,6 @@ import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
-import frc.robot.commands.WristAngleCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -120,9 +120,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
-    NamedCommands.registerCommand("AngleAtSpeaker", new WristAngleCommand(shooterSubsystem, 60));
-    NamedCommands.registerCommand("AngleAt1", new WristAngleCommand(shooterSubsystem, 42.8));
-    NamedCommands.registerCommand("AngleAt2", new WristAngleCommand(shooterSubsystem, 20));
+    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(shooterSubsystem, 60));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(shooterSubsystem, 42.8));
+    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(shooterSubsystem, 20));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
