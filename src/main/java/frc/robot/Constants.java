@@ -195,7 +195,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? -0.40478515625 // comp bot offset
-                : -0.4052734375; // practice bot offset
+                : 0.308349609375; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -206,7 +206,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.2158203125 // comp bot offset
-                : 0.226318359375; // practice bot offset
+                : -0.23291015625; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -217,7 +217,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.286865234375 // comp bot offset
-                : 0.294677734375; // practice bot offset
+                : -0.379150390625; // practice bot offset
       }
     }
 
@@ -402,12 +402,9 @@ public final class Constants {
 
   public static final class Shooter {
     public static final class Ports {
-      public static final int PIVOT_MOTOR_PORT = 18;
       public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
       public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
       public static final int ACCELERATOR_MOTOR_PORT = 17;
-      public static final int CANCODER_PORT = 22;
-      public static final int INDUCTIVE_PROXIMITY_SENSwOR_PORT = 30;
       public static final int BEAM_BREAK_SENSOR_PORT = 8;
     }
 
@@ -422,6 +419,16 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(.8, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
           new ShooterSubsystem.ShooterPowers(0, 0);
+    }
+
+    public static final double REQUIRED_SHOOT_SPEED = 30;
+  }
+
+  public static final class Pivot {
+    public static final class Ports {
+      public static final int PIVOT_MOTOR_PORT = 18;
+      public static final int CANCODER_PORT = 22;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
     }
 
     public static final class MotorConfigs {

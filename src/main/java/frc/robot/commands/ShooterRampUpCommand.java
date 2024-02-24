@@ -36,6 +36,5 @@ public class ShooterRampUpCommand extends Command {
   @Override
   public boolean isFinished() {
     return shooterSubsystem.isReadyToShoot();
-    // return true;
   }
 }

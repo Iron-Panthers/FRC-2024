@@ -34,11 +34,11 @@ import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
+import frc.robot.commands.PivotTargetLockCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
-import frc.robot.commands.ShooterTargetLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
@@ -47,6 +47,7 @@ import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -104,6 +105,8 @@ public class RobotContainer {
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+  private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
@@ -214,7 +217,9 @@ public class RobotContainer {
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
-    jacob.leftTrigger().onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem));
+    jacob
+        .leftTrigger()
+        .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
     // SHOOT
     jacob
@@ -222,23 +227,24 @@ public class RobotContainer {
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
-                .andThen(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem)));
+                .andThen(
+                    new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
     // SHOOT OVERRIDE
     jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    jacob.y().onTrue(new ShooterTargetLockCommand(shooterSubsystem, drivebaseSubsystem));
+    jacob.y().onTrue(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
 
-    anthony.povUp().onTrue(new PivotAngleCommand(shooterSubsystem, 30));
-    anthony.povLeft().onTrue(new PivotAngleCommand(shooterSubsystem, 60));
-    anthony.povRight().onTrue(new PivotAngleCommand(shooterSubsystem, 75));
-    anthony.povDown().onTrue(new PivotAngleCommand(shooterSubsystem, 10));
+    anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
+    anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
+    anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
+    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
     new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
-        .onTrue(new PivotManualCommand(shooterSubsystem, pivotManualRate));
+        .onTrue(new PivotManualCommand(pivotSubsystem, pivotManualRate));
 
     anthony
         .y()
