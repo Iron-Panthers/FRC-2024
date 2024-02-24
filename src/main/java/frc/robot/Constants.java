@@ -402,12 +402,9 @@ public final class Constants {
 
   public static final class Shooter {
     public static final class Ports {
-      public static final int PIVOT_MOTOR_PORT = 18;
       public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
       public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
       public static final int ACCELERATOR_MOTOR_PORT = 17;
-      public static final int CANCODER_PORT = 22;
-      public static final int INDUCTIVE_PROXIMITY_SENSwOR_PORT = 30;
       public static final int BEAM_BREAK_SENSOR_PORT = 8;
     }
 
@@ -422,6 +419,16 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(.8, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
           new ShooterSubsystem.ShooterPowers(0, 0);
+    }
+
+    public static final double REQUIRED_SHOOT_SPEED = 30;
+  }
+
+  public static final class Pivot {
+    public static final class Ports {
+      public static final int PIVOT_MOTOR_PORT = 18;
+      public static final int CANCODER_PORT = 22;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
     }
 
     public static final class MotorConfigs {
@@ -467,7 +474,8 @@ public final class Constants {
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET = 0.476806640625 + (0.0390625-0.000732421875);
+    public static final double PIVOT_CANCODER_OFFSET =
+        0.476806640625 + (0.0390625 - 0.000732421875);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 

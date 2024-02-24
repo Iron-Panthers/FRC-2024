@@ -5,25 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 
 public class PivotAngleCommand extends Command {
   /** Creates a new StoreShooterCommand. */
-  ShooterSubsystem shooterSubsystem;
+  PivotSubsystem pivotSubsystem;
 
   double angle;
 
-  public PivotAngleCommand(ShooterSubsystem shooterSubsystem, double angle) {
+  public PivotAngleCommand(PivotSubsystem pivotSubsystem, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angle = angle;
-    this.shooterSubsystem = shooterSubsystem;
-    addRequirements(shooterSubsystem);
+    this.pivotSubsystem = pivotSubsystem;
+    addRequirements(pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setTargetDegrees(angle);
+    pivotSubsystem.setTargetDegrees(angle);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,6 +36,6 @@ public class PivotAngleCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooterSubsystem.isAtTargetDegrees();
+    return pivotSubsystem.isAtTargetDegrees();
   }
 }
