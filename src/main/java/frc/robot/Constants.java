@@ -413,7 +413,7 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(0, .15);
+          new ShooterSubsystem.ShooterPowers(0.8, .15);
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMPING =

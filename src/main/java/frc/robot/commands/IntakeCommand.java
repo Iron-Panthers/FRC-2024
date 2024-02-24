@@ -40,7 +40,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
-    shooterSubsystem.setShooterMode(ShooterMode.IDLE);
+    shooterSubsystem.setShooterMode(ShooterMode.RAMPING);
     shooterSubsystem.stopAccelerator();
   }
 
