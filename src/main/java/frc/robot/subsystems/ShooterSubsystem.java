@@ -251,7 +251,8 @@ public class ShooterSubsystem extends SubsystemBase {
   // }
 
   private double clampedTargetDegrees() {
-    return MathUtil.clamp(targetDegrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
+    return MathUtil.clamp(
+        targetDegrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
   }
 
   private void applyPivotMode() {

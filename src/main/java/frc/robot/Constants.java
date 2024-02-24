@@ -194,7 +194,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.404052734375 // comp bot offset
+                ? -0.40478515625 // comp bot offset
                 : -0.4052734375; // practice bot offset
       }
 
@@ -205,7 +205,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.224365234375 // comp bot offset
+                ? 0.2158203125 // comp bot offset
                 : 0.226318359375; // practice bot offset
       }
 
@@ -216,7 +216,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.202880859375 // comp bot offset
+                ? 0.286865234375 // comp bot offset
                 : 0.294677734375; // practice bot offset
       }
     }
@@ -467,7 +467,8 @@ public final class Constants {
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET = 0.476806640625 + (0.0390625-0.000732421875);
+    public static final double PIVOT_CANCODER_OFFSET =
+        0.476806640625 + (0.0390625 - 0.000732421875);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 

@@ -276,7 +276,7 @@ public class RobotContainer {
             new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(0.74, 6.73), new Rotation2d(-64.97))),
+                        new Pose2d(new Translation2d(1.5, 5.6), new Rotation2d(0))),
                 drivebaseSubsystem));
 
     new Trigger(
