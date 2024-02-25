@@ -123,9 +123,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
-    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 60));
-    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 42.8));
-    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 20));
+    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
+    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -282,7 +283,7 @@ public class RobotContainer {
             new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.5, 5.6), new Rotation2d(0))),
+                        new Pose2d(new Translation2d(1.24, 6.44), new Rotation2d(37.66))),
                 drivebaseSubsystem));
 
     new Trigger(

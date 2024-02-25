@@ -68,11 +68,13 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMode = ShooterMode.IDLE;
 
     // SHUFFLEBOARD
-    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       shooterTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
       shooterTab.addDouble(
-          "Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
-    }
+          "Top Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
+      shooterTab.addDouble(
+          "Bottom Roller Velocity", () -> rollerMotorBottom.getVelocity().getValueAsDouble());
+      shooterTab.addDouble("Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
+      shooterTab.addDouble("Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
   }
 
   public boolean isShooterUpToSpeed() {

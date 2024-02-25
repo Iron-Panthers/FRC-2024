@@ -43,6 +43,6 @@ public class PivotTargetLockCommand extends Command {
   @Override
   public boolean isFinished() {
     // return shooterSubsystem.isDone();
-    return false;
+    return true;
   }
 }

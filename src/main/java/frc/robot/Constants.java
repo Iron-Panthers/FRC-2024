@@ -250,11 +250,14 @@ public final class Constants {
                 "backCam",
                 new Transform3d(
                     new Translation3d(
-                        0, // front/back
-                        -0.212725, // left/right
-                        0.6470142 // up/down
+                        0.280543, // front/back
+                        -0.0964428, // left/right
+                        0.5119878 // up/down
                         ),
-                    new Rotation3d(0, Math.toRadians(17), Math.PI))));
+                    new Rotation3d(
+                      0, 
+                      Math.toRadians(125), // angle up/down
+                      0))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
@@ -393,7 +396,7 @@ public final class Constants {
 
     // MODE SETTINGS
     public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(.8d, .5d);
+        new IntakeSubsystemModeSettings(.95d, .5d);
     public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
         new IntakeSubsystemModeSettings(0, 0d);
     public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =
@@ -453,7 +456,7 @@ public final class Constants {
               .withForwardSoftLimitEnable(false)
               .withReverseSoftLimitEnable(false);
       public static final VoltageConfigs PIVOT_VOLTAGE =
-          new VoltageConfigs().withPeakForwardVoltage(1.5).withPeakReverseVoltage(-1.5);
+          new VoltageConfigs().withPeakForwardVoltage(5).withPeakReverseVoltage(-5);
       public static final TalonFXConfiguration PIVOT_CONFIG =
           new TalonFXConfiguration()
               .withFeedback(PIVOT_FEEDBACK)
@@ -491,7 +494,7 @@ public final class Constants {
     public static final double X_DISTANCE = 4; // meters
 
     public static final double GRAVITY = 9.80665; // meters per second
-    public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
+    public static final double NOTE_SPEED = 30; // FIXME placeholder, m/s
 
     public static final double GRAVITY_VOLTAGE = 0.38;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;

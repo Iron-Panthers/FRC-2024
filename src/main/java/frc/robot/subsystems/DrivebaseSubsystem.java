@@ -419,13 +419,13 @@ public class DrivebaseSubsystem extends SubsystemBase {
     this.robotPose =
         swervePoseEstimator.update(getConsistentGyroscopeRotation(), getSwerveModulePositions());
 
-    // VisionMeasurement measurement;
-    // while ((measurement = visionSubsystem.drainVisionMeasurement()) != null) {
-    //   swervePoseEstimator.addVisionMeasurement(
-    //       measurement.estimation().estimatedPose.toPose2d(),
-    //       measurement.estimation().timestampSeconds,
-    //       measurement.confidence());
-    // }
+    VisionMeasurement measurement;
+    while ((measurement = visionSubsystem.drainVisionMeasurement()) != null) {
+      swervePoseEstimator.addVisionMeasurement(
+          measurement.estimation().estimatedPose.toPose2d(),
+          measurement.estimation().timestampSeconds,
+          measurement.confidence());
+    }
   }
 
   private void drivePeriodic() {
