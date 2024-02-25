@@ -240,7 +240,7 @@ public class RobotContainer {
     anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
-    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
+    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 55));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
