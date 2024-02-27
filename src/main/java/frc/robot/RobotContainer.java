@@ -190,10 +190,10 @@ public class RobotContainer {
         .x()
         .onTrue(
             new StopShooterCommand(shooterSubsystem)
-                .alongWith(new StopIntakeCommand(intakeSubsystem)));
+                .alongWith(new StopIntakeCommand(intakeSubsystem))
+                .alongWith(new InstantCommand(() -> {}, climberSubsystem)));
     // UNSTUCK
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
-    jacob.a().onTrue(new ClimberPositionCommand(climberSubsystem, 0));
 
     // INTAKE
     jacob
@@ -201,7 +201,7 @@ public class RobotContainer {
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
     // CLIMBER
-    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 1));
+    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 12));
 
     jacob.y().onTrue(new ClimberPositionCommand(climberSubsystem, 0));
 
