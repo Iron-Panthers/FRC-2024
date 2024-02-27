@@ -121,6 +121,8 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
+    climberSubsystem.setDefaultCommand(new ClimberManualCommand(climberSubsystem, jacob::getRightY));
+
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
@@ -197,9 +199,11 @@ public class RobotContainer {
     jacob
         .leftTrigger()
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
-    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 12));
 
-    jacob.y().onTrue(new ClimberPositionCommand(climberSubsystem, 25));
+    // CLIMBER
+    jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 1));
+
+    jacob.y().onTrue(new ClimberPositionCommand(climberSubsystem, 0));
 
     // SHOOT
     jacob

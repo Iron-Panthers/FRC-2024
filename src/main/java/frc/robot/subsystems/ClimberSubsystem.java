@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -21,7 +22,8 @@ import frc.robot.Constants.Climber.PIDConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-  private TalonFX climberMotor;
+  private TalonFX climberMotorRight;
+  private TalonFX climberMotorLeft;
   private double targetExtension;
   private double currentExtension;
   private double filterOutput;
@@ -40,13 +42,20 @@ public class ClimberSubsystem extends SubsystemBase {
   /** Creates a new Climber. */
   public ClimberSubsystem() {
     //DEFINE MOTORS
-    climberMotor = new TalonFX(Climber.Ports.CLIMBER_MOTOR_PORT);
+    climberMotorRight = new TalonFX(Climber.Ports.CLIMBER_MOTOR_RIGHT_PORT);
+    climberMotorLeft = new TalonFX(Climber.Ports.CLIMBER_MOTOR_LEFT_PORT);
 
     //MOTOR CONFIG
-    climberMotor.clearStickyFaults();
-    climberMotor.setNeutralMode(NeutralModeValue.Brake);
-    climberMotor.setPosition(0);
-    climberMotor.setInverted(false);
+    climberMotorRight.clearStickyFaults();
+
+    climberMotorRight.setControl(new Follower(climberMotorLeft.getDeviceID(), false));
+
+    climberMotorRight.setNeutralMode(NeutralModeValue.Brake);
+    climberMotorRight.setPosition(0);
+    climberMotorRight.setInverted(false);
+    climberMotorLeft.setNeutralMode(NeutralModeValue.Brake);
+    climberMotorLeft.setPosition(0);
+    climberMotorLeft.setInverted(false);
 
     climberController = new PIDController(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
 
@@ -61,12 +70,12 @@ public class ClimberSubsystem extends SubsystemBase {
     climberTab.addDouble("Current Extension", this::getCurrentExtension);
     climberTab.addDouble("Filter Output", () -> filterOutput);
     climberTab.addBoolean("Stator Ecceded?", () -> Math.abs(filterOutput) > Climber.ZERO_STATOR_LIMIT);
-    climberTab.addDouble("Current Motor Power", () -> climberMotor.get());
+    climberTab.addDouble("Current Motor Power", () -> climberMotorRight.get());
     climberTab.addDouble(
-        "Stator Current", () -> climberMotor.getStatorCurrent().getValueAsDouble());
+        "Stator Current", () -> climberMotorRight.getStatorCurrent().getValueAsDouble());
     climberTab.add("PID Controller", climberController);
     climberTab.addString("Current Mode", () -> currentMode.toString());
-    climberTab.addDouble("Motor rotations", () -> climberMotor.getPosition().getValueAsDouble());
+    climberTab.addDouble("Motor rotations", () -> climberMotorRight.getPosition().getValueAsDouble());
   }
 
   //SETTERS
@@ -96,7 +105,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   private double getCurrentRotations() {
-    return climberMotor.getPosition().getValueAsDouble();//negate the value to invert the motor
+    return climberMotorRight.getPosition().getValueAsDouble();//negate the value to invert the motor
   }
 
   public double getCurrentExtensionInches() {
@@ -120,21 +129,21 @@ public class ClimberSubsystem extends SubsystemBase {
 
   //PERIODICS
   private void positionDrivePeriodic() {
-    climberMotor.set(
+    climberMotorRight.set(
       MathUtil.clamp(climberController.calculate(currentExtension, targetExtension), -1, 1));
   }
 
   private void percentDrivePeriodic() {
-    climberMotor.set(percentPower);
+    climberMotorRight.set(percentPower);
   }
 
   private void zeroPeriodic() {
     if (Math.abs(filterOutput) > Climber.ZERO_STATOR_LIMIT) {
       currentMode = Modes.PERCENT_CONTROL;
-      climberMotor.set(0);
-      climberMotor.setPosition(0);
+      climberMotorRight.set(0);
+      climberMotorRight.setPosition(0);
     } else {
-      climberMotor.set(-0.25);
+      climberMotorRight.set(-0.25);
     }
   }
 
@@ -142,7 +151,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     currentExtension = getCurrentExtensionInches();
-    filterOutput = filter.calculate(climberMotor.getStatorCurrent().getValueAsDouble());
+    filterOutput = filter.calculate(climberMotorRight.getStatorCurrent().getValueAsDouble());
 
     switch (currentMode) {
       case PERCENT_CONTROL:

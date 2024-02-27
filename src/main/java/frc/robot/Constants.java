@@ -450,8 +450,8 @@ public final class Constants {
           new SoftwareLimitSwitchConfigs()
               .withForwardSoftLimitThreshold(0.25)
               .withReverseSoftLimitThreshold(-0.015)
-              .withForwardSoftLimitEnable(false)
-              .withReverseSoftLimitEnable(false);
+              .withForwardSoftLimitEnable(true)
+              .withReverseSoftLimitEnable(true);
       public static final VoltageConfigs PIVOT_VOLTAGE =
           new VoltageConfigs().withPeakForwardVoltage(1.5).withPeakReverseVoltage(-1.5);
       public static final TalonFXConfiguration PIVOT_CONFIG =
@@ -499,7 +499,8 @@ public final class Constants {
 
   public static final class Climber {
     public static final class Ports {
-      public static final int CLIMBER_MOTOR_PORT = 22;
+      public static final int CLIMBER_MOTOR_RIGHT_PORT = 22;
+      public static final int CLIMBER_MOTOR_LEFT_PORT = 23;
     }
 
     public static final class PIDConstants {
@@ -508,8 +509,15 @@ public final class Constants {
       public static final double kD = 0;
     }
 
+    public static final SoftwareLimitSwitchConfigs PIVOT_SOFTWARE_LIMIT =
+          new SoftwareLimitSwitchConfigs()
+              .withForwardSoftLimitThreshold(68.57)
+              .withReverseSoftLimitThreshold(0)
+              .withForwardSoftLimitEnable(true)
+              .withReverseSoftLimitEnable(true);
+
     public static final int FALCON_CPR = 2048;
-    public static final double CLIMBER_GEAR_RATIO = 75;
+    public static final double CLIMBER_GEAR_RATIO = 19;
     public static final double ZERO_STATOR_LIMIT = 6; // FIXME These values are placeholders
     public static final double SPROCKET_DIAMETER = 1.5;
   }
