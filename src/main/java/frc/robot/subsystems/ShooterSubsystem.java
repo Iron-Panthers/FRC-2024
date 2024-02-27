@@ -61,6 +61,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 
+    acceleratorMotor.setInverted(true);
+    
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorTop.setNeutralMode(NeutralModeValue.Coast);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Coast);

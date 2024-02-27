@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.1298414632227496,
-      "y": 6.6799548643345075
+      "x": 1.24,
+      "y": 6.44
     },
-    "rotation": 37.66
+    "rotation": 60.290323507891934
   },
   "command": {
     "type": "sequential",
@@ -81,26 +81,32 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pose1intake2"
+                  "pathName": "Pose1intake1far"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeCommand"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AngleAt2"
-                      }
-                    }
-                  ]
+                  "name": "IntakeCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pose1shoot1far"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
                 }
               }
             ]
