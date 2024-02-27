@@ -126,6 +126,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
     NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand("AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
@@ -263,7 +264,8 @@ public class RobotContainer {
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                Setpoints.SPEAKER_DEGREES));
+                Setpoints.SPEAKER_DEGREES)
+          .andThen(new PivotAngleCommand(pivotSubsystem, 35)));
 
     anthony
         .x()

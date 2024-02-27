@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.24,
-      "y": 6.44
+      "x": 1.1161186924143758,
+      "y": 6.675380607398383
     },
-    "rotation": 60.290323507891934
+    "rotation": 54.52466797179002
   },
   "command": {
     "type": "sequential",
@@ -94,6 +94,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "AngleAtFar"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -135,6 +141,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AngleAtFar"
           }
         },
         {
