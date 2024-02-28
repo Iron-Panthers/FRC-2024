@@ -5,6 +5,9 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -216,7 +219,7 @@ public class RobotContainer {
     anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
-    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
+    // anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
@@ -265,6 +268,15 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
+
+    anthony
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.24, 6.44), new Rotation2d(37.66))),
+                drivebaseSubsystem));
   }
 
   /**

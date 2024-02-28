@@ -314,20 +314,20 @@ public class DrivebaseSubsystem extends SubsystemBase {
   /**
    * Resets the odometry estimate to a specific pose.
    *
-   * @param pose The pose to reset to.
+   * @param pose2d The pose to reset to.
    */
-  public void resetOdometryToPose(Pose2d pose) {
+  public void resetOdometryToPose(Pose2d pose2d) {
     // "Zero" the driver gyro heading
     driverGyroOffset =
         getConsistentGyroscopeRotation()
-            .minus(pose.getRotation())
+            .minus(pose2d.getRotation())
             .plus(
                 DriverStation.getAlliance().get() == Alliance.Blue // FIXME
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 
     swervePoseEstimator.resetPosition(
-        getConsistentGyroscopeRotation(), getSwerveModulePositions(), pose);
+        getConsistentGyroscopeRotation(), getSwerveModulePositions(), pose2d);
   }
 
   /**
