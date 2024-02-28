@@ -224,7 +224,7 @@ public class RobotContainer {
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
     // anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
 
-    anthony.y().onTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER));
+    anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 

@@ -58,8 +58,8 @@ public class TargetLockCommand extends Command {
     targetAngle =
         (int) // may want to change to double for more accuracy (likely unnecessary)
             -Math.toDegrees(Math.atan2(
-                (pose.get().getY()),
-                    (pose.get().getX())
+                (targetPoint.getY() - pose.get().getY()),
+                    ( targetPoint.getX() - pose.get().getX())
                   ));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
@@ -76,10 +76,11 @@ public class TargetLockCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Util.epsilonZero(
-            Util.relativeAngularDifference(
-                drivebaseSubsystem.getDriverGyroscopeRotation(), targetAngle),
-            Drive.ANGULAR_ERROR)
-        && Util.epsilonEquals(drivebaseSubsystem.getRotVelocity(), 0, 10);
+    return false;
+    // return Util.epsilonZero(
+    //         Util.relativeAngularDifference(
+    //             drivebaseSubsystem.getDriverGyroscopeRotation(), targetAngle),
+    //         Drive.ANGULAR_ERROR)
+    //     && Util.epsilonEquals(drivebaseSubsystem.getRotVelocity(), 0, 10);
   }
 }
