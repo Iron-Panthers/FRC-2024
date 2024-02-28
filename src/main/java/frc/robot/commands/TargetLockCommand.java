@@ -13,6 +13,7 @@ import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.util.Util;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import java.util.*;
 
 /**
  * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the
@@ -56,9 +57,10 @@ public class TargetLockCommand extends Command {
   public void execute() {
     targetAngle =
         (int) // may want to change to double for more accuracy (likely unnecessary)
-            Math.atan(
-                (targetPoint.getY() - pose.get().getY())
-                    / (targetPoint.getX() - pose.get().getX()));
+            -Math.toDegrees(Math.atan2(
+                (pose.get().getY()),
+                    (pose.get().getX())
+                  ));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 

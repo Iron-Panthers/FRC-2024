@@ -39,6 +39,7 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.TargetLockCommand;
 import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
@@ -179,6 +180,8 @@ public class RobotContainer {
           jacob.getHID().setRumble(RumbleType.kRightRumble, power);
         });
 
+   
+
     anthony
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
@@ -216,24 +219,26 @@ public class RobotContainer {
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     jacob.y().onTrue(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
 
-    anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
+    //anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
     // anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
+
+    anthony.y().onTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
     new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
         .onTrue(new PivotManualCommand(pivotSubsystem, pivotManualRate));
 
-    anthony
-        .y()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                Setpoints.SOURCE_DEGREES));
+    // anthony
+    //     .y()
+    //     .onTrue(
+    //         new RotateAngleDriveCommand(
+    //             drivebaseSubsystem,
+    //             translationXSupplier,
+    //             translationYSupplier,
+    //             Setpoints.SOURCE_DEGREES));
 
     anthony
         .a()
@@ -275,7 +280,7 @@ public class RobotContainer {
             new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.24, 6.44), new Rotation2d(37.66))),
+                        new Pose2d(new Translation2d(1, 1), new Rotation2d(Math.toRadians(180)))),
                 drivebaseSubsystem));
   }
 
