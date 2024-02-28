@@ -5,6 +5,10 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -27,6 +31,7 @@ import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
@@ -71,14 +76,14 @@ public class RobotContainer {
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
 
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
   private final NetworkWatchdogSubsystem networkWatchdogSubsystem =
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
-
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final SharedReference<NodeSelection> currentNodeSelection =
       new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
@@ -89,9 +94,11 @@ public class RobotContainer {
   private final Layer jacobLayer = new Layer(jacob.rightBumper());
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
+  /** controller 0 layer */
+  private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector = AutoBuilder.buildAutoChooser();
+  private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
 
@@ -109,6 +116,19 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // reigster commands for pathplanner
+    NamedCommands.registerCommand(
+        "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
+    NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
+    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
+    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
+    NamedCommands.registerCommand("AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
     // Left stick Y axis -> forward and backwards movement
@@ -122,12 +142,17 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
-    SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
-    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
+    pivotSubsystem.setDefaultCommand(
+        new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
     // Configure the button bindings
     configureButtonBindings();
+
+    autoSelector = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
+    SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
+    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
 
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
@@ -194,12 +219,12 @@ public class RobotContainer {
     jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
 
     // INTAKE
-    jacob
+    anthony
         .leftTrigger()
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
     // SHOOT
-    jacob
+    anthony
         .rightTrigger()
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
@@ -216,7 +241,7 @@ public class RobotContainer {
     anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
-    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 10));
+    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 55));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
@@ -239,7 +264,8 @@ public class RobotContainer {
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                Setpoints.SPEAKER_DEGREES));
+                Setpoints.SPEAKER_DEGREES)
+          .andThen(new PivotAngleCommand(pivotSubsystem, 35)));
 
     anthony
         .x()
@@ -247,11 +273,20 @@ public class RobotContainer {
             new RotateAngleDriveCommand(
                 drivebaseSubsystem, translationXSupplier, translationYSupplier, 90));
 
+    // anthony
+    //     .b()
+    //     .onTrue(
+    //         new RotateAngleDriveCommand(
+    //             drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+
     anthony
         .b()
         .onTrue(
-            new RotateAngleDriveCommand(
-                drivebaseSubsystem, translationXSupplier, translationYSupplier, 270));
+            new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.24, 6.44), new Rotation2d(37.66))),
+                drivebaseSubsystem));
 
     new Trigger(
             () ->
@@ -271,7 +306,7 @@ public class RobotContainer {
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(3, 1).withPosition(0, 0);
+    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(4, 1).withPosition(7, 2);
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 

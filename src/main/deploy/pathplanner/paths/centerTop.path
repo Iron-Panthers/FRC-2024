@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9824179221312184,
-        "y": 4.099779112962734
+        "x": 0.7571548712002016,
+        "y": 6.710543833337373
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9983773489871577,
-        "y": 6.999137910394885
+        "x": 1.7571548712002043,
+        "y": 6.710543833337373
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 7.65,
+        "y": 7.45
       },
       "prevControl": {
-        "x": 3.0089206742552395,
-        "y": 7.004955980145837
+        "x": 6.65,
+        "y": 7.45
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": null,
+  "folder": "Ethan's Paths",
+  "previewStartingState": {
+    "rotation": 59.34933204294715,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

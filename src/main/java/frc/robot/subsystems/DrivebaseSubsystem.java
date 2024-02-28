@@ -210,7 +210,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         this::getPose,
         this::resetOdometryToPose,
         this::getRobotRelativeSpeeds,
-        this::driveRobotRelative,
+        this::drive,
         Constants.Config.PATH_FOLLOWER_CONFIG,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -250,6 +250,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
       tab.addDouble("targetAngle", () -> targetAngle);
       tab.addDouble("currentGyroAngle", () -> getDriverGyroscopeRotation().getDegrees());
+      tab.addDouble("consistent gyro", () -> getConsistentGyroscopeRotation().getDegrees());
 
       addSwerveShuffleboard("module 4", 0, swerveModules, tab);
       addSwerveShuffleboard("module 3", 1, swerveModules, tab);
@@ -257,7 +258,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
       addSwerveShuffleboard("module 2", 3, swerveModules, tab);
     }
 
-    Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
+    Shuffleboard.getTab("DriverView").add(field).withPosition(0, 0).withSize(8, 5);
   }
 
   /** Return the current pose estimation of the robot */
@@ -314,20 +315,20 @@ public class DrivebaseSubsystem extends SubsystemBase {
   /**
    * Resets the odometry estimate to a specific pose.
    *
-   * @param pose The pose to reset to.
+   * @param pose2d The pose to reset to.
    */
-  public void resetOdometryToPose(Pose2d pose) {
+  public void resetOdometryToPose(Pose2d pose2d) {
     // "Zero" the driver gyro heading
     driverGyroOffset =
         getConsistentGyroscopeRotation()
-            .minus(pose.getRotation())
+            .minus(pose2d.getRotation())
             .plus(
                 DriverStation.getAlliance().get() == Alliance.Blue // FIXME
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 
     swervePoseEstimator.resetPosition(
-        getConsistentGyroscopeRotation(), getSwerveModulePositions(), pose);
+        getConsistentGyroscopeRotation(), getSwerveModulePositions(), pose2d);
   }
 
   /**
