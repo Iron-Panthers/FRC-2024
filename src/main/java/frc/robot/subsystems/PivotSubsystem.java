@@ -128,10 +128,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   // returns wheather or not a change was needed
   public void prepareForIntake() {
-      setTargetDegrees(20);
+    setTargetDegrees(20);
   }
 
-  public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
+  public void calculatePivotTargetDegrees(Pose2d pose, double xVelocity, double yVelocity) {
     this.pose = pose;
     double g = Pivot.GRAVITY;
     double x = pose.getX();
@@ -156,7 +156,9 @@ public class PivotSubsystem extends SubsystemBase {
     // difference between distance to speaker now and after 1 second to find v to speaker
     double velocityToSpeaker =
         distanceToSpeaker
-            - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
+            - Math.sqrt(
+                (Math.pow((x + xVelocity - speakerX), 2)
+                    + Math.pow((y + yVelocity - speakerY), 2)));
 
     double v = Pivot.NOTE_SPEED + velocityToSpeaker;
 
@@ -165,7 +167,11 @@ public class PivotSubsystem extends SubsystemBase {
     if (interiorMath > 0) {
       mathedTargetDegrees =
           180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-      targetDegrees = mathedTargetDegrees;
+
+      // aaa, this is why you should have a mode setter, so the mode correctly sets in commands...
+      // targetDegrees = mathedTargetDegrees;
+      setTargetDegrees(mathedTargetDegrees);
+
       inRange = true;
     } else {
       inRange = false;
