@@ -255,9 +255,9 @@ public final class Constants {
                         0.5119878 // up/down
                         ),
                     new Rotation3d(
-                      0, 
-                      Math.toRadians(125), // angle up/down
-                      0))));
+                        0,
+                        Math.toRadians(125), // angle up/down
+                        0))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
@@ -477,8 +477,7 @@ public final class Constants {
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET = 
-        0.499268 + (0.057373 - 0.014404);
+    public static final double PIVOT_CANCODER_OFFSET = 0.499268 + (0.057373 - 0.014404);
 
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values

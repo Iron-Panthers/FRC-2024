@@ -128,7 +128,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   // returns wheather or not a change was needed
   public void prepareForIntake() {
-      setTargetDegrees(20);
+    setTargetDegrees(20);
   }
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {

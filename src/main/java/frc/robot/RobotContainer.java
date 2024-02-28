@@ -6,10 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -127,7 +126,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
-    NamedCommands.registerCommand("AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -238,10 +238,25 @@ public class RobotContainer {
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
     jacob.y().onTrue(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
 
-    anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
-    anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
-    anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
-    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 55));
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (!alliance.isPresent())
+      alliance = Optional.of(Alliance.Blue); // default to blue if no alliance
+    anthony
+        .povUp()
+        .onTrue(
+            new PivotAngleCommand(pivotSubsystem, alliance.get().equals(Alliance.Blue) ? 30 : (30 + 180)));
+    anthony
+        .povLeft()
+        .onTrue(
+            new PivotAngleCommand(pivotSubsystem, alliance.get().equals(Alliance.Blue) ? 60 : (60 + 180)));
+    anthony
+        .povRight()
+        .onTrue(
+            new PivotAngleCommand(pivotSubsystem, alliance.get().equals(Alliance.Blue) ? 75 : (75 + 180)));
+    anthony
+        .povDown()
+        .onTrue(
+            new PivotAngleCommand(pivotSubsystem, alliance.get().equals(Alliance.Blue) ? 55 : (55 + 180)));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
@@ -261,11 +276,11 @@ public class RobotContainer {
         .a()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                Setpoints.SPEAKER_DEGREES)
-          .andThen(new PivotAngleCommand(pivotSubsystem, 35)));
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    Setpoints.SPEAKER_DEGREES)
+                .andThen(new PivotAngleCommand(pivotSubsystem, 35)));
 
     anthony
         .x()

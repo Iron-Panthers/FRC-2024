@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Drive;
@@ -32,19 +31,17 @@ public class TargetLockCommand extends Command {
   private Supplier<Pose2d> pose;
 
   /** Creates a new TargetLockCommand. */
-  public TargetLockCommand(
-      DrivebaseSubsystem drivebaseSubsystem) {
+  public TargetLockCommand(DrivebaseSubsystem drivebaseSubsystem) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
     this.translationXSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond;
     this.translationYSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond;
 
-
     var alliance = DriverStation.getAlliance();
-    this.targetPoint = 
-    (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red)
-    ?Pivot.RED_SPEAKER_POSE
-    :Pivot.BLUE_SPEAKER_POSE;
+    this.targetPoint =
+        (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red)
+            ? Pivot.RED_SPEAKER_POSE
+            : Pivot.BLUE_SPEAKER_POSE;
 
     this.pose = () -> this.drivebaseSubsystem.getPose();
 
