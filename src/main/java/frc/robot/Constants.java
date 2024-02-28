@@ -222,7 +222,7 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-      public static final Translation2d SPEAKER = new Translation2d(0, 104.64);
+      public static final Translation2d SPEAKER = new Translation2d(0, 5.5);
 
       public static final int SOURCE_DEGREES = 39;
       public static final int SPEAKER_DEGREES = 11;

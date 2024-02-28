@@ -250,7 +250,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
       tab.addDouble("targetAngle", () -> targetAngle);
       tab.addDouble("currentGyroAngle", () -> getDriverGyroscopeRotation().getDegrees());
-      
 
       addSwerveShuffleboard("module 4", 0, swerveModules, tab);
       addSwerveShuffleboard("module 3", 1, swerveModules, tab);
