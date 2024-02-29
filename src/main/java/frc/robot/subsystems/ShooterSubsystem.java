@@ -100,8 +100,8 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.set(0);
   }
 
-  public void setShooterMode(ShooterMode newMode) {
-    this.shooterMode = newMode;
+  public void setShooterMode(ShooterMode shooterMode) {
+    this.shooterMode = shooterMode;
   }
 
   @Override

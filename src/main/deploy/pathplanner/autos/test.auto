@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.74,
-      "y": 6.73
+      "x": 2.9,
+      "y": 5.545539144175634
     },
     "rotation": 0
   },
@@ -15,12 +15,6 @@
           "type": "path",
           "data": {
             "pathName": "test"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
           }
         }
       ]

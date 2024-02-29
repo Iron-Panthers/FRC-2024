@@ -36,6 +36,7 @@ import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
+import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
@@ -122,8 +123,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
+    NamedCommands.registerCommand("SetShooterToRamping", new SetRampModeCommand(shooterSubsystem));
     NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
-    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 40));
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand(
@@ -223,6 +225,10 @@ public class RobotContainer {
         .leftTrigger()
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
+    jacob
+        .leftBumper()
+        .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
+
     // SHOOT
     anthony
         .rightTrigger()
@@ -231,6 +237,7 @@ public class RobotContainer {
                 .andThen(new ShootCommand(shooterSubsystem))
                 .andThen(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
+    
     // SHOOT OVERRIDE
     jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
 
@@ -261,10 +268,11 @@ public class RobotContainer {
                 translationYSupplier,
                 alliance.get().equals(Alliance.Blue)
                     ? Setpoints.SOURCE_DEGREES
-                    : (Setpoints.SOURCE_DEGREES + 180)));
+                    : (Setpoints.SOURCE_DEGREES + 180))
+        .alongWith(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
     anthony
-        .a()
+        .b()
         .onTrue(
             new RotateAngleDriveCommand(
                     drivebaseSubsystem,
@@ -273,7 +281,7 @@ public class RobotContainer {
                     alliance.get().equals(Alliance.Blue)
                         ? Setpoints.SPEAKER_DEGREES
                         : (Setpoints.SPEAKER_DEGREES + 180))
-                .andThen(new PivotAngleCommand(pivotSubsystem, 35)));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
     anthony
         .x()
@@ -282,16 +290,18 @@ public class RobotContainer {
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180)));
+                alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
     anthony
-        .b()
+        .a()
         .onTrue(
             new RotateAngleDriveCommand(
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                alliance.get().equals(Alliance.Blue) ? 270 : (270 + 180)));
+                alliance.get().equals(Alliance.Blue) ? 0 : 180)
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
 
     new Trigger(
             () ->

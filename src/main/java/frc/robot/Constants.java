@@ -183,7 +183,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.425537109375 // comp bot offset
+                ? 0.417724609375 // comp bot offset
                 : 0.067626953125; // practice bot offset
       }
 
@@ -194,7 +194,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.40478515625 // comp bot offset
+                ? -0.40869140625 // comp bot offset
                 : 0.308349609375; // practice bot offset
       }
 
@@ -205,7 +205,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.2158203125 // comp bot offset
+                ? 0.213134765625 // comp bot offset
                 : -0.23291015625; // practice bot offset
       }
 
@@ -216,7 +216,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.286865234375 // comp bot offset
+                ? 0.30322265625 // comp bot offset
                 : -0.379150390625; // practice bot offset
       }
     }
@@ -238,25 +238,25 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0.23749, // front/back
-                        0.2403348, // left/right
-                        0.7973822 // up/down
+                        0.280543, // front/back
+                        0.0964428, // left/right
+                        0.5119878 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(-11.5), // angle up/down
+                        Math.toRadians(35), // angle up/down
                         0))),
             new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
                         0.280543, // front/back
-                        -0.0964428, // left/right
+                        0.0964428, // left/right
                         0.5119878 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(125), // angle up/down
+                        Math.toRadians(215), // angle up/down
                         0))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
@@ -413,7 +413,7 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(0, .15);
+          new ShooterSubsystem.ShooterPowers(.8, .15);
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMPING =
@@ -496,7 +496,7 @@ public final class Constants {
     public static final double GRAVITY = 9.80665; // meters per second
     public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
 
-    public static final double GRAVITY_VOLTAGE = 0.45;
+    public static final double GRAVITY_VOLTAGE = 0.4;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 }
