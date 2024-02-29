@@ -237,7 +237,7 @@ public class RobotContainer {
                 .andThen(new ShootCommand(shooterSubsystem))
                 .andThen(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
-    
+
     // SHOOT OVERRIDE
     jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
 
@@ -263,13 +263,14 @@ public class RobotContainer {
         .y()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                alliance.get().equals(Alliance.Blue)
-                    ? Setpoints.SOURCE_DEGREES
-                    : (Setpoints.SOURCE_DEGREES + 180))
-        .alongWith(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    alliance.get().equals(Alliance.Blue)
+                        ? Setpoints.SOURCE_DEGREES
+                        : (Setpoints.SOURCE_DEGREES + 180))
+                .alongWith(
+                    new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
     anthony
         .b()
@@ -287,21 +288,21 @@ public class RobotContainer {
         .x()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
     anthony
         .a()
         .onTrue(
             new RotateAngleDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                alliance.get().equals(Alliance.Blue) ? 0 : 180)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    alliance.get().equals(Alliance.Blue) ? 0 : 180)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
 
     new Trigger(
             () ->
