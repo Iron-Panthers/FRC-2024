@@ -477,7 +477,7 @@ public final class Constants {
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET = 0.499268 + (0.057373 - 0.014404);
+    public static final double PIVOT_CANCODER_OFFSET = -0.281250 + (0.046387 - 0.012695);
 
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
