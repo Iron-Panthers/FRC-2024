@@ -6,33 +6,34 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 
-public class ShooterTargetLockCommand extends Command {
+public class PivotTargetLockCommand extends Command {
   /** Creates a new ShooterCommand. */
-  ShooterSubsystem shooterSubsystem;
+  PivotSubsystem pivotSubsystem;
 
   DrivebaseSubsystem drivebaseSubsystem;
 
-  public ShooterTargetLockCommand(
-      ShooterSubsystem shooterSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
+  public PivotTargetLockCommand(
+      PivotSubsystem pivotSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooterSubsystem = shooterSubsystem;
+    this.pivotSubsystem = pivotSubsystem;
     this.drivebaseSubsystem = drivebaseSubsystem;
-    addRequirements(shooterSubsystem);
+    addRequirements(pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    shooterSubsystem.calculateWristTargetDegrees(
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    pivotSubsystem.calculatePivotTargetDegrees(
         drivebaseSubsystem.getPose(),
         drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,
         drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
   }
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -42,6 +43,6 @@ public class ShooterTargetLockCommand extends Command {
   @Override
   public boolean isFinished() {
     // return shooterSubsystem.isDone();
-    return false;
+    return true;
   }
 }

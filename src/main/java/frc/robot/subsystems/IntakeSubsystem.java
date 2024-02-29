@@ -4,94 +4,69 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Intake;
+import frc.robot.Constants.Intake.IntakeSubsystemModeSettings;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX rightIntakeMotor; // LEADER
-  private final TalonFX leftIntakeMotor; // FOLLOWER
+  private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
-  private final DigitalInput noteSensor;
-  public boolean isUsingIntakeSensor = true;
 
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
 
   private Modes intakeMode;
 
   public enum Modes {
-    INTAKE(Intake.INTAKE_MOTOR_INTAKE_SPEED, Intake.SERIALIZER_MOTOR_INTAKE_SPEED),
-    OUTTAKE(Intake.INTAKE_MOTOR_OUTTAKE_SPEED, Intake.SERIALIZER_MOTOR_OUTTAKE_SPEED),
-    HOLD(Intake.INTAKE_MOTOR_HOLD_SPEED, Intake.SERIALIZER_MOTOR_HOLD_SPEED);
+    INTAKE(Intake.INTAKE_MODE_SETTINGS),
+    HOLD(Intake.HOLD_MODE_SETTINGS),
+    REVERSE(Intake.REVERSE_MODE_SETTINGS);
 
-    public final double intakeMotorSpeed;
-    public final double serializerMotorSpeed;
+    public final IntakeSubsystemModeSettings modeSettings;
 
-    private Modes(double intakeMotorSpeed, double serializerMotorSpeed) {
-      this.intakeMotorSpeed = intakeMotorSpeed;
-      this.serializerMotorSpeed = serializerMotorSpeed;
+    private Modes(IntakeSubsystemModeSettings modeSettings) {
+      this.modeSettings = modeSettings;
     }
   }
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    rightIntakeMotor = new TalonFX(Intake.Ports.RIGHT_INTAKE_MOTOR_PORT);
-    leftIntakeMotor = new TalonFX(Intake.Ports.LEFT_INTAKE_MOTOR_PORT);
+    intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
 
-    rightIntakeMotor.clearStickyFaults();
-    leftIntakeMotor.clearStickyFaults();
+    intakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
 
-    rightIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
-    leftIntakeMotor.setNeutralMode(NeutralModeValue.Brake);
+    intakeMotor.setNeutralMode(NeutralModeValue.Brake);
     serializerMotor.setNeutralMode(NeutralModeValue.Brake);
-
-    leftIntakeMotor.setControl(
-        new Follower(
-            rightIntakeMotor.getDeviceID(),
-            false)); // set left intake motor to follow the right intake motor
+    intakeMotor.setInverted(true);
+    serializerMotor.setInverted(true);
 
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
 
-    // BEAM BRAKE SENSOR - once the beam is broken we need to hold the piece in place.
-    noteSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
-
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("intake voltage", () -> rightIntakeMotor.getMotorVoltage().getValueAsDouble());
+      tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
       tab.addDouble(
           "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
-      tab.addBoolean("Note Sensor Output", this::getSensorOutput);
       tab.addString("Current Mode", () -> intakeMode.toString());
     }
   }
 
-  // GETTERS
-  public boolean getSensorOutput() {
-    return !noteSensor.get();
-  }
-
   // SETTERS
-
-  public void setUsingIntakeSensor(boolean isUsingIntakeSensor) {
-    this.isUsingIntakeSensor = isUsingIntakeSensor;
-  }
 
   public void setIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;
   }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
-    rightIntakeMotor.set(intakeMode.intakeMotorSpeed);
-    serializerMotor.set(intakeMode.serializerMotorSpeed);
+    intakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
+    serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }
 
   @Override
