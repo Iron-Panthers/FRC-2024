@@ -301,7 +301,7 @@ public class RobotContainer {
     // SPEAKER FROM SUBWOOFER
     anthony
         .a()
-        .onTrue(new PivotAngleCommand(pivotSubsystem, 45));
+        .onTrue(new PivotAngleCommand(pivotSubsystem, 56));
             // new RotateAngleDriveCommand(
             //         drivebaseSubsystem,
             //         translationXSupplier,
