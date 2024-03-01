@@ -307,7 +307,7 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-      public static final int MINIMUM_ANGLE = -3;
+      public static final int MINIMUM_ANGLE = 0;
       public static final int MAXIMUM_ANGLE = 90;
 
       public static final int MINIMUM_SAFE_THRESHOLD = 15;
