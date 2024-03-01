@@ -31,7 +31,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private double targetDegrees;
   private double pidVoltageOutput;
-  private double mathedTargetDegrees;
+  private double calculatedTargetDegrees;
 
   private boolean inRange;
   private Pose2d pose;
@@ -40,10 +40,8 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    // PORTS
     pivotMotor = new TalonFX(Pivot.Ports.PIVOT_MOTOR_PORT);
 
-    // CONFIGS
     pivotCANcoder = new CANcoder(Pivot.Ports.CANCODER_PORT);
     pivotCANcoder.getConfigurator().apply(Pivot.MotorConfigs.CANCODER_CONFIG);
 
@@ -59,7 +57,6 @@ public class PivotSubsystem extends SubsystemBase {
     targetDegrees = 0;
     pidVoltageOutput = 0;
 
-    // SHUFFLEBOARD
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       pivotTab.addNumber(
           "Current Motor Position", () -> pivotMotor.getPosition().getValueAsDouble());
@@ -70,7 +67,7 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addNumber("Target Degrees", this::getTargetDegrees);
       pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
-      pivotTab.addDouble("Calculated Target Angle", () -> mathedTargetDegrees);
+      pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
       pivotTab.add(pidController);
     }
   }
@@ -96,8 +93,7 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void setTargetDegrees(double degrees) {
-    this.targetDegrees =
-        MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
+    this.targetDegrees = MathUtil.clamp(degrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE);
   }
 
   private static double rotationsToDegrees(double rotations) {
@@ -111,7 +107,7 @@ public class PivotSubsystem extends SubsystemBase {
     double y = pose.getY();
     double speakerX;
     double speakerY;
-    mathedTargetDegrees = getCurrentAngle();
+    calculatedTargetDegrees = getCurrentAngle();
     Optional<Alliance> color = DriverStation.getAlliance();
 
     if (color.isPresent() && color.get() == Alliance.Red) {
@@ -136,26 +132,36 @@ public class PivotSubsystem extends SubsystemBase {
     double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
 
     if (interiorMath > 0) {
-      mathedTargetDegrees =
+      calculatedTargetDegrees =
           180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-      targetDegrees = mathedTargetDegrees;
+      targetDegrees = calculatedTargetDegrees;
       inRange = true;
     } else {
       inRange = false;
     }
   }
 
-  private double clampedTargetDegrees() {
-    return MathUtil.clamp(
-        targetDegrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
+  private boolean inAngleRange(double angle) {
+    return angle < Setpoints.MAXIMUM_ANGLE && angle > Setpoints.MINIMUM_ANGLE;
+  }
+
+  private boolean currentOrTargetAngleIsUnsafe() {
+    return !inAngleRange(getCurrentAngle()) || !inAngleRange(targetDegrees);
+  }
+
+  private double computeTargetDegrees() {
+    if (currentOrTargetAngleIsUnsafe()) {
+      if (getCurrentAngle() < 45) {
+        return Setpoints.MINIMUM_SAFE_THRESHOLD;
+      }
+      return Setpoints.MAXIMUM_SAFE_THRESHOLD;
+    }
+    return targetDegrees;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    targetDegrees = clampedTargetDegrees();
-
-    double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
+    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

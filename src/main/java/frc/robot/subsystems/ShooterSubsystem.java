@@ -72,7 +72,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterMode = ShooterMode.IDLE;
 
-    if(Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
+    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       shooterTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
       shooterTab.addDouble(
           "Top Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
