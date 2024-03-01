@@ -150,28 +150,6 @@ public class PivotSubsystem extends SubsystemBase {
         targetDegrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
   }
 
-  // private void applyPivotMode() {
-  //   if (pivotMode == PivotMode.ANGLE) {
-  //     pivotAnglePeriodic();
-  //   } else {
-  //     pivotVoltagePeriodic();
-  //   }
-  // }
-
-  // private void pivotAnglePeriodic() {
-  //   targetDegrees = clampedTargetDegrees();
-
-  //   double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
-
-  //   pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
-
-  //   pivotMotor.setVoltage(pidVoltageOutput);
-  // }
-
-  // private void pivotVoltagePeriodic() {
-  //   pivotMotor.setVoltage(MathUtil.clamp(manualVolatgeOutput + getFeedForward(), -4, 4));
-  // }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
