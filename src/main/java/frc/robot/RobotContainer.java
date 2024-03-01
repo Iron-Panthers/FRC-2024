@@ -260,7 +260,8 @@ public class RobotContainer {
     if (!alliance.isPresent())
       alliance = Optional.of(Alliance.Blue); // default to blue if no alliance
 
-    anthony
+    // SOURCE
+      anthony
         .y()
         .onTrue(
             new RotateAngleDriveCommand(
@@ -273,7 +274,8 @@ public class RobotContainer {
                 .alongWith(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
-    anthony
+    // SPEAKER FROM STAGE
+      anthony
         .b()
         .onTrue(
             new RotateAngleDriveCommand(
@@ -285,6 +287,7 @@ public class RobotContainer {
                         : (-Setpoints.SPEAKER_DEGREES))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
+    // AMP
     anthony
         .x()
         .onTrue(
@@ -295,16 +298,16 @@ public class RobotContainer {
                     alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
+    // SPEAKER FROM SUBWOOFER
     anthony
         .a()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    alliance.get().equals(Alliance.Blue) ? 0 : 180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
-
+        .onTrue(new PivotAngleCommand(pivotSubsystem, 45));
+            // new RotateAngleDriveCommand(
+            //         drivebaseSubsystem,
+            //         translationXSupplier,
+            //         translationYSupplier,
+            //         alliance.get().equals(Alliance.Blue) ? 0 : 180)
+            //     .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));            
     
     DoubleSupplier rotation =
         exponential(

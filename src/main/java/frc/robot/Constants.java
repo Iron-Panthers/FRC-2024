@@ -234,30 +234,30 @@ public final class Constants {
 
     public static final List<VisionSource> VISION_SOURCES =
         List.of(
+            // new VisionSource(
+            //     "frontCam",
+            //     new Transform3d(
+            //         new Translation3d(
+            //             0.280543, // front/back
+            //             0.0964428, // left/right
+            //             0.5119878 // up/down
+            //             ),
+            //         new Rotation3d(
+            //             0,
+            //             Math.toRadians(35), // angle up/down
+            //             0))));
             new VisionSource(
-                "frontCam",
-                new Transform3d(
-                    new Translation3d(
-                        0.280543, // front/back
-                        0.0964428, // left/right
-                        0.5119878 // up/down
-                        ),
-                    new Rotation3d(
-                        0,
-                        Math.toRadians(35), // angle up/down
-                        0))));
-            /*new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
                         0.280543, // front/back
-                        0.0964428, // left/right
+                        -0.0964428, // left/right
                         0.5119878 // up/down
                         ),
                     new Rotation3d(
                         0,
                         Math.toRadians(215), // angle up/down
-                        0))));*/
+                        0))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
