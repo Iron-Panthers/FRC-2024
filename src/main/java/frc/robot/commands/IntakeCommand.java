@@ -47,7 +47,7 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
     shooterSubsystem.setShooterMode(ShooterMode.RAMPING);
-    shooterSubsystem.stopAccelerator();
+    shooterSubsystem.haltAccelerator();
   }
 
   // Returns true when the command should end.
