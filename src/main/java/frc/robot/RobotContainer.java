@@ -256,8 +256,9 @@ public class RobotContainer {
         .onTrue(new PivotManualCommand(pivotSubsystem, pivotManualRate));
 
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (!alliance.isPresent())
-      alliance = Optional.of(Alliance.Blue); // default to blue if no alliance
+    if (!alliance.isPresent()) {
+      alliance = Optional.of(Alliance.Blue); // default to blue if null
+    }
 
     anthony
         .y()

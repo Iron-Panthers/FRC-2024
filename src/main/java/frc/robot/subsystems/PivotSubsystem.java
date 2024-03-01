@@ -29,22 +29,14 @@ public class PivotSubsystem extends SubsystemBase {
 
   private PIDController pidController;
 
-  // private PivotMode pivotMode;
-
   private double targetDegrees;
   private double pidVoltageOutput;
-  private double manualVolatgeOutput;
-  private boolean inRange;
   private double mathedTargetDegrees;
 
+  private boolean inRange;
   private Pose2d pose;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
-
-  // public enum PivotMode {
-  //   ANGLE,
-  //   VOLTAGE
-  // }
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
@@ -64,11 +56,8 @@ public class PivotSubsystem extends SubsystemBase {
 
     pidController = new PIDController(0.3, 0, 0);
 
-    // pivotMode = PivotMode.ANGLE;
-
     targetDegrees = 0;
     pidVoltageOutput = 0;
-    manualVolatgeOutput = 0;
 
     // SHUFFLEBOARD
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
@@ -83,7 +72,6 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> mathedTargetDegrees);
       pivotTab.add(pidController);
-      // pivotTab.addString("Pivot mode", () -> pivotMode.toString());
     }
   }
 
@@ -110,25 +98,10 @@ public class PivotSubsystem extends SubsystemBase {
   public void setTargetDegrees(double degrees) {
     this.targetDegrees =
         MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
-    // this.pivotMode = PivotMode.ANGLE;
-  }
-
-  // public void setManualVolatgeOutput(double voltage) {
-  //   this.manualVolatgeOutput = voltage;
-  //   this.pivotMode = PivotMode.VOLTAGE;
-  // }
-
-  private static double degreesToRotations(double angle) {
-    return (angle / 360);
   }
 
   private static double rotationsToDegrees(double rotations) {
     return (rotations * 360);
-  }
-
-  // returns wheather or not a change was needed
-  public void prepareForIntake() {
-    setTargetDegrees(20);
   }
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {

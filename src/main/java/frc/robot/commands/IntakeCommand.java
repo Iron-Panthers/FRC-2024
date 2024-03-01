@@ -33,7 +33,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pivotSubsystem.prepareForIntake();
+    pivotSubsystem.setTargetDegrees(20);
     intakeSubsystem.setIntakeMode(Modes.INTAKE);
     shooterSubsystem.setShooterMode(ShooterMode.INTAKE);
   }
