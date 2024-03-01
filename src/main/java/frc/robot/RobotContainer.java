@@ -36,6 +36,7 @@ import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
+import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
@@ -268,7 +269,7 @@ public class RobotContainer {
                     translationYSupplier,
                     alliance.get().equals(Alliance.Blue)
                         ? Setpoints.SOURCE_DEGREES
-                        : (Setpoints.SOURCE_DEGREES + 180))
+                        : (-Setpoints.SOURCE_DEGREES))
                 .alongWith(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
@@ -281,7 +282,7 @@ public class RobotContainer {
                     translationYSupplier,
                     alliance.get().equals(Alliance.Blue)
                         ? Setpoints.SPEAKER_DEGREES
-                        : (Setpoints.SPEAKER_DEGREES + 180))
+                        : (-Setpoints.SPEAKER_DEGREES))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
     anthony
@@ -303,6 +304,28 @@ public class RobotContainer {
                     translationYSupplier,
                     alliance.get().equals(Alliance.Blue) ? 0 : 180)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
+
+    
+    DoubleSupplier rotation =
+        exponential(
+            () ->
+                ControllerUtil.deadband(
+                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+                2);
+        
+    DoubleSupplier rotationVelocity =
+        () ->
+             rotation.getAsDouble()
+                * 0.2;
+    
+    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
+        .whileTrue(
+            new RotateVelocityDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                rotationVelocity,
+                anthony.rightBumper()));
 
     new Trigger(
             () ->
