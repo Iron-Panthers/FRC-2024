@@ -245,8 +245,8 @@ public final class Constants {
                     new Rotation3d(
                         0,
                         Math.toRadians(35), // angle up/down
-                        0))),
-            new VisionSource(
+                        0))));
+            /*new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
@@ -257,7 +257,7 @@ public final class Constants {
                     new Rotation3d(
                         0,
                         Math.toRadians(215), // angle up/down
-                        0))));
+                        0))));*/
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
