@@ -307,7 +307,6 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-      // degrees
       public static final int MINIMUM_ANGLE = -3;
       public static final int MAXIMUM_ANGLE = 90;
 

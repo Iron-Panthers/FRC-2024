@@ -45,7 +45,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * by a ChassisSpeeds object) and our actual drive outputs (what speeds and angles we apply to
    * each module)
    */
-  // FIXME check if its correct for season
   private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           // Front right
@@ -236,7 +235,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
             kinematics,
             getConsistentGyroscopeRotation(),
             getSwerveModulePositions(),
-            // FIXME: FIXME FIXME GOOD GOD FIX ME, USE A REAL VALUE HERE
+            // FIXME: USE A REAL VALUE HERE
             new Pose2d(3.5, 2.2, Rotation2d.fromDegrees(0)),
             PoseEstimator.STATE_STANDARD_DEVIATIONS,
             PoseEstimator.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
@@ -307,7 +306,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
                     .getEstimatedPosition()
                     .getRotation()
                     .plus(
-                        DriverStation.getAlliance().get() == Alliance.Blue // FIXME temp fix
+                        DriverStation.getAlliance().get() == Alliance.Blue
                             ? new Rotation2d()
                             : Rotation2d.fromDegrees(180)));
   }
@@ -323,7 +322,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         getConsistentGyroscopeRotation()
             .minus(pose2d.getRotation())
             .plus(
-                DriverStation.getAlliance().get() == Alliance.Blue // FIXME
+                DriverStation.getAlliance().get() == Alliance.Blue
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 
