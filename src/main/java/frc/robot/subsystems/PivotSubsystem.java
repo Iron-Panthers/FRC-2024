@@ -107,6 +107,10 @@ public class PivotSubsystem extends SubsystemBase {
     return Util.epsilonEquals(getCurrentAngle(), targetDegrees, Pivot.EPSILON);
   }
 
+  public boolean isReadyToShoot(){
+    return isAtTargetDegrees() && inRange;
+  }
+
   public void setTargetDegrees(double degrees) {
     this.targetDegrees =
         MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);

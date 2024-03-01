@@ -226,6 +226,7 @@ public final class Constants {
 
       public static final int SOURCE_DEGREES = 39;
       public static final int SPEAKER_DEGREES = 11;
+      public static final int EPSILON = 3;
     }
   }
 
@@ -487,7 +488,7 @@ public final class Constants {
     public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
     public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
 
-    public static final double SPEAKER_HEIGHT = 2; // meters
+    public static final double SPEAKER_HEIGHT = 2.05; // meters
     public static final double X_DISTANCE = 4; // meters
 
     public static final double GRAVITY = 9.80665; // meters per second
