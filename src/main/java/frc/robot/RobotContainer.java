@@ -54,10 +54,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
-import frc.util.NodeSelectorUtility;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeSelection;
-import frc.util.SharedReference;
 import frc.util.Util;
 import java.util.Map;
 import java.util.Optional;
@@ -84,9 +80,6 @@ public class RobotContainer {
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
-
-  private final SharedReference<NodeSelection> currentNodeSelection =
-      new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
 
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);

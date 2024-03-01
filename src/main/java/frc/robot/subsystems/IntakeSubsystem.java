@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Intake;
-import frc.robot.Constants.Intake.IntakePowers;
 
 public class IntakeSubsystem extends SubsystemBase {
 
