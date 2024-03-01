@@ -83,8 +83,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterUpToSpeed() {
-    return rollerMotorBottom.getVelocity().getValueAsDouble() >= Shooter.REQUIRED_SHOOT_SPEED
-        && rollerMotorTop.getVelocity().getValueAsDouble() >= Shooter.REQUIRED_SHOOT_SPEED;
+    return rollerMotorBottom.getVelocity().getValueAsDouble() >= Shooter.SHOOTER_VELOCITY_THRESHOLD
+        && rollerMotorTop.getVelocity().getValueAsDouble() >= Shooter.SHOOTER_VELOCITY_THRESHOLD;
   }
 
   public boolean isBeamBreakSensorTriggered() {
