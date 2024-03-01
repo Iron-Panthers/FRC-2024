@@ -223,7 +223,7 @@ public class RobotContainer {
 
     // INTAKE
     anthony
-        .leftTrigger()
+        .leftBumper()
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
     jacob
@@ -232,7 +232,7 @@ public class RobotContainer {
 
     // SHOOT
     anthony
-        .rightTrigger()
+        .rightBumper()
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
