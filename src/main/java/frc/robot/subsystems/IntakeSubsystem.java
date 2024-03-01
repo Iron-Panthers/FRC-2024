@@ -53,8 +53,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.setInverted(true);
     serializerMotor.setInverted(true);
 
-    // Mode to tell the motor what speed to go at
-    intakeMode = Modes.HOLD; // default to hold
+    intakeMode = Modes.HOLD;
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());

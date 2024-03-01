@@ -23,6 +23,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -57,7 +58,7 @@ import java.util.Set;
 public final class Constants {
 
   public static final class Config {
-    // FIXME: These values should be replaced with actual values
+    // maybe tune PID values?
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
             new PIDConstants(20, 0, 0),
@@ -380,12 +381,13 @@ public final class Constants {
      * estimates less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
     public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                0.1, // x
-                0.1, // y
-                0.1 // theta
-                );
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N1(),
+            0.1, // x
+            0.1, // y
+            0.1 // theta
+            );
 
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global
@@ -396,13 +398,13 @@ public final class Constants {
      * them. This value is calculated dynamically using the below list.
      */
     public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                // if these numbers are less than one, multiplying will do bad things
-                1, // x
-                1, // y
-                1 * Math.PI // theta
-                );
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N1(),
+            1, // x
+            1, // y
+            1 * Math.PI // theta
+            );
 
     public static final double POSE_AMBIGUITY_CUTOFF = .05;
 
