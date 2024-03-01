@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Modes;
 
-public class UnstuckIntakeCommand extends Command {
+public class OuttakeCommand extends Command {
 
   IntakeSubsystem intakeSubsystem;
 
   /** Creates a new UnstuckIntakeCommand. */
-  public UnstuckIntakeCommand(IntakeSubsystem intakeSubsystem) {
+  public OuttakeCommand(IntakeSubsystem intakeSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.

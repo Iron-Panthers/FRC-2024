@@ -41,7 +41,7 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
-import frc.robot.commands.UnstuckIntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -200,18 +200,14 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    /*anthony
-    .back()
-    .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
-
     // STOP INTAKE-SHOOTER
     jacob
         .x()
         .onTrue(
             new StopShooterCommand(shooterSubsystem)
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
-    // UNSTUCK
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
+    // OUTTAKE
+    jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
 
     // INTAKE
     anthony
