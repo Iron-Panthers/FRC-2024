@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,10 +19,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
-
+  public final ShooterSubsystem shooterSubsystem;
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-
+  private final DigitalInput noteSensor;
   private Modes intakeMode;
+  private Modes pastMode; 
 
   public enum Modes {
     INTAKE(Intake.INTAKE_MODE_SETTINGS),
@@ -35,10 +38,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem() {
+  public IntakeSubsystem(ShooterSubsystem shooterSubsystem) {
+
     intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
-
+    noteSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
+    this.shooterSubsystem = shooterSubsystem;
     intakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
 
@@ -63,8 +68,30 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;
   }
+  
+  public boolean isBeamBreakSensorTriggered() {
+    // if is triggered return true
+    return !noteSensor.get();
+  }
+
+  public boolean areTwoNotesInRobot(){
+    return !(isBeamBreakSensorTriggered() && shooterSubsystem.isBeamBreakSensorTriggered());
+  }
+
+  private void resolvePenaltyHazard(){
+    if (areTwoNotesInRobot()){
+        setIntakeMode(intakeMode.REVERSE);
+    }
+  }
+
+  private Modes getIntakeMode(){
+    return intakeMode;
+  }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
+    if (areTwoNotesInRobot()){
+      resolvePenaltyHazard();
+    }
     intakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
     serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }

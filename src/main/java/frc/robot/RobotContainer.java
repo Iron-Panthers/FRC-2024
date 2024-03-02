@@ -76,7 +76,11 @@ public class RobotContainer {
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+  private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
+
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(shooterSubsystem);
 
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
@@ -103,10 +107,6 @@ public class RobotContainer {
   private GenericEntry autoDelay;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
-
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-
-  private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
 
   /* drive joystick "y" is passed to x because controller is inverted */
   private final DoubleSupplier translationXSupplier =
