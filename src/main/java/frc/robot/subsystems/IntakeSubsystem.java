@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -21,7 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
   private final DigitalInput noteSensor;
   private Modes intakeMode;
-  private Modes pastMode; 
+  private Modes pastMode;
   private double timeSincePenaltyHazard;
   private boolean pastPenalty;
 
@@ -73,13 +72,13 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;
   }
-  
+
   public boolean isBeamBreakSensorTriggered() {
     // if is triggered return true
     return !noteSensor.get();
   }
 
-  private Modes getIntakeMode(){
+  private Modes getIntakeMode() {
     return intakeMode;
   }
 

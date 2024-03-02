@@ -6,10 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -35,6 +31,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
@@ -46,7 +43,6 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
-import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -97,7 +93,7 @@ public class RobotContainer {
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
   /** controller 0 layer */
-//   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
+  //   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
   private final SendableChooser<Command> autoSelector;
