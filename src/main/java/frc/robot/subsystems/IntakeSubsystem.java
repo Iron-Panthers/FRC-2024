@@ -19,7 +19,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
-  public final ShooterSubsystem shooterSubsystem;
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
   private final DigitalInput noteSensor;
   private Modes intakeMode;
@@ -40,12 +39,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem(ShooterSubsystem shooterSubsystem) {
+  public IntakeSubsystem() {
 
     intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
     noteSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
-    this.shooterSubsystem = shooterSubsystem;
     intakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
 
@@ -78,23 +76,11 @@ public class IntakeSubsystem extends SubsystemBase {
     return !noteSensor.get();
   }
 
-  public boolean getPenaltyHazard(){
-    return isBeamBreakSensorTriggered() && shooterSubsystem.isBeamBreakSensorTriggered();
-  }
-
-  private void resolvePenaltyHazard(){
-    if (getPenaltyHazard()){
-        setIntakeMode(intakeMode.REVERSE);
-    }
-  }
-
   private Modes getIntakeMode(){
     return intakeMode;
   }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
-    resolvePenaltyHazard();
-
     intakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
     serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }

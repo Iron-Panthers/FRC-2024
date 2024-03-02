@@ -81,7 +81,7 @@ public class RobotContainer {
 
   private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(shooterSubsystem);
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
