@@ -34,6 +34,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
@@ -45,7 +46,6 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
-import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -58,10 +58,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
-import frc.util.NodeSelectorUtility;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeSelection;
-import frc.util.SharedReference;
 import frc.util.Util;
 import java.util.Map;
 import java.util.Optional;
@@ -92,9 +88,6 @@ public class RobotContainer {
       new NetworkWatchdogSubsystem(Optional.of(rgbSubsystem));
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
-
-  private final SharedReference<NodeSelection> currentNodeSelection =
-      new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
 
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);
@@ -263,18 +256,14 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    /*anthony
-    .back()
-    .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
-
     // STOP INTAKE-SHOOTER
     jacob
         .x()
         .onTrue(
             new StopShooterCommand(shooterSubsystem)
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
-    // UNSTUCK
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
+    // OUTTAKE
+    jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
 
     // INTAKE
     anthony
