@@ -60,7 +60,7 @@ public final class Constants {
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
             new PIDConstants(20, 0, 0),
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(10, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
             Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
             new ReplanningConfig());
@@ -234,18 +234,18 @@ public final class Constants {
 
     public static final List<VisionSource> VISION_SOURCES =
         List.of(
-            // new VisionSource(
-            //     "frontCam",
-            //     new Transform3d(
-            //         new Translation3d(
-            //             0.280543, // front/back
-            //             0.0964428, // left/right
-            //             0.5119878 // up/down
-            //             ),
-            //         new Rotation3d(
-            //             0,
-            //             Math.toRadians(35), // angle up/down
-            //             0))));
+            new VisionSource(
+                "frontCam",
+                new Transform3d(
+                    new Translation3d(
+                        0.3737864, // front/back
+                        0, // left/right
+                        0.5137658 // up/down
+                        ),
+                    new Rotation3d(
+                        0,
+                        Math.toRadians(35), // angle up/down
+                        0))),
             new VisionSource(
                 "backCam",
                 new Transform3d(
