@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,10 +19,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
   private final TalonFX serializerMotor;
-
   private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-
+  private final DigitalInput noteSensor;
   private Modes intakeMode;
+  private Modes pastMode; 
+  private double timeSincePenaltyHazard;
+  private boolean pastPenalty;
 
   public enum Modes {
     INTAKE(Intake.INTAKE_MODE_SETTINGS),
@@ -36,9 +40,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
+
     intakeMotor = new TalonFX(Intake.Ports.INTAKE_MOTOR_PORT);
     serializerMotor = new TalonFX(Intake.Ports.SERIALIZER_MOTOR_PORT);
-
+    noteSensor = new DigitalInput(Intake.Ports.INTAKE_SENSOR_PORT);
     intakeMotor.clearStickyFaults();
     serializerMotor.clearStickyFaults();
 
@@ -49,6 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
+
+    timeSincePenaltyHazard = 7;
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
@@ -62,6 +69,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setIntakeMode(Modes intakeMode) {
     this.intakeMode = intakeMode;
+  }
+  
+  public boolean isBeamBreakSensorTriggered() {
+    // if is triggered return true
+    return !noteSensor.get();
+  }
+
+  private Modes getIntakeMode(){
+    return intakeMode;
   }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
