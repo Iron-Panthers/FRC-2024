@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -104,7 +103,7 @@ public class RobotContainer {
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
   /** controller 0 layer */
-//   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
+  //   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
   private final SendableChooser<Command> autoSelector;
@@ -135,6 +134,58 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand(
         "AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose1",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.12, 6.68), new Rotation2d(56.93))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose2",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.4, 5.56), new Rotation2d(0))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.2, 6.68), new Rotation2d(180))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose3",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.12, 4.36), new Rotation2d(-98.90))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(98.90))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose4",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1, 2.5), new Rotation2d(0))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.5, 2.5), new Rotation2d(180))),
+                drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -301,12 +352,11 @@ public class RobotContainer {
     anthony
         .x()
         .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 90 : (90 + 180))
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
+            new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
+                drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
     anthony.a().onTrue(new PivotAngleCommand(pivotSubsystem, 56));

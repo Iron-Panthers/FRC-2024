@@ -251,7 +251,10 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("targetAngle", () -> targetAngle);
       tab.addDouble("currentGyroAngle", () -> getDriverGyroscopeRotation().getDegrees());
       tab.addDouble("consistent gyro", () -> getConsistentGyroscopeRotation().getDegrees());
-      tab.addDouble("angular difference", () -> -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle));
+      tab.addDouble(
+          "angular difference",
+          () ->
+              -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle));
 
       addSwerveShuffleboard("module 4", 0, swerveModules, tab);
       addSwerveShuffleboard("module 3", 1, swerveModules, tab);

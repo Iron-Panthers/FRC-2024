@@ -14,6 +14,12 @@
         {
           "type": "named",
           "data": {
+            "name": "recenterPose3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AngleAtSpeaker"
           }
         },
