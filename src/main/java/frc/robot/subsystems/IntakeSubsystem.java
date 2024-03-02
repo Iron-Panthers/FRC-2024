@@ -24,6 +24,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DigitalInput noteSensor;
   private Modes intakeMode;
   private Modes pastMode; 
+  private double timeSincePenaltyHazard;
+  private boolean pastPenalty;
 
   public enum Modes {
     INTAKE(Intake.INTAKE_MODE_SETTINGS),
@@ -55,6 +57,8 @@ public class IntakeSubsystem extends SubsystemBase {
     // Mode to tell the motor what speed to go at
     intakeMode = Modes.HOLD; // default to hold
 
+    timeSincePenaltyHazard = 7;
+
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
       tab.addDouble(
@@ -74,12 +78,12 @@ public class IntakeSubsystem extends SubsystemBase {
     return !noteSensor.get();
   }
 
-  public boolean areTwoNotesInRobot(){
-    return !(isBeamBreakSensorTriggered() && shooterSubsystem.isBeamBreakSensorTriggered());
+  public boolean getPenaltyHazard(){
+    return isBeamBreakSensorTriggered() && shooterSubsystem.isBeamBreakSensorTriggered();
   }
 
   private void resolvePenaltyHazard(){
-    if (areTwoNotesInRobot()){
+    if (getPenaltyHazard()){
         setIntakeMode(intakeMode.REVERSE);
     }
   }
@@ -89,9 +93,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void setMotorSpeeds() { // using the current mode, set the motor speed
-    if (areTwoNotesInRobot()){
-      resolvePenaltyHazard();
-    }
+    resolvePenaltyHazard();
+
     intakeMotor.set(intakeMode.modeSettings.INTAKE_MOTOR_SPEED);
     serializerMotor.set(intakeMode.modeSettings.SERIALIZER_MOTOR_SPEED);
   }
