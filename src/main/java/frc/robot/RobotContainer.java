@@ -36,6 +36,7 @@ import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
+import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
@@ -222,7 +223,7 @@ public class RobotContainer {
 
     // INTAKE
     anthony
-        .leftTrigger()
+        .leftBumper()
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
     jacob
@@ -231,7 +232,7 @@ public class RobotContainer {
 
     // SHOOT
     anthony
-        .rightTrigger()
+        .rightBumper()
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
@@ -239,7 +240,7 @@ public class RobotContainer {
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
     // SHOOT OVERRIDE
-    jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
+    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
@@ -255,10 +256,7 @@ public class RobotContainer {
     new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
         .onTrue(new PivotManualCommand(pivotSubsystem, pivotManualRate));
 
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (!alliance.isPresent())
-      alliance = Optional.of(Alliance.Blue); // default to blue if no alliance
-
+    // SOURCE
     anthony
         .y()
         .onTrue(
@@ -266,12 +264,13 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    alliance.get().equals(Alliance.Blue)
+                    DriverStation.getAlliance().get().equals(Alliance.Blue)
                         ? Setpoints.SOURCE_DEGREES
-                        : (Setpoints.SOURCE_DEGREES + 180))
+                        : (-Setpoints.SOURCE_DEGREES))
                 .alongWith(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
+    // SPEAKER FROM STAGE
     anthony
         .b()
         .onTrue(
@@ -279,11 +278,12 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    alliance.get().equals(Alliance.Blue)
+                    DriverStation.getAlliance().get().equals(Alliance.Blue)
                         ? Setpoints.SPEAKER_DEGREES
-                        : (Setpoints.SPEAKER_DEGREES + 180))
+                        : (-Setpoints.SPEAKER_DEGREES))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
+    // AMP
     anthony
         .x()
         .onTrue(
@@ -291,18 +291,36 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
+                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 90 : (90 + 180))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
-    anthony
-        .a()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    alliance.get().equals(Alliance.Blue) ? 0 : 180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
+    // SPEAKER FROM SUBWOOFER
+    anthony.a().onTrue(new PivotAngleCommand(pivotSubsystem, 56));
+    // new RotateAngleDriveCommand(
+    //         drivebaseSubsystem,
+    //         translationXSupplier,
+    //         translationYSupplier,
+    //         alliance.get().equals(Alliance.Blue) ? 0 : 180)
+    //     .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
+
+    DoubleSupplier rotation =
+        exponential(
+            () ->
+                ControllerUtil.deadband(
+                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+            2);
+
+    DoubleSupplier rotationVelocity =
+        () -> rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+
+    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
+        .whileTrue(
+            new RotateVelocityDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                rotationVelocity,
+                anthony.rightBumper()));
 
     new Trigger(
             () ->
