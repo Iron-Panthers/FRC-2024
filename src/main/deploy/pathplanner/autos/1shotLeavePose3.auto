@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7718481866382481,
-      "y": 6.709614747817872
+      "x": 1.12,
+      "y": 4.356232340783266
     },
-    "rotation": 59.88626684901752
+    "rotation": -42.31
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AngleAt1"
+            "name": "AngleAtSpeaker"
           }
         },
         {
@@ -24,15 +24,15 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootAndLeave"
           }
         }
       ]

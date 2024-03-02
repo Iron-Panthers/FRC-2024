@@ -62,7 +62,7 @@ public final class Constants {
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
             new PIDConstants(20, 0, 0),
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(10, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
             Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
             new ReplanningConfig());
@@ -349,9 +349,9 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0.280543, // front/back
-                        0.0964428, // left/right
-                        0.5119878 // up/down
+                        0.3737864, // front/back
+                        0, // left/right
+                        0.5137658 // up/down
                         ),
                     new Rotation3d(
                         0,
@@ -362,7 +362,7 @@ public final class Constants {
                 new Transform3d(
                     new Translation3d(
                         0.280543, // front/back
-                        0.0964428, // left/right
+                        -0.0964428, // left/right
                         0.5119878 // up/down
                         ),
                     new Rotation3d(
