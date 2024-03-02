@@ -145,8 +145,8 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    pivotSubsystem.setDefaultCommand(
-        new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
+    // pivotSubsystem.setDefaultCommand(
+    //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
     // Configure the button bindings
     configureButtonBindings();
