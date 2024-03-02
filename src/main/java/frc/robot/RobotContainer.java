@@ -287,7 +287,17 @@ public class RobotContainer {
                         : (-Setpoints.SPEAKER_DEGREES))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
-    // AMP
+    // // AMP
+    // anthony
+    //     .x()
+    //     .onTrue(
+    //         new RotateAngleDriveCommand(
+    //                 drivebaseSubsystem,
+    //                 translationXSupplier,
+    //                 translationYSupplier,
+    //                 alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
+    //             .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
+
     anthony
         .x()
         .onTrue(
