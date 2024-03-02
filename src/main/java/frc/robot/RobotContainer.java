@@ -310,7 +310,8 @@ public class RobotContainer {
                     (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
             2);
 
-    DoubleSupplier rotationVelocity = () -> rotation.getAsDouble() * 0.2;
+    DoubleSupplier rotationVelocity =
+        () -> rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
 
     new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
         .whileTrue(
