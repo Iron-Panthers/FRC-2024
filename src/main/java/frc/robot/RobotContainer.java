@@ -327,34 +327,34 @@ public class RobotContainer {
                         : (-Setpoints.SPEAKER_DEGREES))
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
-    // // AMP
-    // anthony
-    //     .x()
-    //     .onTrue(
-    //         new RotateAngleDriveCommand(
-    //                 drivebaseSubsystem,
-    //                 translationXSupplier,
-    //                 translationYSupplier,
-    //                 alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
-    //             .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
-
+    // AMP
     anthony
         .x()
         .onTrue(
-            new InstantCommand(
-                () ->
-                    drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
-                drivebaseSubsystem));
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
+
+    // anthony
+    //     .x()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () ->
+    //                 drivebaseSubsystem.resetOdometryToPose(
+    //                     new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
+    //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    anthony.a().onTrue(new PivotAngleCommand(pivotSubsystem, 56));
-    // new RotateAngleDriveCommand(
-    //         drivebaseSubsystem,
-    //         translationXSupplier,
-    //         translationYSupplier,
-    //         alliance.get().equals(Alliance.Blue) ? 0 : 180)
-    //     .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
+    // anthony.a().onTrue(new PivotAngleCommand(pivotSubsystem, 56));
+    new RotateAngleDriveCommand(
+            drivebaseSubsystem,
+            translationXSupplier,
+            translationYSupplier,
+            alliance.get().equals(Alliance.Blue) ? 0 : 180)
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 56));
 
     DoubleSupplier rotation =
         exponential(
