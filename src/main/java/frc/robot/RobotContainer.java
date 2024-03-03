@@ -133,12 +133,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.12, 6.68), new Rotation2d(56.93))),
+                        new Pose2d(new Translation2d(1.12, 6.68), Rotation2d.fromDegrees(56.93))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(-56.93))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose2",
@@ -146,12 +146,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.4, 5.56), new Rotation2d(0))),
+                        new Pose2d(new Translation2d(1.4, 5.56), Rotation2d.fromDegrees(0))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.2, 5.56), new Rotation2d(180))),
+                        new Pose2d(new Translation2d(15.2, 5.56), Rotation2d.fromDegrees(180))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose3",
@@ -159,12 +159,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.12, 4.36), new Rotation2d(-98.90))),
+                        new Pose2d(new Translation2d(1.12, 4.36), Rotation2d.fromDegrees(-98.90))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(98.90))),
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(98.90))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose4",
@@ -172,12 +172,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1, 2.5), new Rotation2d(0))),
+                        new Pose2d(new Translation2d(1, 2.5), Rotation2d.fromDegrees(0))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.5, 2.5), new Rotation2d(180))),
+                        new Pose2d(new Translation2d(15.5, 2.5), Rotation2d.fromDegrees(180))),
                 drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
