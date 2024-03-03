@@ -214,7 +214,7 @@ public class RGBSubsystem extends SubsystemBase {
     if (!isMessageDisplayed
         && !(lastAppliedAnimation.isPresent()
             && lastAppliedAnimation.get() == CurrentAnimationTypes.RAINBOW)) {
-      //showRainbow();
+      // showRainbow();
     }
   }
 }
