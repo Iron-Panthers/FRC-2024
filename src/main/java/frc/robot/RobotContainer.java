@@ -151,7 +151,7 @@ public class RobotContainer {
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.2, 6.68), new Rotation2d(180))),
+                        new Pose2d(new Translation2d(15.2, 5.56), new Rotation2d(180))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose3",
