@@ -395,7 +395,7 @@ public class RobotContainer {
                 anthony::getRightX,
                 anthony.rightBumper()));
 
-
+        //two note = yellow
     new Trigger(
         () -> shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
         .onTrue( new InstantCommand(() -> {
@@ -405,7 +405,7 @@ public class RobotContainer {
         }, rgbSubsystem))
         .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
     
-
+        //serializer = purple
     new Trigger(
         () -> !shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
         .onTrue( new InstantCommand(() -> {
@@ -415,7 +415,7 @@ public class RobotContainer {
         }, rgbSubsystem))
         .onFalse( new InstantCommand(() -> serializerNoteMessage.expire()));
 
-
+        //accelerator = blue
     new Trigger(
         () -> shooterSubsystem.isBeamBreakSensorTriggered() && !intakeSubsystem.isBeamBreakSensorTriggered())
         .onTrue( new InstantCommand(() -> {
@@ -425,6 +425,7 @@ public class RobotContainer {
         }, rgbSubsystem))
         .onFalse( new InstantCommand(() -> acceleratorNoteMessage.expire()));
 
+        //ready to shoot = white
     new Trigger(
         () -> shooterSubsystem.isBeamBreakSensorTriggered() 
         && !intakeSubsystem.isBeamBreakSensorTriggered() 
