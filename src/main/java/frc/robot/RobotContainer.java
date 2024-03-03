@@ -110,6 +110,8 @@ public class RobotContainer {
 
   private RGBMessage acceleratorNoteMessage;
 
+  private RGBMessage readyToShootMessage;
+
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
   /* drive joystick "y" is passed to x because controller is inverted */
@@ -405,38 +407,26 @@ public class RobotContainer {
         }, rgbSubsystem))
         .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
     
-        //serializer = purple
+        //serializer = blue
     new Trigger(
-        () -> !shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
+        () -> intakeSubsystem.isBeamBreakSensorTriggered() || shooterSubsystem.isBeamBreakSensorTriggered())
         .onTrue( new InstantCommand(() -> {
-        serializerNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.PURPLE,
+        serializerNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
                     RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.D_SERIALIZER_NOTE);
+                    RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
         }, rgbSubsystem))
         .onFalse( new InstantCommand(() -> serializerNoteMessage.expire()));
 
-        //accelerator = blue
+        //ready to shoot = red
     new Trigger(
-        () -> shooterSubsystem.isBeamBreakSensorTriggered() && !intakeSubsystem.isBeamBreakSensorTriggered())
-        .onTrue( new InstantCommand(() -> {
-        acceleratorNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
-                    RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.E_ACCELERATOR_NOTE);
-        }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> acceleratorNoteMessage.expire()));
-
-        //ready to shoot = white
-    new Trigger(
-        () -> shooterSubsystem.isBeamBreakSensorTriggered() 
-        && !intakeSubsystem.isBeamBreakSensorTriggered() 
-        && shooterSubsystem.isReadyToShoot() 
+        () -> shooterSubsystem.isReadyToShoot() 
         && pivotSubsystem.isAtTargetDegrees())
         .onTrue( new InstantCommand(() -> {
-        acceleratorNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.WHITE,
+        readyToShootMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.WHITE,
                     RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.F_READY_TO_SHOOT);
+                    RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
         }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> acceleratorNoteMessage.expire()));
+        .onFalse( new InstantCommand(() -> readyToShootMessage.expire()));
   }
 
   /**

@@ -34,9 +34,9 @@ public class RGBSubsystem extends SubsystemBase {
     A_CRITICAL_NETWORK_FAILURE,
     B_MISSING_CAN_DEVICE,
     C_TWO_NOTE_WARNING,
-    D_SERIALIZER_NOTE,
+    D_READY_TO_SHOOT,
+    F_NOTE_IN_ROBOT,
     E_ACCELERATOR_NOTE,
-    F_READY_TO_SHOOT,
     G_NODE_SELECTION_COLOR,
     H_MISSING_PHOTONVISION_CLIENTS,
     I_NETWORK_HEALTHY,
@@ -214,7 +214,7 @@ public class RGBSubsystem extends SubsystemBase {
     if (!isMessageDisplayed
         && !(lastAppliedAnimation.isPresent()
             && lastAppliedAnimation.get() == CurrentAnimationTypes.RAINBOW)) {
-      showRainbow();
+      //showRainbow();
     }
   }
 }
