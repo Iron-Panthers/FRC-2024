@@ -364,7 +364,7 @@ public class RobotContainer {
             2);
 
     DoubleSupplier rotationVelocity =
-        () -> rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
 
     new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
         .whileTrue(
