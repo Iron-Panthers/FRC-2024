@@ -355,7 +355,7 @@ public class RobotContainer {
             translationXSupplier,
             translationYSupplier,
             DriverStation.getAlliance().get().equals(Alliance.Red) ? 180 : 0)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 56));
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(
