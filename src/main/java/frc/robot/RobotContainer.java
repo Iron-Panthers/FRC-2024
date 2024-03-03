@@ -407,7 +407,7 @@ public class RobotContainer {
         }, rgbSubsystem))
         .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
     
-        //serializer = blue
+        //serializer = purple
     new Trigger(
         () -> intakeSubsystem.isBeamBreakSensorTriggered() || shooterSubsystem.isBeamBreakSensorTriggered())
         .onTrue( new InstantCommand(() -> {
