@@ -354,7 +354,7 @@ public class RobotContainer {
             drivebaseSubsystem,
             translationXSupplier,
             translationYSupplier,
-            DriverStation.getAlliance().get().equals(Alliance.Red) ? 0 : 180)
+            DriverStation.getAlliance().get().equals(Alliance.Red) ? 180 : 0)
         .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
