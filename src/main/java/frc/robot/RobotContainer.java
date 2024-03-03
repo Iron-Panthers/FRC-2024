@@ -308,9 +308,9 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue)
-                        ? Setpoints.SOURCE_DEGREES
-                        : (-Setpoints.SOURCE_DEGREES))
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SOURCE_DEGREES
+                        : Setpoints.SOURCE_DEGREES)
                 .alongWith(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
@@ -322,9 +322,9 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue)
-                        ? Setpoints.SPEAKER_DEGREES
-                        : (-Setpoints.SPEAKER_DEGREES))
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SPEAKER_DEGREES
+                        : Setpoints.SPEAKER_DEGREES)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
     // AMP
@@ -335,7 +335,7 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 90 : (90 + 180))
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? (90 + 180) : 90)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
     // anthony
@@ -353,7 +353,7 @@ public class RobotContainer {
             drivebaseSubsystem,
             translationXSupplier,
             translationYSupplier,
-            DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : 180)
+            DriverStation.getAlliance().get().equals(Alliance.Red) ? 180 : 0)
         .alongWith(new PivotAngleCommand(pivotSubsystem, 56));
 
     DoubleSupplier rotation =
