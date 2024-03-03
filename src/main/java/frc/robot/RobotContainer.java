@@ -53,6 +53,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
@@ -102,6 +103,12 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
+  
+  private RGBMessage twoNoteMessage;
+
+  private RGBMessage serializerNoteMessage;
+
+  private RGBMessage acceleratorNoteMessage;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
@@ -387,6 +394,48 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
+
+
+    new Trigger(
+        () -> shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
+        .onTrue( new InstantCommand(() -> {
+        twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
+                    RGBSubsystem.PatternTypes.PULSE,
+                    RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
+        }, rgbSubsystem))
+        .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
+    
+
+    new Trigger(
+        () -> !shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
+        .onTrue( new InstantCommand(() -> {
+        serializerNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.PURPLE,
+                    RGBSubsystem.PatternTypes.PULSE,
+                    RGBSubsystem.MessagePriority.D_SERIALIZER_NOTE);
+        }, rgbSubsystem))
+        .onFalse( new InstantCommand(() -> serializerNoteMessage.expire()));
+
+
+    new Trigger(
+        () -> shooterSubsystem.isBeamBreakSensorTriggered() && !intakeSubsystem.isBeamBreakSensorTriggered())
+        .onTrue( new InstantCommand(() -> {
+        acceleratorNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
+                    RGBSubsystem.PatternTypes.PULSE,
+                    RGBSubsystem.MessagePriority.E_ACCELERATOR_NOTE);
+        }, rgbSubsystem))
+        .onFalse( new InstantCommand(() -> acceleratorNoteMessage.expire()));
+
+    new Trigger(
+        () -> shooterSubsystem.isBeamBreakSensorTriggered() 
+        && !intakeSubsystem.isBeamBreakSensorTriggered() 
+        && shooterSubsystem.isReadyToShoot() 
+        && pivotSubsystem.isAtTargetDegrees())
+        .onTrue( new InstantCommand(() -> {
+        acceleratorNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.WHITE,
+                    RGBSubsystem.PatternTypes.PULSE,
+                    RGBSubsystem.MessagePriority.F_READY_TO_SHOOT);
+        }, rgbSubsystem))
+        .onFalse( new InstantCommand(() -> acceleratorNoteMessage.expire()));
   }
 
   /**
