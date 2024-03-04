@@ -422,7 +422,7 @@ public class RobotContainer {
         () -> shooterSubsystem.isReadyToShoot() 
         && pivotSubsystem.isAtTargetDegrees())
         .onTrue( new InstantCommand(() -> {
-        readyToShootMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.WHITE,
+        readyToShootMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
                     RGBSubsystem.PatternTypes.PULSE,
                     RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
         }, rgbSubsystem))
