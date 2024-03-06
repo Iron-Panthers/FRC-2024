@@ -348,14 +348,13 @@ public class RobotContainer {
     //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    anthony.a().onTrue(
-    // new PivotAngleCommand(pivotSubsystem, 56));
-    new RotateAngleDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            0)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+    anthony
+        .a()
+        .onTrue(
+            // new PivotAngleCommand(pivotSubsystem, 56));
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,9 +63,12 @@ public class IntakeSubsystem extends SubsystemBase {
     timeSincePenaltyHazard = 7;
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble());
+      tab.addDouble("intake voltage", () -> intakeMotor.getMotorVoltage().getValueAsDouble())
+          .withWidget(BuiltInWidgets.kVoltageView);
       tab.addDouble(
-          "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
+              "Serializer motor voltage",
+              () -> serializerMotor.getMotorVoltage().getValueAsDouble())
+          .withWidget(BuiltInWidgets.kVoltageView);
       tab.addString("Current Mode", () -> intakeMode.toString());
     }
   }

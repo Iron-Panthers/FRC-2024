@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -22,7 +21,6 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Pivot;
 import frc.robot.Constants.Pivot.Setpoints;
 import frc.util.Util;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,8 +39,9 @@ public class PivotSubsystem extends SubsystemBase {
   private boolean inRange;
   private Pose2d pose;
 
-  //DEBUG
+  // DEBUG
   private GenericEntry targetDegreesEntry;
+  private GenericEntry useDebugControls;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
@@ -72,14 +71,23 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addBoolean("Is at target", this::isAtTargetDegrees);
       pivotTab.addNumber("Motor Error", this::getCurrentError);
       pivotTab.addNumber("PID Error", pidController::getPositionError);
-      targetDegreesEntry = pivotTab.add("DEBUG Target Degrees", 45)// this::getTargetDegrees)
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 15, "max", 90))
-        .getEntry();
-      pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
+      pivotTab
+          .addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble())
+          .withWidget(BuiltInWidgets.kVoltageView);
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
       pivotTab.add(pidController);
+      targetDegreesEntry =
+          pivotTab
+              .add("DEBUG Target Degrees", 45) // this::getTargetDegrees)
+              .withWidget(BuiltInWidgets.kNumberSlider)
+              .withProperties(Map.of("min", 15, "max", 90))
+              .getEntry();
+      useDebugControls =
+          pivotTab
+              .add("Use Debug Controls", false)
+              .withWidget(BuiltInWidgets.kToggleSwitch)
+              .getEntry();
     }
   }
 
@@ -152,30 +160,14 @@ public class PivotSubsystem extends SubsystemBase {
     }
   }
 
-  private boolean inAngleRange(double angle) {
-    return angle < Setpoints.MAXIMUM_ANGLE && angle > Setpoints.MINIMUM_ANGLE;
-  }
-
-  private boolean currentOrTargetAngleIsUnsafe() {
-    return !inAngleRange(getCurrentAngle()) || !inAngleRange(targetDegrees);
-  }
-
-  private double computeTargetDegrees() {
-    if (currentOrTargetAngleIsUnsafe()) {
-      if (getCurrentAngle() < 45) {
-        return Setpoints.MINIMUM_SAFE_THRESHOLD;
-      }
-      return Setpoints.MAXIMUM_SAFE_THRESHOLD;
-    }
-    return targetDegrees;
-  }
-
   @Override
   public void periodic() {
 
-    targetDegrees = targetDegreesEntry.getDouble(targetDegrees);
+    if (useDebugControls.getBoolean(false)) {
+      targetDegrees = targetDegreesEntry.getDouble(targetDegrees);
+    }
 
-    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
+    double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
