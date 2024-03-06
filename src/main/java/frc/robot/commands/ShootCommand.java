@@ -21,7 +21,7 @@ public class ShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.SHOOTING);
+    shooterSubsystem.setShooterMode(ShooterMode.SHOOTING_SPEAKER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

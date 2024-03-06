@@ -35,12 +35,17 @@ public class ShooterSubsystem extends SubsystemBase {
   private double d_AmpRollerRatio = .068d;
   private GenericEntry ampRollerRatioEntry;
 
+  private double d_ShooterSpeed = .5d;
+  private GenericEntry shooterSpeedEntry;
+
 
   public enum ShooterMode {
     INTAKE(Shooter.Modes.INTAKE),
     IDLE(Shooter.Modes.IDLE),
     RAMPING(Shooter.Modes.RAMPING),
-    SHOOTING(Shooter.Modes.SHOOT_SPEAKER);
+    SHOOTING_SPEAKER(Shooter.Modes.SHOOT_SPEAKER),
+    SHOOTING_AMP(Shooter.Modes.SHOOT_AMP);
+
 
     public final ShooterPowers shooterPowers;
 
@@ -100,7 +105,12 @@ public class ShooterSubsystem extends SubsystemBase {
           "Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
 
       ampRollerRatioEntry = shooterTab.add(
-          "DEBUG Amp Top Roller Ratio", 1)
+          "DEBUG Amp Top Roller Percent", 1)
+          .withWidget(BuiltInWidgets.kNumberSlider)
+          .withProperties(Map.of("min", 0, "max", 1))
+          .getEntry();
+      shooterSpeedEntry = shooterTab.add(
+          "DEBUG Shooter Speed", .5)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 1))
           .getEntry();
@@ -131,9 +141,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     d_AmpRollerRatio = ampRollerRatioEntry.getDouble(1);
+    d_ShooterSpeed = shooterSpeedEntry.getDouble(.5);
 
-    rollerMotorBottom.set(shooterMode.shooterPowers.roller());
-    rollerMotorTop.set(shooterMode.shooterPowers.roller() * d_AmpRollerRatio);// * shooterMode.shooterPowers.rollerRatio());
+    rollerMotorBottom.set(d_ShooterSpeed);
+    rollerMotorTop.set(d_ShooterSpeed * d_AmpRollerRatio);// * shooterMode.shooterPowers.rollerRatio());
 
     acceleratorMotor.set(shooterMode.shooterPowers.accelerator());
   }
