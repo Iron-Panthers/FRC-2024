@@ -1,11 +1,17 @@
 {
-  "robotWidth": 0.8128,
-  "robotLength": 0.98,
+  "robotWidth": 0.85,
+  "robotLength": 0.85,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
+  "pathFolders": [
+    "Ethan's Paths",
+    "Pose2",
+    "Pose1"
+  ],
+  "autoFolders": [
+    "Ethan's Autos"
+  ],
+  "defaultMaxVel": 1.0,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

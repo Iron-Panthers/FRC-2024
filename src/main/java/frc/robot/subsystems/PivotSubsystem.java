@@ -29,7 +29,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private PIDController pidController;
 
-  private PivotMode pivotMode;
+  // private PivotMode pivotMode;
 
   private double targetDegrees;
   private double pidVoltageOutput;
@@ -41,10 +41,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
-  public enum PivotMode {
-    ANGLE,
-    VOLTAGE
-  }
+  // public enum PivotMode {
+  //   ANGLE,
+  //   VOLTAGE
+  // }
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
@@ -62,9 +62,9 @@ public class PivotSubsystem extends SubsystemBase {
 
     pivotMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    pidController = new PIDController(0.2, 0, 0);
+    pidController = new PIDController(0.3, 0, 0);
 
-    pivotMode = PivotMode.ANGLE;
+    // pivotMode = PivotMode.ANGLE;
 
     targetDegrees = 0;
     pidVoltageOutput = 0;
@@ -83,7 +83,7 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> mathedTargetDegrees);
       pivotTab.add(pidController);
-      pivotTab.addString("Pivot mode", () -> pivotMode.toString());
+      // pivotTab.addString("Pivot mode", () -> pivotMode.toString());
     }
   }
 
@@ -99,7 +99,7 @@ public class PivotSubsystem extends SubsystemBase {
     return rotationsToDegrees(pivotCANcoder.getAbsolutePosition().getValueAsDouble());
   }
 
-  private double getTargetDegrees() {
+  public double getTargetDegrees() {
     return targetDegrees;
   }
 
@@ -110,13 +110,13 @@ public class PivotSubsystem extends SubsystemBase {
   public void setTargetDegrees(double degrees) {
     this.targetDegrees =
         MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
-    this.pivotMode = PivotMode.ANGLE;
+    // this.pivotMode = PivotMode.ANGLE;
   }
 
-  public void setManualVolatgeOutput(double voltage) {
-    this.manualVolatgeOutput = voltage;
-    this.pivotMode = PivotMode.VOLTAGE;
-  }
+  // public void setManualVolatgeOutput(double voltage) {
+  //   this.manualVolatgeOutput = voltage;
+  //   this.pivotMode = PivotMode.VOLTAGE;
+  // }
 
   private static double degreesToRotations(double angle) {
     return (angle / 360);
@@ -128,7 +128,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   // returns wheather or not a change was needed
   public void prepareForIntake() {
-      setTargetDegrees(20);
+    setTargetDegrees(20);
   }
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
@@ -177,15 +177,31 @@ public class PivotSubsystem extends SubsystemBase {
         targetDegrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
   }
 
-  private void applyPivotMode() {
-    if (pivotMode == PivotMode.ANGLE) {
-      pivotAnglePeriodic();
-    } else {
-      pivotVoltagePeriodic();
-    }
-  }
+  // private void applyPivotMode() {
+  //   if (pivotMode == PivotMode.ANGLE) {
+  //     pivotAnglePeriodic();
+  //   } else {
+  //     pivotVoltagePeriodic();
+  //   }
+  // }
 
-  private void pivotAnglePeriodic() {
+  // private void pivotAnglePeriodic() {
+  //   targetDegrees = clampedTargetDegrees();
+
+  //   double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
+
+  //   pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
+
+  //   pivotMotor.setVoltage(pidVoltageOutput);
+  // }
+
+  // private void pivotVoltagePeriodic() {
+  //   pivotMotor.setVoltage(MathUtil.clamp(manualVolatgeOutput + getFeedForward(), -4, 4));
+  // }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
     targetDegrees = clampedTargetDegrees();
 
     double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
@@ -193,15 +209,5 @@ public class PivotSubsystem extends SubsystemBase {
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
     pivotMotor.setVoltage(pidVoltageOutput);
-  }
-
-  private void pivotVoltagePeriodic() {
-    pivotMotor.setVoltage(MathUtil.clamp(manualVolatgeOutput + getFeedForward(), -4, 4));
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    applyPivotMode();
   }
 }

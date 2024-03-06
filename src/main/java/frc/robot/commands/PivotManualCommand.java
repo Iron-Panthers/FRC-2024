@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Pivot;
 import frc.robot.subsystems.PivotSubsystem;
 import java.util.function.DoubleSupplier;
 
@@ -20,7 +19,7 @@ public class PivotManualCommand extends Command {
 
   @Override
   public void execute() {
-    pivotSubsystem.setManualVolatgeOutput(joystickRate.getAsDouble() * Pivot.PIVOT_MAX_VOLTAGE);
+    pivotSubsystem.setTargetDegrees(pivotSubsystem.getTargetDegrees() + joystickRate.getAsDouble());
   }
 
   @Override

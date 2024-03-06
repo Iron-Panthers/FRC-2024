@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Config;
 import frc.robot.Constants.Shooter;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -61,6 +60,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 
+    acceleratorMotor.setInverted(true);
+    rollerMotorBottom.setInverted(true);
+    rollerMotorTop.setInverted(true);
+
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorTop.setNeutralMode(NeutralModeValue.Coast);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Coast);
@@ -68,11 +71,15 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMode = ShooterMode.IDLE;
 
     // SHUFFLEBOARD
-    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      shooterTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
-      shooterTab.addDouble(
-          "Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
-    }
+    shooterTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
+    shooterTab.addDouble(
+        "Top Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
+    shooterTab.addDouble(
+        "Bottom Roller Velocity", () -> rollerMotorBottom.getVelocity().getValueAsDouble());
+    shooterTab.addDouble(
+        "Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
+    shooterTab.addDouble(
+        "Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
   }
 
   public boolean isShooterUpToSpeed() {
@@ -93,8 +100,8 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.set(0);
   }
 
-  public void setShooterMode(ShooterMode newMode) {
-    this.shooterMode = newMode;
+  public void setShooterMode(ShooterMode shooterMode) {
+    this.shooterMode = shooterMode;
   }
 
   @Override

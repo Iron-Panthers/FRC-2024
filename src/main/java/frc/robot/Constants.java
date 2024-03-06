@@ -59,7 +59,7 @@ public final class Constants {
     // FIXME: These values should be replaced with actual values
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(20, 0, 0),
             new PIDConstants(5, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
             Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
@@ -183,7 +183,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.425537109375 // comp bot offset
+                ? 0.417724609375 // comp bot offset
                 : 0.067626953125; // practice bot offset
       }
 
@@ -194,7 +194,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.40478515625 // comp bot offset
+                ? -0.40869140625 // comp bot offset
                 : 0.308349609375; // practice bot offset
       }
 
@@ -205,7 +205,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.2158203125 // comp bot offset
+                ? 0.213134765625 // comp bot offset
                 : -0.23291015625; // practice bot offset
       }
 
@@ -216,7 +216,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.286865234375 // comp bot offset
+                ? 0.30322265625 // comp bot offset
                 : -0.379150390625; // practice bot offset
       }
     }
@@ -238,23 +238,26 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0.23749, // front/back
-                        0.2403348, // left/right
-                        0.7973822 // up/down
+                        0.280543, // front/back
+                        0.0964428, // left/right
+                        0.5119878 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(-11.5), // angle up/down
+                        Math.toRadians(35), // angle up/down
                         0))),
             new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
-                        0, // front/back
-                        -0.212725, // left/right
-                        0.6470142 // up/down
+                        0.280543, // front/back
+                        0.0964428, // left/right
+                        0.5119878 // up/down
                         ),
-                    new Rotation3d(0, Math.toRadians(17), Math.PI))));
+                    new Rotation3d(
+                        0,
+                        Math.toRadians(215), // angle up/down
+                        0))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
@@ -393,7 +396,7 @@ public final class Constants {
 
     // MODE SETTINGS
     public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(.8d, .5d);
+        new IntakeSubsystemModeSettings(.95d, .5d);
     public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
         new IntakeSubsystemModeSettings(0, 0d);
     public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =
@@ -410,7 +413,7 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(0, .15);
+          new ShooterSubsystem.ShooterPowers(.8, .15);
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMPING =
@@ -427,7 +430,7 @@ public final class Constants {
   public static final class Pivot {
     public static final class Ports {
       public static final int PIVOT_MOTOR_PORT = 18;
-      public static final int CANCODER_PORT = 22;
+      public static final int CANCODER_PORT = 28;
       public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
     }
 
@@ -453,7 +456,7 @@ public final class Constants {
               .withForwardSoftLimitEnable(true)
               .withReverseSoftLimitEnable(true);
       public static final VoltageConfigs PIVOT_VOLTAGE =
-          new VoltageConfigs().withPeakForwardVoltage(1.5).withPeakReverseVoltage(-1.5);
+          new VoltageConfigs().withPeakForwardVoltage(5).withPeakReverseVoltage(-5);
       public static final TalonFXConfiguration PIVOT_CONFIG =
           new TalonFXConfiguration()
               .withFeedback(PIVOT_FEEDBACK)
@@ -474,8 +477,8 @@ public final class Constants {
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET =
-        0.476806640625 + (0.0390625 - 0.000732421875);
+    public static final double PIVOT_CANCODER_OFFSET = 0.499268 + (0.057373 - 0.014404);
+
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 
@@ -493,7 +496,7 @@ public final class Constants {
     public static final double GRAVITY = 9.80665; // meters per second
     public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
 
-    public static final double GRAVITY_VOLTAGE = 0.38;
+    public static final double GRAVITY_VOLTAGE = 0.4;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 
