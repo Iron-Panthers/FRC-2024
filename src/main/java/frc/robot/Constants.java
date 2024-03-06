@@ -255,15 +255,15 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(.8, .15);
+          new ShooterSubsystem.ShooterPowers(.8, .15, 1);
       public static final ShooterSubsystem.ShooterPowers IDLE =
-          new ShooterSubsystem.ShooterPowers(0, 0);
+          new ShooterSubsystem.ShooterPowers(0, 0, 1);
       public static final ShooterSubsystem.ShooterPowers RAMPING =
-          new ShooterSubsystem.ShooterPowers(.8, 0);
-      public static final ShooterSubsystem.ShooterPowers SHOOTING =
-          new ShooterSubsystem.ShooterPowers(.8, .5);
-      public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
-          new ShooterSubsystem.ShooterPowers(0, 0);
+          new ShooterSubsystem.ShooterPowers(.8, 0, 1);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
+          new ShooterSubsystem.ShooterPowers(.8, .5, 1);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP =
+          new ShooterSubsystem.ShooterPowers(.8, .5, .068);
     }
 
     public static final double SHOOTER_VELOCITY_THRESHOLD = 30;

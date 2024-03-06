@@ -10,8 +10,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +22,8 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Pivot;
 import frc.robot.Constants.Pivot.Setpoints;
 import frc.util.Util;
+
+import java.util.Map;
 import java.util.Optional;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -35,6 +40,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   private boolean inRange;
   private Pose2d pose;
+
+  //DEBUG
+  private GenericEntry targetDegreesEntry;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
@@ -64,7 +72,10 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addBoolean("Is at target", this::isAtTargetDegrees);
       pivotTab.addNumber("Motor Error", this::getCurrentError);
       pivotTab.addNumber("PID Error", pidController::getPositionError);
-      pivotTab.addNumber("Target Degrees", this::getTargetDegrees);
+      targetDegreesEntry = pivotTab.add("DEBUG Target Degrees", 45)// this::getTargetDegrees)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 15, "max", 90))
+        .getEntry();
       pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
@@ -161,6 +172,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    targetDegrees = targetDegreesEntry.getDouble(targetDegrees);
+
     double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);

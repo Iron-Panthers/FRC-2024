@@ -4,12 +4,18 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Shooter;
@@ -25,11 +31,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final ShuffleboardTab shooterTab = Shuffleboard.getTab("Shooter");
 
+  //DEBUG
+  private double d_AmpRollerRatio = .068d;
+  private GenericEntry ampRollerRatioEntry;
+
+
   public enum ShooterMode {
     INTAKE(Shooter.Modes.INTAKE),
     IDLE(Shooter.Modes.IDLE),
     RAMPING(Shooter.Modes.RAMPING),
-    SHOOTING(Shooter.Modes.SHOOTING);
+    SHOOTING(Shooter.Modes.SHOOT_SPEAKER);
 
     public final ShooterPowers shooterPowers;
 
@@ -38,10 +49,17 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public record ShooterPowers(double roller, double accelerator) {
-    public ShooterPowers(double roller, double accelerator) {
+  public record ShooterPowers(double roller, double accelerator, double rollerRatio) {
+    /**
+     * Custom motor powers for each shooter mode.
+     * @param roller percent speed of roller motor
+     * @param accelerator percent speed of acceletator motor
+     * @param rollerRatio the ratio between the top and bottom roller: top speed = bottom * rollerRatio
+     */
+    public ShooterPowers(double roller, double accelerator, double rollerRatio) {
       this.roller = roller;
       this.accelerator = accelerator;
+      this.rollerRatio = rollerRatio;
     }
   }
 
@@ -59,8 +77,6 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
     rollerMotorBottom.clearStickyFaults();
-
-    rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 
     acceleratorMotor.setInverted(true);
     rollerMotorBottom.setInverted(true);
@@ -82,6 +98,12 @@ public class ShooterSubsystem extends SubsystemBase {
           "Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
       shooterTab.addDouble(
           "Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
+
+      ampRollerRatioEntry = shooterTab.add(
+          "DEBUG Amp Top Roller Ratio", 1)
+          .withWidget(BuiltInWidgets.kNumberSlider)
+          .withProperties(Map.of("min", 0, "max", 1))
+          .getEntry();
     }
   }
 
@@ -108,7 +130,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    rollerMotorTop.set(shooterMode.shooterPowers.roller());
+    d_AmpRollerRatio = ampRollerRatioEntry.getDouble(1);
+
+    rollerMotorBottom.set(shooterMode.shooterPowers.roller());
+    rollerMotorTop.set(shooterMode.shooterPowers.roller() * d_AmpRollerRatio);// * shooterMode.shooterPowers.rollerRatio());
+
     acceleratorMotor.set(shooterMode.shooterPowers.accelerator());
   }
 }
