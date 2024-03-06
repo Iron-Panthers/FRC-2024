@@ -107,9 +107,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public double getCurrentExtensionInches() {
-    return getCurrentRotations()
-        / Climber.CLIMBER_GEAR_RATIO
-        * (Climber.SPROCKET_DIAMETER * Math.PI);
+    return rotationsToExtensionInches(getCurrentRotations());
   }
 
   // ROTATION TO INCHES CONVERSION
