@@ -6,9 +6,12 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -264,7 +267,8 @@ public class RobotContainer {
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
     // OUTTAKE
     jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
-
+    
+    
     // INTAKE
     anthony
         .leftBumper()
@@ -388,6 +392,14 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
+
+    Pose2d bottomMid = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
+    PathConstraints constraints = new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command followBottomMid = AutoBuilder.pathfindToPose(bottomMid, constraints, 0, 0);
+
+
+    jacob.y().onTrue( followBottomMid);
+
   }
 
   /**
