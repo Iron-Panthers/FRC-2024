@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -34,17 +37,18 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
+import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
-import frc.robot.commands.UnstuckIntakeCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -76,6 +80,10 @@ public class RobotContainer {
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
 
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+  private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
+
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
@@ -85,9 +93,6 @@ public class RobotContainer {
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
 
-  private final SharedReference<NodeSelection> currentNodeSelection =
-      new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
-
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);
   /** controller 1 layer */
@@ -95,7 +100,7 @@ public class RobotContainer {
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
   /** controller 0 layer */
-  private final Layer anthonyLayer = new Layer(anthony.rightBumper());
+  //   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
   private final SendableChooser<Command> autoSelector;
@@ -132,6 +137,58 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand(
         "AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose1",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.12, 6.68), Rotation2d.fromDegrees(56.93))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(-56.93))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose2",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.4, 5.56), Rotation2d.fromDegrees(0))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.2, 5.56), Rotation2d.fromDegrees(180))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose3",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.12, 4.36), Rotation2d.fromDegrees(-98.90))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(98.90))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose4",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1, 2.5), Rotation2d.fromDegrees(0))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.5, 2.5), Rotation2d.fromDegrees(180))),
+                drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -146,8 +203,8 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    pivotSubsystem.setDefaultCommand(
-        new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
+    // pivotSubsystem.setDefaultCommand(
+    //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -211,23 +268,18 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    /*anthony
-    .back()
-    .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem)); */
-
     // STOP INTAKE-SHOOTER
     jacob
         .x()
         .onTrue(
             new StopShooterCommand(shooterSubsystem)
-                .alongWith(new StopIntakeCommand(intakeSubsystem))
-                .alongWith(new InstantCommand(() -> {}, climberSubsystem)));
-    // UNSTUCK
-    jacob.rightBumper().onTrue(new UnstuckIntakeCommand(intakeSubsystem));
+                .alongWith(new StopIntakeCommand(intakeSubsystem)));
+    // OUTTAKE
+    jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
 
     // INTAKE
     anthony
-        .leftTrigger()
+        .leftBumper()
         .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
     jacob
@@ -241,7 +293,7 @@ public class RobotContainer {
 
     // SHOOT
     anthony
-        .rightTrigger()
+        .rightBumper()
         .onTrue(
             new ShooterRampUpCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
@@ -249,7 +301,7 @@ public class RobotContainer {
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
     // SHOOT OVERRIDE
-    jacob.leftBumper().onTrue(new ShootCommand(shooterSubsystem));
+    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
@@ -265,10 +317,7 @@ public class RobotContainer {
     new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
         .onTrue(new PivotManualCommand(pivotSubsystem, pivotManualRate));
 
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (!alliance.isPresent())
-      alliance = Optional.of(Alliance.Blue); // default to blue if no alliance
-
+    // SOURCE
     anthony
         .y()
         .onTrue(
@@ -276,12 +325,13 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    alliance.get().equals(Alliance.Blue)
-                        ? Setpoints.SOURCE_DEGREES
-                        : (Setpoints.SOURCE_DEGREES + 180))
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SOURCE_DEGREES
+                        : Setpoints.SOURCE_DEGREES)
                 .alongWith(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
+    // SPEAKER FROM STAGE
     anthony
         .b()
         .onTrue(
@@ -289,11 +339,12 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    alliance.get().equals(Alliance.Blue)
-                        ? Setpoints.SPEAKER_DEGREES
-                        : (Setpoints.SPEAKER_DEGREES + 180))
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SPEAKER_DEGREES
+                        : Setpoints.SPEAKER_DEGREES)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
+    // AMP
     anthony
         .x()
         .onTrue(
@@ -301,18 +352,46 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    alliance.get().equals(Alliance.Blue) ? 90 : (90 + 180))
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
-    anthony
-        .a()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    alliance.get().equals(Alliance.Blue) ? 0 : 180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 45)));
+    // anthony
+    //     .x()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () ->
+    //                 drivebaseSubsystem.resetOdometryToPose(
+    //                     new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
+    //             drivebaseSubsystem));
+
+    // SPEAKER FROM SUBWOOFER
+    anthony.a().onTrue(
+    // new PivotAngleCommand(pivotSubsystem, 56));
+    new RotateAngleDriveCommand(
+            drivebaseSubsystem,
+            translationXSupplier,
+            translationYSupplier,
+            0)
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+
+    DoubleSupplier rotation =
+        exponential(
+            () ->
+                ControllerUtil.deadband(
+                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+            2);
+
+    DoubleSupplier rotationVelocity =
+        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+
+    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
+        .whileTrue(
+            new RotateVelocityDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                rotationVelocity,
+                anthony.rightBumper()));
 
     new Trigger(
             () ->

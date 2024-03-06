@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Ethan's Paths",
-    "Pose2",
-    "Pose1"
+    "Pose3",
+    "Pose1",
+    "Pose2"
   ],
   "autoFolders": [
     "Ethan's Autos"

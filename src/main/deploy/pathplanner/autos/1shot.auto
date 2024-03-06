@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.24,
-      "y": 6.44
+      "x": 1.1161186924143758,
+      "y": 6.675380607398383
     },
-    "rotation": 60.316859820876644
+    "rotation": 56.93
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,44 @@
         {
           "type": "named",
           "data": {
-            "name": "AngleAt1"
+            "name": "recenterPose1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleAtSpeaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterRampUpCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
           }
         },
         {
@@ -30,16 +67,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShooterRampUpCommand"
+                  "name": "IntakeCommand"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
           }
         }
       ]

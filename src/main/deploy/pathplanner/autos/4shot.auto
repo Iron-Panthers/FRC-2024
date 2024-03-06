@@ -5,12 +5,24 @@
       "x": 1.1161186924143758,
       "y": 6.675380607398383
     },
-    "rotation": 56.92932217723831
+    "rotation": 56.93
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "recenterPose1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        },
         {
           "type": "deadline",
           "data": {
@@ -28,6 +40,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
