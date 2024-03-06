@@ -272,7 +272,10 @@ public class RobotContainer {
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
     // OUTTAKE
     jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
-
+// climer up
+jacob.a().onTrue(new ClimberPositionCommand(climberSubsystem, 5 ).alongWith( new PivotAngleCommand(pivotSubsystem, 90) ));
+//climer down 
+jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 0 ).alongWith( new PivotAngleCommand(pivotSubsystem, 0) ));
     // INTAKE
     anthony
         .leftBumper()
