@@ -408,15 +408,21 @@ public class RobotContainer {
     
         //serializer = blue
     new Trigger(
-        () -> intakeSubsystem.isBeamBreakSensorTriggered() /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/)
+        () -> intakeSubsystem.isBeamBreakSensorTriggered()) /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
         .onTrue( new InstantCommand(() -> {
-        noteInRobotMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
+            noteInRobotMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
             Constants.Lights.Colors.PURPLE,
             //: Constants.Lights.Colors.BLUE,
             RGBSubsystem.PatternTypes.PULSE,
             RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
         }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> noteInRobotMessage.expire()));
+        .onFalse( new InstantCommand(() -> {
+            twoNoteMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
+            Constants.Lights.Colors.ORANGE,
+            //: Constants.Lights.Colors.BLUE,
+            RGBSubsystem.PatternTypes.PULSE,
+            RGBSubsystem.MessagePriority.E_ACCELERATOR_NOTE);
+        }, rgbSubsystem));
 
         //ready to shoot = red
     new Trigger(
