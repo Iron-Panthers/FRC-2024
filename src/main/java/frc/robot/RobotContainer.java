@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Climber;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
@@ -206,8 +207,7 @@ public class RobotContainer {
 
     autoSelector = AutoBuilder.buildAutoChooser();
 
-    climberSubsystem.setDefaultCommand(
-        new ClimberManualCommand(climberSubsystem, jacob::getRightY));
+    climberSubsystem.setDefaultCommand(new ClimberManualCommand(climberSubsystem, jacob::getRightY));
 
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
@@ -364,13 +364,14 @@ jacob.b().onTrue(new ClimberPositionCommand(climberSubsystem, 0 ).alongWith( new
     //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    anthony
-        .a()
-        .onTrue(
-            // new PivotAngleCommand(pivotSubsystem, 56));
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+    anthony.a().onTrue(
+    // new PivotAngleCommand(pivotSubsystem, 56));
+    new RotateAngleDriveCommand(
+            drivebaseSubsystem,
+            translationXSupplier,
+            translationYSupplier,
+            0)
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(
