@@ -397,22 +397,22 @@ public class RobotContainer {
                 anthony.rightBumper()));
 
         //two note = yellow
-    new Trigger(
-        () -> shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
-        .onTrue( new InstantCommand(() -> {
-        twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
-                    RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
-        }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
+    // new Trigger(
+    //     () -> shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
+    //     .onTrue( new InstantCommand(() -> {
+    //     twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
+    //                 RGBSubsystem.PatternTypes.PULSE,
+    //                 RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
+    //     }, rgbSubsystem))
+    //     .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
     
         //serializer = blue
     new Trigger(
-        () -> intakeSubsystem.isBeamBreakSensorTriggered() || shooterSubsystem.isBeamBreakSensorTriggered())
+        () -> intakeSubsystem.isBeamBreakSensorTriggered() /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/)
         .onTrue( new InstantCommand(() -> {
-        noteInRobotMessage = rgbSubsystem.showMessage(intakeSubsystem.isBeamBreakSensorTriggered()
-            ? Constants.Lights.Colors.PURPLE
-            : Constants.Lights.Colors.BLUE,
+        noteInRobotMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
+            Constants.Lights.Colors.PURPLE,
+            //: Constants.Lights.Colors.BLUE,
             RGBSubsystem.PatternTypes.PULSE,
             RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
         }, rgbSubsystem))
