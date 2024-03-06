@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -17,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.PoseEstimator;
 import frc.robot.Constants.Vision;
@@ -41,6 +41,8 @@ public class VisionSubsystem {
           .withPosition(11, 0)
           .withSize(2, 3);
 
+  private final ShuffleboardTab cameraTab = Shuffleboard.getTab("Vision");
+
   private class DuplicateTracker {
     private double lastTimeStamp;
 
@@ -60,8 +62,17 @@ public class VisionSubsystem {
 
   private double lastDetection = 0;
 
+  private double tagX;
+  private double tagY; 
+  private double tagZ; 
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
+
+    cameraTab.addDouble("x to target", () -> tagX); 
+    cameraTab.addDouble("y to target", () -> tagY); 
+    cameraTab.addDouble("z to target", () -> tagZ); 
+
     // loading the 2024 field arrangement
     try {
       fieldLayout =
@@ -159,12 +170,11 @@ public class VisionSubsystem {
   public static record TagCountDeviation(
       UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
     private Matrix<N3, N1> computeDeviation(double averageDistance) {
-      return MatBuilder.fill(
-          Nat.N3(),
-          Nat.N1(),
-          xParams.computeUnitDeviation(averageDistance),
-          yParams.computeUnitDeviation(averageDistance),
-          thetaParams.computeUnitDeviation(averageDistance));
+      return Matrix.mat(Nat.N3(), Nat.N1())
+          .fill(
+              xParams.computeUnitDeviation(averageDistance),
+              yParams.computeUnitDeviation(averageDistance),
+              thetaParams.computeUnitDeviation(averageDistance));
     }
 
     public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
@@ -216,6 +226,9 @@ public class VisionSubsystem {
         var t3d = target.getBestCameraToTarget();
         sumDistance +=
             Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+          tagX = t3d.getX();
+          tagY = t3d.getY(); 
+          tagZ = t3d.getZ(); 
       }
       double avgDistance = sumDistance / estimation.targetsUsed.size();
 
