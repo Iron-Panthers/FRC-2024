@@ -106,9 +106,7 @@ public class RobotContainer {
   
   private RGBMessage twoNoteMessage;
 
-  private RGBMessage serializerNoteMessage;
-
-  private RGBMessage acceleratorNoteMessage;
+  private RGBMessage noteInRobotMessage;
 
   private RGBMessage readyToShootMessage;
 
@@ -411,11 +409,13 @@ public class RobotContainer {
     new Trigger(
         () -> intakeSubsystem.isBeamBreakSensorTriggered() || shooterSubsystem.isBeamBreakSensorTriggered())
         .onTrue( new InstantCommand(() -> {
-        serializerNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
-                    RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
+        noteInRobotMessage = rgbSubsystem.showMessage(intakeSubsystem.isBeamBreakSensorTriggered()
+            ? Constants.Lights.Colors.PURPLE
+            : Constants.Lights.Colors.BLUE,
+            RGBSubsystem.PatternTypes.PULSE,
+            RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
         }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> serializerNoteMessage.expire()));
+        .onFalse( new InstantCommand(() -> noteInRobotMessage.expire()));
 
         //ready to shoot = red
     new Trigger(
