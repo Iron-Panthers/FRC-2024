@@ -140,12 +140,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.12, 6.68), new Rotation2d(56.93))),
+                        new Pose2d(new Translation2d(1.12, 6.68), Rotation2d.fromDegrees(56.93))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(-56.93))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose2",
@@ -153,12 +153,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.4, 5.56), new Rotation2d(0))),
+                        new Pose2d(new Translation2d(1.4, 5.56), Rotation2d.fromDegrees(0))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.2, 5.56), new Rotation2d(180))),
+                        new Pose2d(new Translation2d(15.2, 5.56), Rotation2d.fromDegrees(180))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose3",
@@ -166,12 +166,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1.12, 4.36), new Rotation2d(-98.90))),
+                        new Pose2d(new Translation2d(1.12, 4.36), Rotation2d.fromDegrees(-98.90))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(98.90))),
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(98.90))),
                 drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose4",
@@ -179,12 +179,12 @@ public class RobotContainer {
             ? new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1, 2.5), new Rotation2d(0))),
+                        new Pose2d(new Translation2d(1, 2.5), Rotation2d.fromDegrees(0))),
                 drivebaseSubsystem)
             : new InstantCommand(
                 () ->
                     drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(15.5, 2.5), new Rotation2d(180))),
+                        new Pose2d(new Translation2d(15.5, 2.5), Rotation2d.fromDegrees(180))),
                 drivebaseSubsystem));
 
     // Set up the default command for the drivetrain.
@@ -315,9 +315,9 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue)
-                        ? Setpoints.SOURCE_DEGREES
-                        : (-Setpoints.SOURCE_DEGREES))
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SOURCE_DEGREES
+                        : Setpoints.SOURCE_DEGREES)
                 .alongWith(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
@@ -329,9 +329,9 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue)
-                        ? Setpoints.SPEAKER_DEGREES
-                        : (-Setpoints.SPEAKER_DEGREES))
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SPEAKER_DEGREES
+                        : Setpoints.SPEAKER_DEGREES)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
     // AMP
@@ -342,7 +342,7 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 90 : (90 + 180))
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 80)));
 
     // anthony
@@ -355,13 +355,14 @@ public class RobotContainer {
     //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    // anthony.a().onTrue(new PivotAngleCommand(pivotSubsystem, 56));
+    anthony.a().onTrue(
+    // new PivotAngleCommand(pivotSubsystem, 56));
     new RotateAngleDriveCommand(
             drivebaseSubsystem,
             translationXSupplier,
             translationYSupplier,
-            DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : 180)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 56));
+            0)
+        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(
@@ -371,7 +372,7 @@ public class RobotContainer {
             2);
 
     DoubleSupplier rotationVelocity =
-        () -> rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
 
     new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
         .whileTrue(
