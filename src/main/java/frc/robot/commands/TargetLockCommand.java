@@ -6,14 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Drive;
-import frc.robot.Constants.Pivot;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.util.Util;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import java.util.*;
 
 /**
  * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the
@@ -25,23 +25,22 @@ public class TargetLockCommand extends Command {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
 
-  private final Pose2d targetPoint;
+  private final Translation2d targetPoint;
 
   private int targetAngle;
   private Supplier<Pose2d> pose;
 
   /** Creates a new TargetLockCommand. */
-  public TargetLockCommand(DrivebaseSubsystem drivebaseSubsystem) {
+  public TargetLockCommand(
+      DrivebaseSubsystem drivebaseSubsystem,
+      DoubleSupplier translationXSupplier,
+      DoubleSupplier translationYSupplier,
+      Translation2d targetPoint) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
-    this.translationXSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond;
-    this.translationYSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond;
-
-    var alliance = DriverStation.getAlliance();
-    this.targetPoint =
-        (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red)
-            ? Pivot.RED_SPEAKER_POSE
-            : Pivot.BLUE_SPEAKER_POSE;
+    this.translationXSupplier = translationXSupplier;
+    this.translationYSupplier = translationYSupplier;
+    this.targetPoint = targetPoint;
 
     this.pose = () -> this.drivebaseSubsystem.getPose();
 
@@ -58,9 +57,10 @@ public class TargetLockCommand extends Command {
   public void execute() {
     targetAngle =
         (int) // may want to change to double for more accuracy (likely unnecessary)
-            Math.atan(
-                (targetPoint.getY() - pose.get().getY())
-                    / (targetPoint.getX() - pose.get().getX()));
+            - Math.toDegrees(Math.atan2(
+                (targetPoint.getY() - pose.get().getY()),
+                    ( targetPoint.getX() - pose.get().getX())
+                  ));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 
@@ -76,10 +76,11 @@ public class TargetLockCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Util.epsilonZero(
-            Util.relativeAngularDifference(
-                drivebaseSubsystem.getDriverGyroscopeRotation(), targetAngle),
-            Drive.ANGULAR_ERROR)
-        && Util.epsilonEquals(drivebaseSubsystem.getRotVelocity(), 0, 10);
+    return false;
+    // return Util.epsilonZero(
+    //         Util.relativeAngularDifference(
+    //             drivebaseSubsystem.getDriverGyroscopeRotation(), targetAngle),
+    //         Drive.ANGULAR_ERROR)
+    //     && Util.epsilonEquals(drivebaseSubsystem.getRotVelocity(), 0, 10);
   }
 }

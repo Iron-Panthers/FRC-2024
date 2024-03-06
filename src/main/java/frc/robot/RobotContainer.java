@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -267,8 +266,7 @@ public class RobotContainer {
                 .alongWith(new StopIntakeCommand(intakeSubsystem)));
     // OUTTAKE
     jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
-    
-    
+
     // INTAKE
     anthony
         .leftBumper()
@@ -352,14 +350,13 @@ public class RobotContainer {
     //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    anthony.a().onTrue(
-    // new PivotAngleCommand(pivotSubsystem, 56));
-    new RotateAngleDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            0)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+    anthony
+        .a()
+        .onTrue(
+            // new PivotAngleCommand(pivotSubsystem, 56));
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(
@@ -392,14 +389,25 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
+    PathConstraints constraints =
+        new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
+    // TODO: change the button bindings on all of these
     Pose2d bottomMid = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
-    PathConstraints constraints = new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
     Command followBottomMid = AutoBuilder.pathfindToPose(bottomMid, constraints, 0, 0);
+    jacob.b().onTrue(followBottomMid);
 
+    Pose2d stage = new Pose2d(4.2, 5.0, Rotation2d.fromDegrees(0));
+    Command followStage = AutoBuilder.pathfindToPose(stage, constraints, 0, 0);
+    jacob.a().onTrue(followStage);
 
-    jacob.y().onTrue( followBottomMid);
+    Pose2d topMid = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
+    Command followTopMid = AutoBuilder.pathfindToPose(topMid, constraints, 0, 0);
+    jacob.leftTrigger().onTrue(followTopMid);
 
+    Pose2d amp = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
+    Command followAmp = AutoBuilder.pathfindToPose(amp, constraints, 0, 0);
+    jacob.rightStick().onTrue(followAmp);
   }
 
   /**
