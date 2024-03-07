@@ -11,6 +11,7 @@ import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Lights;
 import java.util.Objects;
 import java.util.Optional;
@@ -212,9 +213,8 @@ public class RGBSubsystem extends SubsystemBase {
     }
 
     if (!isMessageDisplayed
-        && !(lastAppliedAnimation.isPresent()
-            && lastAppliedAnimation.get() == CurrentAnimationTypes.RAINBOW)) {
-      // showRainbow();
+        && !(lastAppliedAnimation.isPresent())) {
+      showBounceColor(Constants.Lights.Colors.WHITE);
     }
   }
 }

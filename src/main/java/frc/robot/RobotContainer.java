@@ -38,6 +38,7 @@ import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
+import frc.robot.commands.RGBCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
@@ -103,12 +104,6 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
-  
-  private RGBMessage twoNoteMessage;
-
-  private RGBMessage noteInRobotMessage;
-
-  private RGBMessage readyToShootMessage;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
@@ -199,6 +194,15 @@ public class RobotContainer {
             translationYSupplier,
             // anthony.rightBumper(),
             anthony.leftBumper()));
+
+    rgbSubsystem.setDefaultCommand(
+        new RGBCommand(
+            shooterSubsystem,
+            intakeSubsystem,
+            rgbSubsystem,
+            pivotSubsystem
+        )
+    );
 
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
@@ -396,44 +400,7 @@ public class RobotContainer {
                 anthony::getRightX,
                 anthony.rightBumper()));
 
-        //two note = yellow
-    // new Trigger(
-    //     () -> shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
-    //     .onTrue( new InstantCommand(() -> {
-    //     twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
-    //                 RGBSubsystem.PatternTypes.PULSE,
-    //                 RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
-    //     }, rgbSubsystem))
-    //     .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
-    
-        //serializer = blue
-    new Trigger(
-        () -> intakeSubsystem.isBeamBreakSensorTriggered()) /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
-        .onTrue( new InstantCommand(() -> {
-            noteInRobotMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
-            Constants.Lights.Colors.PURPLE,
-            //: Constants.Lights.Colors.BLUE,
-            RGBSubsystem.PatternTypes.PULSE,
-            RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
-        }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> {
-            twoNoteMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
-            Constants.Lights.Colors.ORANGE,
-            //: Constants.Lights.Colors.BLUE,
-            RGBSubsystem.PatternTypes.PULSE,
-            RGBSubsystem.MessagePriority.E_ACCELERATOR_NOTE);
-        }, rgbSubsystem));
 
-        //ready to shoot = red
-    new Trigger(
-        () -> shooterSubsystem.isReadyToShoot() 
-        && pivotSubsystem.isAtTargetDegrees())
-        .onTrue( new InstantCommand(() -> {
-        readyToShootMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
-                    RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
-        }, rgbSubsystem))
-        .onFalse( new InstantCommand(() -> readyToShootMessage.expire()));
   }
 
   /**
