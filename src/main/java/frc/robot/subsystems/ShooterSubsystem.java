@@ -46,14 +46,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterSubsystem() {
-    // PORTS
     rollerMotorTop = new TalonFX(Shooter.Ports.TOP_SHOOTER_MOTOR_PORT);
-    // rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
     rollerMotorBottom = new TalonFX(Shooter.Ports.BOTTOM_SHOOTER_MOTOR_PORT);
-    // rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
     acceleratorMotor = new TalonFX(Shooter.Ports.ACCELERATOR_MOTOR_PORT);
-    // acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
+
     noteSensor = new DigitalInput(Shooter.Ports.BEAM_BREAK_SENSOR_PORT);
+
+    // rollerMotorTop.getConfigurator().apply(new TalonFXConfiguration());
+    // rollerMotorBottom.getConfigurator().apply(new TalonFXConfiguration());
+    // acceleratorMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
@@ -64,30 +65,32 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.setInverted(true);
     rollerMotorBottom.setInverted(true);
     rollerMotorTop.setInverted(true);
-    
+
     acceleratorMotor.setNeutralMode(NeutralModeValue.Brake);
     rollerMotorTop.setNeutralMode(NeutralModeValue.Coast);
     rollerMotorBottom.setNeutralMode(NeutralModeValue.Coast);
 
     shooterMode = ShooterMode.IDLE;
 
-    // SHUFFLEBOARD
+    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       shooterTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
       shooterTab.addDouble(
           "Top Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
       shooterTab.addDouble(
           "Bottom Roller Velocity", () -> rollerMotorBottom.getVelocity().getValueAsDouble());
-      shooterTab.addDouble("Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
-      shooterTab.addDouble("Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
+      shooterTab.addDouble(
+          "Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
+      shooterTab.addDouble(
+          "Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
+    }
   }
 
   public boolean isShooterUpToSpeed() {
-    return rollerMotorBottom.getVelocity().getValueAsDouble() >= Shooter.REQUIRED_SHOOT_SPEED
-        && rollerMotorTop.getVelocity().getValueAsDouble() >= Shooter.REQUIRED_SHOOT_SPEED;
+    return rollerMotorBottom.getVelocity().getValueAsDouble() >= Shooter.SHOOTER_VELOCITY_THRESHOLD
+        && rollerMotorTop.getVelocity().getValueAsDouble() >= Shooter.SHOOTER_VELOCITY_THRESHOLD;
   }
 
   public boolean isBeamBreakSensorTriggered() {
-    // if is triggered return true
     return !noteSensor.get();
   }
 
@@ -95,17 +98,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return isBeamBreakSensorTriggered() && isShooterUpToSpeed();
   }
 
-  public void stopAccelerator() {
+  public void haltAccelerator() {
     acceleratorMotor.set(0);
   }
 
-  public void setShooterMode(ShooterMode newMode) {
-    this.shooterMode = newMode;
+  public void setShooterMode(ShooterMode shooterMode) {
+    this.shooterMode = shooterMode;
   }
 
   @Override
   public void periodic() {
-    // shooter motor power
     rollerMotorTop.set(shooterMode.shooterPowers.roller());
     acceleratorMotor.set(shooterMode.shooterPowers.accelerator());
   }

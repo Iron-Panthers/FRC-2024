@@ -23,6 +23,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,6 +35,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
+import frc.robot.subsystems.IntakeSubsystem.IntakePowers;
 import frc.robot.subsystems.NetworkWatchdogSubsystem.IPv4;
 import frc.robot.subsystems.RGBSubsystem.RGBColor;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -56,11 +58,11 @@ import java.util.Set;
 public final class Constants {
 
   public static final class Config {
-    // FIXME: These values should be replaced with actual values
+    // maybe tune PID values?
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
         new HolonomicPathFollowerConfig(
             new PIDConstants(20, 0, 0),
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(10, 0, 0),
             Drive.MAX_VELOCITY_METERS_PER_SECOND,
             Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
             new ReplanningConfig());
@@ -153,8 +155,6 @@ public final class Constants {
 
     public static final class Modules {
       public static final class Params {
-        // FIXME ALL PLACEHOLDERS
-        /* Currently use L2 gearing for alphabot, will use L3 for comp bot? Not decided? Check w/ engie */
         public static final double WHEEL_RADIUS = 2; // also in INCHES
         public static final double COUPLING_GEAR_RATIO = 3.125;
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
@@ -183,7 +183,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.425537109375 // comp bot offset
+                ? 0.417724609375 // comp bot offset
                 : 0.067626953125; // practice bot offset
       }
 
@@ -194,7 +194,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.40478515625 // comp bot offset
+                ? -0.40869140625 // comp bot offset
                 : 0.308349609375; // practice bot offset
       }
 
@@ -205,7 +205,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.2158203125 // comp bot offset
+                ? 0.213134765625 // comp bot offset
                 : -0.23291015625; // practice bot offset
       }
 
@@ -216,7 +216,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.286865234375 // comp bot offset
+                ? 0.30322265625 // comp bot offset
                 : -0.379150390625; // practice bot offset
       }
     }
@@ -229,6 +229,117 @@ public final class Constants {
     }
   }
 
+  public static final class Intake {
+    public static final class Ports {
+      public static final int INTAKE_MOTOR_PORT = 15;
+      public static final int SERIALIZER_MOTOR_PORT = 16;
+      public static final int INTAKE_SENSOR_PORT = 9;
+    }
+
+    public static final class Modes {
+      public static final IntakePowers INTAKE = new IntakePowers(.95, .5);
+      public static final IntakePowers HOLD = new IntakePowers(0, 0d);
+      public static final IntakePowers REVERSE = new IntakePowers(-.5, -.5);
+    }
+
+    public static final boolean IS_BEAMBREAK = true;
+  }
+
+  public static final class Shooter {
+    public static final class Ports {
+      public static final int TOP_SHOOTER_MOTOR_PORT = 20;
+      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
+      public static final int ACCELERATOR_MOTOR_PORT = 17;
+      public static final int BEAM_BREAK_SENSOR_PORT = 8;
+    }
+
+    public static final class Modes {
+      public static final ShooterSubsystem.ShooterPowers INTAKE =
+          new ShooterSubsystem.ShooterPowers(.8, .15);
+      public static final ShooterSubsystem.ShooterPowers IDLE =
+          new ShooterSubsystem.ShooterPowers(0, 0);
+      public static final ShooterSubsystem.ShooterPowers RAMPING =
+          new ShooterSubsystem.ShooterPowers(.8, 0);
+      public static final ShooterSubsystem.ShooterPowers SHOOTING =
+          new ShooterSubsystem.ShooterPowers(.8, .5);
+      public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
+          new ShooterSubsystem.ShooterPowers(0, 0);
+    }
+
+    public static final double SHOOTER_VELOCITY_THRESHOLD = 30;
+  }
+
+  public static final class Pivot {
+    public static final class Ports {
+      public static final int PIVOT_MOTOR_PORT = 18;
+      public static final int CANCODER_PORT = 28;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+    }
+
+    public static final class MotorConfigs {
+      public static final MagnetSensorConfigs CANCODER_MAGNET_SENSOR =
+          new MagnetSensorConfigs()
+              .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
+              .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+              .withMagnetOffset(PIVOT_CANCODER_OFFSET);
+      public static final CANcoderConfiguration CANCODER_CONFIG =
+          new CANcoderConfiguration().withMagnetSensor(CANCODER_MAGNET_SENSOR);
+
+      public static final FeedbackConfigs PIVOT_FEEDBACK =
+          new FeedbackConfigs()
+              .withFeedbackRemoteSensorID(Ports.CANCODER_PORT)
+              .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+              .withSensorToMechanismRatio(1.0)
+              .withRotorToSensorRatio(PIVOT_GEAR_RATIO);
+      public static final SoftwareLimitSwitchConfigs PIVOT_SOFTWARE_LIMIT =
+          new SoftwareLimitSwitchConfigs()
+              .withForwardSoftLimitThreshold(0.25)
+              .withReverseSoftLimitThreshold(-0.015)
+              .withForwardSoftLimitEnable(false)
+              .withReverseSoftLimitEnable(false);
+      public static final VoltageConfigs PIVOT_VOLTAGE =
+          new VoltageConfigs().withPeakForwardVoltage(5).withPeakReverseVoltage(-5);
+      public static final TalonFXConfiguration PIVOT_CONFIG =
+          new TalonFXConfiguration()
+              .withFeedback(PIVOT_FEEDBACK)
+              .withSoftwareLimitSwitch(PIVOT_SOFTWARE_LIMIT)
+              .withVoltage(PIVOT_VOLTAGE);
+    }
+
+    public static final class Setpoints {
+      public static final int MINIMUM_ANGLE = 10;
+      public static final int MAXIMUM_ANGLE = 85;
+
+      public static final int MINIMUM_SAFE_THRESHOLD = 15;
+      public static final int MAXIMUM_SAFE_THRESHOLD = 80;
+
+      public static final int SPEAKER_ANGLE = 30;
+    }
+
+    public static final int EPSILON = 2;
+
+    public static final double PIVOT_CANCODER_OFFSET = -0.610840 + (0.395264 - 0.363525);
+    public static final double PIVOT_GEAR_RATIO =
+        (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
+
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
+    public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
+    public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
+    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
+    public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
+    public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
+
+    public static final double SPEAKER_HEIGHT = 2; // meters
+    public static final double X_DISTANCE = 4; // meters
+
+    public static final double GRAVITY = 9.80665; // meters per second
+    public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
+
+    public static final double GRAVITY_VOLTAGE = 0.4;
+    public static final double PIVOT_MAX_VOLTAGE = 3.5;
+  }
+
   public static final class Vision {
     public static record VisionSource(String name, Transform3d robotToCamera) {}
 
@@ -238,26 +349,26 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0.23749, // front/back
-                        0.2403348, // left/right
-                        0.7973822 // up/down
+                        0.3737864, // front/back
+                        0, // left/right
+                        0.5137658 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(-11.5), // angle up/down
+                        Math.toRadians(35), // angle up/down
                         0))),
             new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
-                        0.280543, // front/back
-                        -0.0964428, // left/right
-                        0.5119878 // up/down
+                        0.3556, // front/back
+                        0.127, // left/right
+                        0.635 // up/down
                         ),
                     new Rotation3d(
-                      0, 
-                      Math.toRadians(125), // angle up/down
-                      0))));
+                        0,
+                        Math.toRadians(215), // angle up/down
+                        0))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
@@ -268,12 +379,13 @@ public final class Constants {
      * estimates less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
      */
     public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                0.1, // x
-                0.1, // y
-                0.1 // theta
-                );
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N1(),
+            0.1, // x
+            0.1, // y
+            0.1 // theta
+            );
 
     /**
      * Standard deviations of the vision measurements. Increase these numbers to trust global
@@ -284,13 +396,13 @@ public final class Constants {
      * them. This value is calculated dynamically using the below list.
      */
     public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
-        Matrix.mat(Nat.N3(), Nat.N1())
-            .fill(
-                // if these numbers are less than one, multiplying will do bad things
-                1, // x
-                1, // y
-                1 * Math.PI // theta
-                );
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N1(),
+            1, // x
+            1, // y
+            1 * Math.PI // theta
+            );
 
     public static final double POSE_AMBIGUITY_CUTOFF = .05;
 
@@ -373,131 +485,5 @@ public final class Constants {
       public static final RGBColor TEAL = new RGBColor(0, 255, 255);
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
-  }
-
-  public static final class Intake {
-    public static final class Ports {
-      public static final int INTAKE_MOTOR_PORT = 15;
-      public static final int SERIALIZER_MOTOR_PORT = 16;
-      public static final int INTAKE_SENSOR_PORT = 9;
-    }
-
-    public static final boolean IS_BEAMBREAK = true;
-
-    public static class IntakeSubsystemModeSettings {
-      public final double INTAKE_MOTOR_SPEED;
-      public final double SERIALIZER_MOTOR_SPEED;
-
-      public IntakeSubsystemModeSettings(double INTAKE_MOTOR_SPEED, double SERIALIZER_MOTOR_SPEED) {
-        this.INTAKE_MOTOR_SPEED = INTAKE_MOTOR_SPEED;
-        this.SERIALIZER_MOTOR_SPEED = SERIALIZER_MOTOR_SPEED;
-      }
-    }
-
-    // MODE SETTINGS
-    public static final IntakeSubsystemModeSettings INTAKE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(.95d, .5d);
-    public static final IntakeSubsystemModeSettings HOLD_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(0, 0d);
-    public static final IntakeSubsystemModeSettings REVERSE_MODE_SETTINGS =
-        new IntakeSubsystemModeSettings(-.5d, -.5d);
-  }
-
-  public static final class Shooter {
-    public static final class Ports {
-      public static final int TOP_SHOOTER_MOTOR_PORT = 20; // top
-      public static final int BOTTOM_SHOOTER_MOTOR_PORT = 19;
-      public static final int ACCELERATOR_MOTOR_PORT = 17;
-      public static final int BEAM_BREAK_SENSOR_PORT = 8;
-    }
-
-    public static final class Modes {
-      public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(0, .15);
-      public static final ShooterSubsystem.ShooterPowers IDLE =
-          new ShooterSubsystem.ShooterPowers(0, 0);
-      public static final ShooterSubsystem.ShooterPowers RAMPING =
-          new ShooterSubsystem.ShooterPowers(.8, 0);
-      public static final ShooterSubsystem.ShooterPowers SHOOTING =
-          new ShooterSubsystem.ShooterPowers(.8, .5);
-      public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
-          new ShooterSubsystem.ShooterPowers(0, 0);
-    }
-
-    public static final double REQUIRED_SHOOT_SPEED = 30;
-  }
-
-  public static final class Pivot {
-    public static final class Ports {
-      public static final int PIVOT_MOTOR_PORT = 18;
-      public static final int CANCODER_PORT = 28;
-      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
-    }
-
-    public static final class MotorConfigs {
-      public static final MagnetSensorConfigs CANCODER_MAGNET_SENSOR =
-          new MagnetSensorConfigs()
-              .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
-              .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-              .withMagnetOffset(PIVOT_CANCODER_OFFSET);
-      public static final CANcoderConfiguration CANCODER_CONFIG =
-          new CANcoderConfiguration().withMagnetSensor(CANCODER_MAGNET_SENSOR);
-
-      public static final FeedbackConfigs PIVOT_FEEDBACK =
-          new FeedbackConfigs()
-              .withFeedbackRemoteSensorID(Ports.CANCODER_PORT)
-              .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
-              .withSensorToMechanismRatio(1.0)
-              .withRotorToSensorRatio(PIVOT_GEAR_RATIO);
-      public static final SoftwareLimitSwitchConfigs PIVOT_SOFTWARE_LIMIT =
-          new SoftwareLimitSwitchConfigs()
-              .withForwardSoftLimitThreshold(0.25)
-              .withReverseSoftLimitThreshold(-0.015)
-              .withForwardSoftLimitEnable(false)
-              .withReverseSoftLimitEnable(false);
-      public static final VoltageConfigs PIVOT_VOLTAGE =
-          new VoltageConfigs().withPeakForwardVoltage(5).withPeakReverseVoltage(-5);
-      public static final TalonFXConfiguration PIVOT_CONFIG =
-          new TalonFXConfiguration()
-              .withFeedback(PIVOT_FEEDBACK)
-              .withSoftwareLimitSwitch(PIVOT_SOFTWARE_LIMIT)
-              .withVoltage(PIVOT_VOLTAGE);
-    }
-
-    public static final class Setpoints {
-      // degrees
-      public static final int MINIMUM_ANGLE = -5;
-      public static final int MAXIMUM_ANGLE = 90;
-
-      public static final int MINIMUM_SAFE_THRESHOLD = 15;
-      public static final int MAXIMUM_SAFE_THRESHOLD = 80;
-
-      public static final int SPEAKER_ANGLE = 30;
-    }
-
-    public static final int EPSILON = 2;
-
-    public static final double PIVOT_CANCODER_OFFSET = 
-        0.499268 + (0.057373 - 0.014404);
-
-    public static final double PIVOT_GEAR_RATIO =
-        (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
-
-    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
-    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
-    public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
-    public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
-    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
-    public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
-    public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-
-    public static final double SPEAKER_HEIGHT = 2; // meters
-    public static final double X_DISTANCE = 4; // meters
-
-    public static final double GRAVITY = 9.80665; // meters per second
-    public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
-
-    public static final double GRAVITY_VOLTAGE = 0.45;
-    public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 }

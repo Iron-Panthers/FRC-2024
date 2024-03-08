@@ -29,29 +29,19 @@ public class PivotSubsystem extends SubsystemBase {
 
   private PIDController pidController;
 
-  private PivotMode pivotMode;
-
   private double targetDegrees;
   private double pidVoltageOutput;
-  private double manualVolatgeOutput;
-  private boolean inRange;
-  private double mathedTargetDegrees;
+  private double calculatedTargetDegrees;
 
+  private boolean inRange;
   private Pose2d pose;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
-  public enum PivotMode {
-    ANGLE,
-    VOLTAGE
-  }
-
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    // PORTS
     pivotMotor = new TalonFX(Pivot.Ports.PIVOT_MOTOR_PORT);
 
-    // CONFIGS
     pivotCANcoder = new CANcoder(Pivot.Ports.CANCODER_PORT);
     pivotCANcoder.getConfigurator().apply(Pivot.MotorConfigs.CANCODER_CONFIG);
 
@@ -62,15 +52,11 @@ public class PivotSubsystem extends SubsystemBase {
 
     pivotMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    pidController = new PIDController(0.2, 0, 0);
-
-    pivotMode = PivotMode.ANGLE;
+    pidController = new PIDController(0.3, 0, 0);
 
     targetDegrees = 0;
     pidVoltageOutput = 0;
-    manualVolatgeOutput = 0;
 
-    // SHUFFLEBOARD
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       pivotTab.addNumber(
           "Current Motor Position", () -> pivotMotor.getPosition().getValueAsDouble());
@@ -81,9 +67,8 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addNumber("Target Degrees", this::getTargetDegrees);
       pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
-      pivotTab.addDouble("Calculated Target Angle", () -> mathedTargetDegrees);
+      pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
       pivotTab.add(pidController);
-      pivotTab.addString("Pivot mode", () -> pivotMode.toString());
     }
   }
 
@@ -99,7 +84,7 @@ public class PivotSubsystem extends SubsystemBase {
     return rotationsToDegrees(pivotCANcoder.getAbsolutePosition().getValueAsDouble());
   }
 
-  private double getTargetDegrees() {
+  public double getTargetDegrees() {
     return targetDegrees;
   }
 
@@ -108,27 +93,11 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void setTargetDegrees(double degrees) {
-    this.targetDegrees =
-        MathUtil.clamp(degrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
-    this.pivotMode = PivotMode.ANGLE;
-  }
-
-  public void setManualVolatgeOutput(double voltage) {
-    this.manualVolatgeOutput = voltage;
-    this.pivotMode = PivotMode.VOLTAGE;
-  }
-
-  private static double degreesToRotations(double angle) {
-    return (angle / 360);
+    this.targetDegrees = MathUtil.clamp(degrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE);
   }
 
   private static double rotationsToDegrees(double rotations) {
     return (rotations * 360);
-  }
-
-  // returns wheather or not a change was needed
-  public void prepareForIntake() {
-      setTargetDegrees(20);
   }
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
@@ -138,7 +107,7 @@ public class PivotSubsystem extends SubsystemBase {
     double y = pose.getY();
     double speakerX;
     double speakerY;
-    mathedTargetDegrees = getCurrentAngle();
+    calculatedTargetDegrees = getCurrentAngle();
     Optional<Alliance> color = DriverStation.getAlliance();
 
     if (color.isPresent() && color.get() == Alliance.Red) {
@@ -163,45 +132,39 @@ public class PivotSubsystem extends SubsystemBase {
     double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
 
     if (interiorMath > 0) {
-      mathedTargetDegrees =
+      calculatedTargetDegrees =
           180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-      targetDegrees = mathedTargetDegrees;
+      targetDegrees = calculatedTargetDegrees;
       inRange = true;
     } else {
       inRange = false;
     }
   }
 
-  private double clampedTargetDegrees() {
-    return MathUtil.clamp(
-        targetDegrees, Setpoints.MINIMUM_SAFE_THRESHOLD, Setpoints.MAXIMUM_SAFE_THRESHOLD);
+  private boolean inAngleRange(double angle) {
+    return angle < Setpoints.MAXIMUM_ANGLE && angle > Setpoints.MINIMUM_ANGLE;
   }
 
-  private void applyPivotMode() {
-    if (pivotMode == PivotMode.ANGLE) {
-      pivotAnglePeriodic();
-    } else {
-      pivotVoltagePeriodic();
+  private boolean currentOrTargetAngleIsUnsafe() {
+    return !inAngleRange(getCurrentAngle()) || !inAngleRange(targetDegrees);
+  }
+
+  private double computeTargetDegrees() {
+    if (currentOrTargetAngleIsUnsafe()) {
+      if (getCurrentAngle() < 45) {
+        return Setpoints.MINIMUM_SAFE_THRESHOLD;
+      }
+      return Setpoints.MAXIMUM_SAFE_THRESHOLD;
     }
-  }
-
-  private void pivotAnglePeriodic() {
-    targetDegrees = clampedTargetDegrees();
-
-    double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
-
-    pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
-
-    pivotMotor.setVoltage(pidVoltageOutput);
-  }
-
-  private void pivotVoltagePeriodic() {
-    pivotMotor.setVoltage(MathUtil.clamp(manualVolatgeOutput + getFeedForward(), -4, 4));
+    return targetDegrees;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    applyPivotMode();
+    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
+
+    pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
+
+    pivotMotor.setVoltage(pidVoltageOutput);
   }
 }

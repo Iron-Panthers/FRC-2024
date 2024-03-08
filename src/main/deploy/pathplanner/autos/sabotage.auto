@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.9,
-      "y": 5.545539144175634
+      "x": 2,
+      "y": 2
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "test"
+            "pathName": "sabotage"
           }
         }
       ]

@@ -5,25 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeSubsystem.Modes;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 
-public class UnstuckIntakeCommand extends Command {
-
-  IntakeSubsystem intakeSubsystem;
-
-  /** Creates a new UnstuckIntakeCommand. */
-  public UnstuckIntakeCommand(IntakeSubsystem intakeSubsystem) {
-    this.intakeSubsystem = intakeSubsystem;
-
+public class SetRampModeCommand extends Command {
+  private ShooterSubsystem shooterSubsystem;
+  /** Creates a new SetRampModeCommand. */
+  public SetRampModeCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem);
+    this.shooterSubsystem = shooterSubsystem;
+
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.setIntakeMode(Modes.REVERSE);
+    shooterSubsystem.setShooterMode(ShooterMode.RAMPING);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,6 +35,6 @@ public class UnstuckIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

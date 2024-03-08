@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "recenterPose1"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -28,6 +34,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {

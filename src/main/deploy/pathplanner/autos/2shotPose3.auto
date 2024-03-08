@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 1.12,
-      "y": 6.6799548643345075
+      "y": 4.356232340783266
     },
-    "rotation": 56.93
+    "rotation": -42.31
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "recenterPose1"
+            "name": "recenterPose3"
           }
         },
         {
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pose1intake1"
+                  "pathName": "intakePose3"
                 }
               },
               {
@@ -72,44 +72,6 @@
                       "type": "named",
                       "data": {
                         "name": "AngleAt1"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Pose1intake2"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeCommand"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AngleAt2"
                       }
                     }
                   ]
