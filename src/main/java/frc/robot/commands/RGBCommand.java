@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -17,12 +19,9 @@ public class RGBCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
   private RGBSubsystem rgbSubsystem;
   private PivotSubsystem pivotSubsystem;
-  private RGBMessage noteInRobotMessage;
-  private RGBMessage readyToShootMessage;
-  private RGBMessage twoNoteMessage;
-  private boolean pastBeamBreak;
-  private boolean pastTwoNote;
-  private boolean pastReadyToShoot;
+  private Optional <RGBMessage> noteInRobotMsg;
+  private Optional <RGBMessage> readyToShootMsg;
+  private Optional <RGBMessage> twoNoteMsg;
 
   
 
@@ -38,6 +37,10 @@ public class RGBCommand extends Command {
     this.intakeSubsystem = intakeSubsystem;
     this.rgbSubsystem = rgbSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    twoNoteMsg = Optional.empty();
+    readyToShootMsg = Optional.empty();
+    noteInRobotMsg = Optional.empty();
+
   }
 
   // Called when the command is initially scheduled.
@@ -49,41 +52,47 @@ public class RGBCommand extends Command {
   public void execute() {
             //two note = yellow
 
-      if (shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered()){
-        twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
+      if (shooterSubsystem.isBeamBreakSensorTriggered() 
+      && intakeSubsystem.isBeamBreakSensorTriggered() 
+      && twoNoteMsg.isEmpty()){
+        twoNoteMsg =
+            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
         RGBSubsystem.PatternTypes.PULSE,
-        RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
-        pastTwoNote = true;
-      }
-      else if (pastTwoNote){
-        twoNoteMessage.expire();
-        pastTwoNote = false;
+        RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING));      }
+      else if (!(shooterSubsystem.isBeamBreakSensorTriggered() 
+      && intakeSubsystem.isBeamBreakSensorTriggered())){
+        twoNoteMsg.ifPresent(RGBMessage::expire);
+        twoNoteMsg = Optional.empty();
       }
       
     
         //serializer = blue
-      if (intakeSubsystem.isBeamBreakSensorTriggered()||shooterSubsystem.isBeamBreakSensorTriggered()){ /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
-        noteInRobotMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
+      if ((intakeSubsystem.isBeamBreakSensorTriggered()
+      ||shooterSubsystem.isBeamBreakSensorTriggered())
+      && noteInRobotMsg.isEmpty()){ /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
+        noteInRobotMsg =
+            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
         RGBSubsystem.PatternTypes.PULSE,
-        RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
-        pastBeamBreak = true;
-      }
-      else if (pastBeamBreak){
-        noteInRobotMessage.expire();
-        pastBeamBreak = false;
+        RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));      }
+      else if(!(intakeSubsystem.isBeamBreakSensorTriggered()
+      ||shooterSubsystem.isBeamBreakSensorTriggered())){
+        noteInRobotMsg.ifPresent(RGBMessage::expire);
+        noteInRobotMsg = Optional.empty();
       }
 
 
         //ready to shoot = red
       if (shooterSubsystem.isReadyToShoot() 
-        && pivotSubsystem.isAtTargetDegrees()){
-          readyToShootMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
-                    RGBSubsystem.PatternTypes.PULSE,
-                    RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
-        }
-      else if (pastReadyToShoot){
-        readyToShootMessage.expire();
-        pastReadyToShoot = false;
+        && pivotSubsystem.isAtTargetDegrees()
+        && readyToShootMsg.isEmpty()){
+          readyToShootMsg =
+            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
+        RGBSubsystem.PatternTypes.PULSE,
+        RGBSubsystem.MessagePriority.D_READY_TO_SHOOT));      }
+      else if (!(shooterSubsystem.isReadyToShoot() 
+        && pivotSubsystem.isAtTargetDegrees())){
+        readyToShootMsg.ifPresent(RGBMessage::expire);
+        readyToShootMsg = Optional.empty();
       }
   }
 
