@@ -263,7 +263,7 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
           new ShooterSubsystem.ShooterPowers(.8, .5, 1);
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP =
-          new ShooterSubsystem.ShooterPowers(.8, .5, .068);
+          new ShooterSubsystem.ShooterPowers(.5, .5, .08);
     }
 
     public static final double SHOOTER_VELOCITY_THRESHOLD = 30;
