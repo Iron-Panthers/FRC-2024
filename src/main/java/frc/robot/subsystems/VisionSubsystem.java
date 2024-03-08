@@ -65,6 +65,9 @@ public class VisionSubsystem {
   private double tagX;
   private double tagY; 
   private double tagZ; 
+  private double tagRoll;
+  private double tagPitch;
+  private double tagYaw;
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
@@ -72,6 +75,9 @@ public class VisionSubsystem {
     cameraTab.addDouble("x to target", () -> tagX); 
     cameraTab.addDouble("y to target", () -> tagY); 
     cameraTab.addDouble("z to target", () -> tagZ); 
+    cameraTab.addDouble("roll to target", () -> Math.toDegrees(tagRoll)); 
+    cameraTab.addDouble("pitch to target", () -> Math.toDegrees(tagPitch)); 
+    cameraTab.addDouble("yaw to target", () -> Math.toDegrees(tagYaw)); 
 
     // loading the 2024 field arrangement
     try {
@@ -229,6 +235,9 @@ public class VisionSubsystem {
           tagX = t3d.getX();
           tagY = t3d.getY(); 
           tagZ = t3d.getZ(); 
+          tagRoll = t3d.getRotation().getX();
+          tagPitch = t3d.getRotation().getY();
+          tagYaw = t3d.getRotation().getZ();
       }
       double avgDistance = sumDistance / estimation.targetsUsed.size();
 
