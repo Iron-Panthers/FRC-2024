@@ -6,11 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -28,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutoAlign;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
@@ -389,25 +388,19 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
-    PathConstraints constraints =
-        new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     // TODO: change the button bindings on all of these
-    Pose2d bottomMid = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
-    Command followBottomMid = AutoBuilder.pathfindToPose(bottomMid, constraints, 0, 0);
-    jacob.b().onTrue(followBottomMid);
+    jacob.b().onTrue(AutoBuilder.pathfindToPose(AutoAlign.BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0));
 
-    Pose2d stage = new Pose2d(4.2, 5.0, Rotation2d.fromDegrees(0));
-    Command followStage = AutoBuilder.pathfindToPose(stage, constraints, 0, 0);
-    jacob.a().onTrue(followStage);
+    jacob.a().onTrue(AutoBuilder.pathfindToPose(AutoAlign.STAGE, AutoAlign.CONSTRAINTS, 0, 0));
 
-    Pose2d topMid = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
-    Command followTopMid = AutoBuilder.pathfindToPose(topMid, constraints, 0, 0);
-    jacob.leftTrigger().onTrue(followTopMid);
+    jacob
+        .leftTrigger()
+        .onTrue(AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0));
 
-    Pose2d amp = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
-    Command followAmp = AutoBuilder.pathfindToPose(amp, constraints, 0, 0);
-    jacob.rightStick().onTrue(followAmp);
+    jacob
+        .rightStick()
+        .onTrue(AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0));
   }
 
   /**
