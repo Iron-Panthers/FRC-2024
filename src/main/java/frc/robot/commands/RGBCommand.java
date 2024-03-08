@@ -57,6 +57,7 @@ public class RGBCommand extends Command {
       }
       else if (pastTwoNote){
         twoNoteMessage.expire();
+        pastTwoNote = false;
       }
       
     
@@ -69,6 +70,7 @@ public class RGBCommand extends Command {
       }
       else if (pastBeamBreak){
         noteInRobotMessage.expire();
+        pastBeamBreak = false;
       }
 
 
@@ -81,6 +83,7 @@ public class RGBCommand extends Command {
         }
       else if (pastReadyToShoot){
         readyToShootMessage.expire();
+        pastReadyToShoot = false;
       }
   }
 

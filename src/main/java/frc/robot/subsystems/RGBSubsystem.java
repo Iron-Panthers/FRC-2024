@@ -213,8 +213,9 @@ public class RGBSubsystem extends SubsystemBase {
     }
 
     if (!isMessageDisplayed
-        && !(lastAppliedAnimation.isPresent())) {
-      showBounceColor(Constants.Lights.Colors.WHITE);
+    && !(lastAppliedAnimation.isPresent()
+    && lastAppliedAnimation.get() == CurrentAnimationTypes.RAINBOW)) {
+    showRainbow();
     }
   }
 }
