@@ -170,7 +170,7 @@ public class RGBSubsystem extends SubsystemBase {
     lastAppliedColor = Optional.of(color);
   }
 
-  private void showMessage(RGBMessage message) {
+  public void showMessage(RGBMessage message) {
     switch (message.pattern) {
       case PULSE -> showPulseColor(message.color);
       case BOUNCE -> showBounceColor(message.color);

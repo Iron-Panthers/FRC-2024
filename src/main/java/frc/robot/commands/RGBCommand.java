@@ -19,6 +19,11 @@ public class RGBCommand extends Command {
   private PivotSubsystem pivotSubsystem;
   private RGBMessage noteInRobotMessage;
   private RGBMessage readyToShootMessage;
+  private RGBMessage twoNoteMessage;
+  private boolean pastBeamBreak;
+  private boolean pastTwoNote;
+  private boolean pastReadyToShoot;
+
   
 
   /** Creates a new RGBCommand. */
@@ -27,7 +32,8 @@ public class RGBCommand extends Command {
       IntakeSubsystem intakeSubsystem,
       RGBSubsystem rgbSubsystem,
       PivotSubsystem pivotSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
+    // Use addRequirements() here to declare subsystem dependencies.\
+    addRequirements(rgbSubsystem);
     this.shooterSubsystem = shooterSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.rgbSubsystem = rgbSubsystem;
@@ -42,26 +48,29 @@ public class RGBCommand extends Command {
   @Override
   public void execute() {
             //two note = yellow
-    // new Trigger(
-    //     () -> shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered())
-    //     .onTrue( new InstantCommand(() -> {
-    //     twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
-    //                 RGBSubsystem.PatternTypes.PULSE,
-    //                 RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
-    //     }, rgbSubsystem))
-    //     .onFalse( new InstantCommand(() -> twoNoteMessage.expire()));
+
+      if (shooterSubsystem.isBeamBreakSensorTriggered() && intakeSubsystem.isBeamBreakSensorTriggered()){
+        twoNoteMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
+        RGBSubsystem.PatternTypes.PULSE,
+        RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING);
+        pastTwoNote = true;
+      }
+      else if (pastTwoNote){
+        twoNoteMessage.expire();
+      }
+      
     
         //serializer = blue
-      if (intakeSubsystem.isBeamBreakSensorTriggered()){ /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
-        noteInRobotMessage = rgbSubsystem.showMessage(/*intakeSubsystem.isBeamBreakSensorTriggered()*/
-        Constants.Lights.Colors.PURPLE,
-        //: Constants.Lights.Colors.BLUE,
+      if (intakeSubsystem.isBeamBreakSensorTriggered()||shooterSubsystem.isBeamBreakSensorTriggered()){ /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
+        noteInRobotMessage = rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
         RGBSubsystem.PatternTypes.PULSE,
-        RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT);
+        RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
+        pastBeamBreak = true;
       }
-      else {
+      else if (pastBeamBreak){
         noteInRobotMessage.expire();
       }
+
 
         //ready to shoot = red
       if (shooterSubsystem.isReadyToShoot() 
@@ -70,7 +79,7 @@ public class RGBCommand extends Command {
                     RGBSubsystem.PatternTypes.PULSE,
                     RGBSubsystem.MessagePriority.D_READY_TO_SHOOT);
         }
-      else{
+      else if (pastReadyToShoot){
         readyToShootMessage.expire();
       }
   }
