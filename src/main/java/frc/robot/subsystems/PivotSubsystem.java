@@ -123,15 +123,15 @@ public class PivotSubsystem extends SubsystemBase {
     }
     double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
 
-    double d = distanceToSpeaker - Pivot.PIVOT_TO_ROBO_CENTER_LENGTH;
+    double d = distanceToSpeaker + Pivot.PIVOT_TO_ROBO_CENTER_LENGTH;
     double h = Pivot.SPEAKER_HEIGHT - Pivot.PIVOT_TO_ROBO_CENTER_HEIGHT;
 
     // difference between distance to speaker now and after 1 second to find v to speaker
     double velocityToSpeaker =
         distanceToSpeaker
             - Math.sqrt(
-                (Math.pow((x + xVelocity - speakerX), 2)
-                    + Math.pow((y + yVelocity - speakerY), 2)));
+                (Math.pow((x - speakerX), 2)
+                    + Math.pow((y - speakerY), 2)));
 
     double v = Pivot.NOTE_SPEED + velocityToSpeaker;
 
