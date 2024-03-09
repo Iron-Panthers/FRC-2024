@@ -6,9 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Drive;
+import frc.robot.Constants.Pivot;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.util.Util;
 import java.util.function.DoubleSupplier;
@@ -25,22 +26,23 @@ public class TargetLockCommand extends Command {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
 
-  private final Translation2d targetPoint;
+  private final Pose2d targetPoint;
 
   private int targetAngle;
   private Supplier<Pose2d> pose;
 
   /** Creates a new TargetLockCommand. */
-  public TargetLockCommand(
-      DrivebaseSubsystem drivebaseSubsystem,
-      DoubleSupplier translationXSupplier,
-      DoubleSupplier translationYSupplier,
-      Translation2d targetPoint) {
+  public TargetLockCommand(DrivebaseSubsystem drivebaseSubsystem) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
-    this.translationXSupplier = translationXSupplier;
-    this.translationYSupplier = translationYSupplier;
-    this.targetPoint = targetPoint;
+    this.translationXSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond;
+    this.translationYSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond;
+
+    var alliance = DriverStation.getAlliance();
+    this.targetPoint =
+        (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red)
+            ? Pivot.RED_SPEAKER_POSE
+            : Pivot.BLUE_SPEAKER_POSE;
 
     this.pose = () -> this.drivebaseSubsystem.getPose();
 

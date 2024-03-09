@@ -45,7 +45,6 @@ public class DrivebaseSubsystem extends SubsystemBase {
    * by a ChassisSpeeds object) and our actual drive outputs (what speeds and angles we apply to
    * each module)
    */
-  // FIXME check if its correct for season
   private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           // Front right
@@ -210,7 +209,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         this::getPose,
         this::resetOdometryToPose,
         this::getRobotRelativeSpeeds,
-        this::driveRobotRelative,
+        this::drive,
         Constants.Config.PATH_FOLLOWER_CONFIG,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -236,7 +235,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
             kinematics,
             getConsistentGyroscopeRotation(),
             getSwerveModulePositions(),
-            // FIXME: FIXME FIXME GOOD GOD FIX ME, USE A REAL VALUE HERE
+            // FIXME: USE A REAL VALUE HERE
             new Pose2d(3.5, 2.2, Rotation2d.fromDegrees(0)),
             PoseEstimator.STATE_STANDARD_DEVIATIONS,
             PoseEstimator.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
@@ -250,6 +249,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("relrot", () -> getRobotRelativeSpeeds().omegaRadiansPerSecond);
       tab.addDouble("targetAngle", () -> targetAngle);
       tab.addDouble("currentGyroAngle", () -> getDriverGyroscopeRotation().getDegrees());
+      tab.addDouble("consistent gyro", () -> getConsistentGyroscopeRotation().getDegrees());
+      tab.addDouble(
+          "angular difference",
+          () ->
+              -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle));
 
       addSwerveShuffleboard("module 4", 0, swerveModules, tab);
       addSwerveShuffleboard("module 3", 1, swerveModules, tab);
@@ -257,7 +261,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
       addSwerveShuffleboard("module 2", 3, swerveModules, tab);
     }
 
-    Shuffleboard.getTab("DriverView").add(field).withPosition(0, 2).withSize(8, 4);
+    Shuffleboard.getTab("DriverView").add(field).withPosition(0, 0).withSize(8, 5);
   }
   public boolean isAtTargetAngle(){
     return Util.epsilonEquals( getPose().getRotation().getDegrees(), targetAngle, Setpoints.EPSILON);
@@ -308,7 +312,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
                     .getEstimatedPosition()
                     .getRotation()
                     .plus(
-                        DriverStation.getAlliance().get() == Alliance.Blue // FIXME temp fix
+                        DriverStation.getAlliance().get() == Alliance.Blue
                             ? new Rotation2d()
                             : Rotation2d.fromDegrees(180)));
   }
@@ -324,7 +328,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         getConsistentGyroscopeRotation()
             .minus(pose2d.getRotation())
             .plus(
-                DriverStation.getAlliance().get() == Alliance.Blue // FIXME
+                DriverStation.getAlliance().get() == Alliance.Blue
                     ? new Rotation2d()
                     : Rotation2d.fromDegrees(180));
 

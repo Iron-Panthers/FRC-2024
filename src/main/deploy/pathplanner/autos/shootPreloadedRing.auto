@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7718481866382481,
+      "y": 6.709614747817872
+    },
+    "rotation": 59.88626684901752
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "recenterPose1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AngleAt1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterRampUpCommand"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
