@@ -200,7 +200,8 @@ public class RobotContainer {
             shooterSubsystem,
             intakeSubsystem,
             rgbSubsystem,
-            pivotSubsystem
+            pivotSubsystem,
+            drivebaseSubsystem
         )
     );
 

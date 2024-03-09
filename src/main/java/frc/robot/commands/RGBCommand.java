@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
@@ -19,6 +20,7 @@ public class RGBCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
   private RGBSubsystem rgbSubsystem;
   private PivotSubsystem pivotSubsystem;
+  private DrivebaseSubsystem drivebaseSubsystem;
   private Optional <RGBMessage> noteInRobotMsg;
   private Optional <RGBMessage> readyToShootMsg;
   private Optional <RGBMessage> twoNoteMsg;
@@ -30,13 +32,15 @@ public class RGBCommand extends Command {
   public RGBCommand(ShooterSubsystem shooterSubsystem,
       IntakeSubsystem intakeSubsystem,
       RGBSubsystem rgbSubsystem,
-      PivotSubsystem pivotSubsystem) {
+      PivotSubsystem pivotSubsystem,
+      DrivebaseSubsystem drivebaseSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.\
     addRequirements(rgbSubsystem);
     this.shooterSubsystem = shooterSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.rgbSubsystem = rgbSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.drivebaseSubsystem = drivebaseSubsystem;
     twoNoteMsg = Optional.empty();
     readyToShootMsg = Optional.empty();
     noteInRobotMsg = Optional.empty();
@@ -84,6 +88,7 @@ public class RGBCommand extends Command {
         //ready to shoot = red
       if (shooterSubsystem.isReadyToShoot() 
         && pivotSubsystem.isAtTargetDegrees()
+        && Math.abs(drivebaseSubsystem.getAngularError()) < 2
         && readyToShootMsg.isEmpty()){
           readyToShootMsg =
             Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
