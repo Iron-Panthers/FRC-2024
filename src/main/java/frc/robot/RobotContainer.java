@@ -54,6 +54,7 @@ import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -119,7 +120,8 @@ public class RobotContainer {
         "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
     NamedCommands.registerCommand(
-        "ShooterRampUpCommand", new ShooterRampUpCommand(shooterSubsystem));
+        "ShooterRampUpCommand",
+        new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHOOTING_SPEAKER));
     NamedCommands.registerCommand("SetShooterToRamping", new SetRampModeCommand(shooterSubsystem));
     NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
     NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 40));
@@ -278,8 +280,7 @@ public class RobotContainer {
     anthony
         .rightBumper()
         .onTrue(
-            new ShooterRampUpCommand(shooterSubsystem)
-                .andThen(new ShootCommand(shooterSubsystem))
+            new ShootCommand(shooterSubsystem)
                 .andThen(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
@@ -336,16 +337,8 @@ public class RobotContainer {
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 50)));
-
-    // anthony
-    //     .x()
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () ->
-    //                 drivebaseSubsystem.resetOdometryToPose(
-    //                     new Pose2d(new Translation2d(15.6, 6.68), new Rotation2d(-56.93))),
-    //             drivebaseSubsystem));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 50))
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMPING_AMP)));
 
     // SPEAKER FROM SUBWOOFER
     anthony

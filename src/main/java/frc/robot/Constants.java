@@ -258,8 +258,10 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(.8, .15, 1);
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0, 1);
-      public static final ShooterSubsystem.ShooterPowers RAMPING =
+      public static final ShooterSubsystem.ShooterPowers RAMP_SPEAKER =
           new ShooterSubsystem.ShooterPowers(.8, 0, 1);
+      public static final ShooterSubsystem.ShooterPowers RAMP_AMP =
+          new ShooterSubsystem.ShooterPowers(.5, 0, 0.08);
       public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
           new ShooterSubsystem.ShooterPowers(.8, .5, 1);
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP =

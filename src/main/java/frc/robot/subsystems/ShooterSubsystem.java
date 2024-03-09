@@ -38,7 +38,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public enum ShooterMode {
     INTAKE(Shooter.Modes.INTAKE),
     IDLE(Shooter.Modes.IDLE),
-    RAMPING(Shooter.Modes.RAMPING),
+    RAMPING_SPEAKER(Shooter.Modes.RAMP_SPEAKER),
+    RAMPING_AMP(Shooter.Modes.RAMP_AMP),
     SHOOTING_SPEAKER(Shooter.Modes.SHOOT_SPEAKER),
     SHOOTING_AMP(Shooter.Modes.SHOOT_AMP);
 
@@ -132,6 +133,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean isReadyToShoot() {
     return isBeamBreakSensorTriggered() && isShooterUpToSpeed();
+  }
+
+  public ShooterMode getMode() {
+    return shooterMode;
   }
 
   public void haltAccelerator() {
