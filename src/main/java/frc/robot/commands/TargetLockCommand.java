@@ -29,14 +29,14 @@ public class TargetLockCommand extends Command {
   private final Pose2d targetPoint;
 
   private int targetAngle;
-  private Supplier<Pose2d> pose;
+
 
   /** Creates a new TargetLockCommand. */
-  public TargetLockCommand(DrivebaseSubsystem drivebaseSubsystem) {
+  public TargetLockCommand(DrivebaseSubsystem drivebaseSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
-    this.translationXSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond;
-    this.translationYSupplier = () -> this.drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond;
+    this.translationXSupplier = translationXSupplier;
+    this.translationYSupplier = translationYSupplier;
 
     var alliance = DriverStation.getAlliance();
     this.targetPoint =
@@ -44,7 +44,6 @@ public class TargetLockCommand extends Command {
             ? Pivot.RED_SPEAKER_POSE
             : Pivot.BLUE_SPEAKER_POSE;
 
-    this.pose = () -> this.drivebaseSubsystem.getPose();
 
     targetAngle = 0;
 
@@ -60,8 +59,8 @@ public class TargetLockCommand extends Command {
     targetAngle =
         (int) // may want to change to double for more accuracy (likely unnecessary)
             -Math.toDegrees(Math.atan2(
-                (targetPoint.getY() - pose.get().getY()),
-                    ( targetPoint.getX() - pose.get().getX())
+                (targetPoint.getY() - drivebaseSubsystem.getPose().getY()),
+                    ( targetPoint.getX() - drivebaseSubsystem.getPose().getX())
                   ));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();

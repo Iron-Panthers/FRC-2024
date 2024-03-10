@@ -184,7 +184,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.417724609375 // comp bot offset
-                : 0.0595703125; // practice bot offset
+                : 0.07421875; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -195,7 +195,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? -0.40869140625 // comp bot offset
-                : 0.262451171875; // practice bot offset
+                : 0.2919921875; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -206,7 +206,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.213134765625 // comp bot offset
-                : -0.20825195312; // practice bot offset
+                : -0.224609375; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -217,7 +217,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.30322265625 // comp bot offset
-                : -0.3564453125 + 180; // practice bot offset
+                : -0.377197265625; // practice bot offset
       }
     }
 
@@ -323,7 +323,7 @@ public final class Constants {
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
 
-        public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
+        public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 5.5, null);
         public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
         public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.048; // meters
         public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.365; // meters
@@ -346,14 +346,14 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0, // front/back
-                        0, // left/right
-                        0 // up/down
+                      -0.305, // front/back
+                      -0.2286, // left/right
+                      -0.2159 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(0), // angle up/down
-                        0))),
+                        Math.toRadians(30), // angle up/down
+                        Math.toRadians(180)))),
             new VisionSource(
                 "backCam",
                 new Transform3d(

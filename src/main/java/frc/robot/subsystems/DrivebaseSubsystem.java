@@ -224,7 +224,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         },
         this);
 
-    rotController = new PIDController(0.0115, 0, 0);
+    rotController = new PIDController(0.015, 0, 0);
     rotController.setSetpoint(0);
     rotController.setTolerance(ANGULAR_ERROR); // degrees error
 
