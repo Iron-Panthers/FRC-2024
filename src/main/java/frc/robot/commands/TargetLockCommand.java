@@ -8,12 +8,10 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Drive;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.util.Util;
+import java.util.*;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import java.util.*;
 
 /**
  * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the
@@ -57,10 +55,10 @@ public class TargetLockCommand extends Command {
   public void execute() {
     targetAngle =
         (int) // may want to change to double for more accuracy (likely unnecessary)
-            - Math.toDegrees(Math.atan2(
-                (targetPoint.getY() - pose.get().getY()),
-                    ( targetPoint.getX() - pose.get().getX())
-                  ));
+            -Math.toDegrees(
+                Math.atan2(
+                    (targetPoint.getY() - pose.get().getY()),
+                    (targetPoint.getX() - pose.get().getX())));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 

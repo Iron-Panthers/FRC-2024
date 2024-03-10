@@ -104,6 +104,8 @@ public class RobotContainer {
 
   private GenericEntry autoDelay;
 
+  private Pose2d desiredPose;
+
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
   /* drive joystick "y" is passed to x because controller is inverted */
@@ -205,6 +207,13 @@ public class RobotContainer {
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
+
+    desiredPose = new Pose2d();
+    SmartDashboard.putString(
+        "desired pose",
+        String.format(
+            "(%2f %2f %2f)",
+            desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
@@ -390,17 +399,61 @@ public class RobotContainer {
                 anthony.rightBumper()));
 
     // TODO: change the button bindings on all of these
-    jacob.b().onTrue(AutoBuilder.pathfindToPose(AutoAlign.BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0));
+    jacob
+        .b()
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.BOTTOM_MID))
+                .andThen(
+                    new RotateAngleDriveCommand(
+                        drivebaseSubsystem,
+                        translationXSupplier,
+                        translationYSupplier,
+                        (int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
 
-    jacob.a().onTrue(AutoBuilder.pathfindToPose(AutoAlign.STAGE, AutoAlign.CONSTRAINTS, 0, 0));
+    jacob
+        .a()
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.STAGE, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.STAGE)));
 
     jacob
         .leftTrigger()
-        .onTrue(AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0));
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.TOP_MID)));
 
     jacob
         .rightStick()
-        .onTrue(AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0));
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.AMP)));
+
+    jacob
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.BOTTOM_MID),
+                drivebaseSubsystem));
+
+    jacob
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.STAGE), drivebaseSubsystem));
+
+    jacob
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.AMP), drivebaseSubsystem));
+
+    jacob
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.TOP_MID),
+                drivebaseSubsystem));
   }
 
   /**
