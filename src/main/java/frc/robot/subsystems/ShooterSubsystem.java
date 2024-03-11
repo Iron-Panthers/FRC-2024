@@ -104,13 +104,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
       ampRollerRatioEntry =
           shooterTab
-              .add("DEBUG Amp Top Roller Percent", 1)
+              .add("DEBUG Amp Top to Bottom Roller Ratio", 1)
               .withWidget(BuiltInWidgets.kNumberSlider)
               .withProperties(Map.of("min", 0, "max", 1))
               .getEntry();
       shooterSpeedEntry =
           shooterTab
-              .add("DEBUG Shooter Speed", .5)
+              .add("DEBUG Bottom Roller Speed", .5)
               .withWidget(BuiltInWidgets.kNumberSlider)
               .withProperties(Map.of("min", 0, "max", 1))
               .getEntry();
