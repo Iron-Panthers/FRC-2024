@@ -254,18 +254,18 @@ public final class Constants {
     }
 
     public static final class Modes {
-      public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(.8, .15, 1);
-      public static final ShooterSubsystem.ShooterPowers IDLE =
-          new ShooterSubsystem.ShooterPowers(0, 0, 1);
-      public static final ShooterSubsystem.ShooterPowers RAMP_SPEAKER =
-          new ShooterSubsystem.ShooterPowers(.8, 0, 1);
-      public static final ShooterSubsystem.ShooterPowers RAMP_AMP =
-          new ShooterSubsystem.ShooterPowers(.5, 0, 0.08);
-      public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
-          new ShooterSubsystem.ShooterPowers(.8, .5, 1);
-      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP =
-          new ShooterSubsystem.ShooterPowers(.5, .5, .08);
+      public static final ShooterSubsystem.ShooterSpeeds INTAKE =
+          new ShooterSubsystem.ShooterSpeeds(40, .3, 1);
+      public static final ShooterSubsystem.ShooterSpeeds IDLE =
+          new ShooterSubsystem.ShooterSpeeds(0, 0, 1);
+      public static final ShooterSubsystem.ShooterSpeeds RAMP_SPEAKER =
+          new ShooterSubsystem.ShooterSpeeds(40, 0, 1);
+      public static final ShooterSubsystem.ShooterSpeeds RAMP_AMP =
+          new ShooterSubsystem.ShooterSpeeds(40, 0, 0.76);
+      public static final ShooterSubsystem.ShooterSpeeds SHOOT_SPEAKER =
+          new ShooterSubsystem.ShooterSpeeds(40, 20, 1);
+      public static final ShooterSubsystem.ShooterSpeeds SHOOT_AMP =
+          new ShooterSubsystem.ShooterSpeeds(11.6, .5, .76);
     }
 
     public static final double SHOOTER_VELOCITY_THRESHOLD = 30;
