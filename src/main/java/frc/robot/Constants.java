@@ -495,13 +495,13 @@ public final class Constants {
     public static final Pose2d AMP = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
     public static final Pose2d TOP_MID = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
     public static final Pose2d STAGE = new Pose2d(4.2, 5.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(30));
+    public static final Pose2d BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
 
 
-    private static final double BOTTOM_MID_TARGET_ANGLE = 23.5;
-    private static final double TOP_MID_TARGET_ANGLE = 0;
-    private static final double STAGE_TARGET_ANGLE = 0;
-    private static final double AMP_TARGET_ANGLE = 0;
+    public static final double BOTTOM_MID_TARGET_ANGLE = 23.5;
+    public static final double TOP_MID_TARGET_ANGLE = 0;
+    public static final double STAGE_TARGET_ANGLE = 0;
+    public static final double AMP_TARGET_ANGLE = 0;
 
 
     public static final PathConstraints CONSTRAINTS =

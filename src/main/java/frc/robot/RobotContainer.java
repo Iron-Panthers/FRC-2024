@@ -409,7 +409,11 @@ public class RobotContainer {
                         drivebaseSubsystem,
                         translationXSupplier,
                         translationYSupplier,
-                        (int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
+                        DriverStation.getAlliance().get().equals(Alliance.Red)
+                            ? -148
+                            : 148)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.BOTTOM_MID_TARGET_ANGLE))));
+                       //(int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
 
     jacob
         .a()
