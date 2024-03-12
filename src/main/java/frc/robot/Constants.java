@@ -495,7 +495,7 @@ public final class Constants {
     public static final Pose2d AMP = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
     public static final Pose2d TOP_MID = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
     public static final Pose2d STAGE = new Pose2d(4.2, 5.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
+    public static final Pose2d BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(30));
 
     public static final PathConstraints CONSTRAINTS =
         new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
