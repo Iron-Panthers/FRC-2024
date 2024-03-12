@@ -106,12 +106,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
-    double g = Pivot.GRAVITY;
     double x = pose.getX();
     double y = pose.getY();
     double speakerX;
     double speakerY;
-    calculatedTargetDegrees = getCurrentAngle();
     Optional<Alliance> color = DriverStation.getAlliance();
 
     if (color.isPresent() && color.get() == Alliance.Red) {
@@ -121,30 +119,13 @@ public class PivotSubsystem extends SubsystemBase {
       speakerX = Pivot.BLUE_SPEAKER_POSE.getX();
       speakerY = Pivot.BLUE_SPEAKER_POSE.getY();
     }
-    double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
-
-    double d = distanceToSpeaker + Pivot.PIVOT_TO_ROBO_CENTER_LENGTH;
-    double h = Pivot.SPEAKER_HEIGHT - Pivot.PIVOT_TO_ROBO_CENTER_HEIGHT;
-
-    // difference between distance to speaker now and after 1 second to find v to speaker
-    double velocityToSpeaker =
-        distanceToSpeaker
-            - Math.sqrt(
-                (Math.pow((x - speakerX), 2)
-                    + Math.pow((y - speakerY), 2)));
-
-    double v = Pivot.NOTE_SPEED + velocityToSpeaker;
-
-    double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
-
-    if (interiorMath > 0) {
-      calculatedTargetDegrees =
-          180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-      targetDegrees = calculatedTargetDegrees;
-      inRange = true;
-    } else {
-      inRange = false;
-    }
+    double d = (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
+        - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
+    targetDegrees = 0.0441608631*Math.pow(d,4) 
+        - 0.978333166*Math.pow(d,3) 
+        + 8.181509161*Math.pow(d,2)
+        -32.48350709*d
+        +79.32690369;
   }
 
   private boolean inAngleRange(double angle) {

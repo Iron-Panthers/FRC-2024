@@ -322,19 +322,15 @@ public final class Constants {
     public static final double PIVOT_CANCODER_OFFSET = -0.610840 + (0.395264 - 0.363525);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
+    public static final double CENTER_OF_ROBOT_TO_BUMPER = 16.75;
 
-        public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 5.5, null);
-        public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
-        public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.048; // meters
-        public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.365; // meters
-    
-        public static final double SPEAKER_HEIGHT = 2.03; // meters
-    
-        public static final double GRAVITY = 9.80665; // meters per second
-        public static final double NOTE_SPEED = 13.4; // FIXME placeholder, m/s
-    
-        public static final double GRAVITY_VOLTAGE = 0.4;
-        public static final double PIVOT_MAX_VOLTAGE = 3.5;
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 5.5, null);
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
+
+    public static final double GRAVITY = 9.80665; // meters per second
+
+    public static final double GRAVITY_VOLTAGE = 0.4;
+    public static final double PIVOT_MAX_VOLTAGE = 3.5;
   }
 
   public static final class Vision {

@@ -291,7 +291,9 @@ public class RobotContainer {
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    jacob.y().whileTrue((new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)));
+    jacob.y().whileTrue(
+        new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
+        .alongWith(new PivotTargetLockCommand(pivotSubsystem,drivebaseSubsystem)));
 
     //anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
