@@ -171,7 +171,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
+   // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
+
+   double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

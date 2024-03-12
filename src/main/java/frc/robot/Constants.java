@@ -492,9 +492,12 @@ public final class Constants {
 
   public static final class AutoAlign {
 
+    // These poses have not been verified
     public static final Pose2d AMP = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
     public static final Pose2d TOP_MID = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d STAGE = new Pose2d(4.2, 5.0, Rotation2d.fromDegrees(0));
+    
+    // These poses have been verified
+    public static final Pose2d STAGE = new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(0));
     public static final Pose2d BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
 
 
