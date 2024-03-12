@@ -508,6 +508,8 @@ public final class Constants {
     //pose angles
     public static final int BOTTOM_MID_ANGLE = 148;
     public static final int STAGE_ANGLE = 0;
+    public static final int  TOP_MID_ANGLE =  0;
+    public static final int AMP_ANGLE = 0;
     public static final PathConstraints CONSTRAINTS =
         new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
   }

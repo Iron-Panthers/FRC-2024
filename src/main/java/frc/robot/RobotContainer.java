@@ -434,13 +434,31 @@ public class RobotContainer {
         .leftTrigger()
         .onTrue(
             AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0)
-                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.TOP_MID)));
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.TOP_MID))
+                 .andThen(
+                    new RotateAngleDriveCommand(
+                        drivebaseSubsystem,
+                        translationXSupplier,
+                        translationYSupplier,
+                        DriverStation.getAlliance().get().equals(Alliance.Red)
+                            ? AutoAlign.TOP_MID_ANGLE+180
+                            : AutoAlign.TOP_MID_ANGLE+180)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.TOP_MID_TARGET_ANGLE))));
 
     jacob
         .rightStick()
         .onTrue(
             AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0)
-                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.AMP)));
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.AMP))
+                 .andThen(
+                    new RotateAngleDriveCommand(
+                        drivebaseSubsystem,
+                        translationXSupplier,
+                        translationYSupplier,
+                        DriverStation.getAlliance().get().equals(Alliance.Red)
+                            ? AutoAlign.AMP_ANGLE+180
+                            : AutoAlign.AMP_ANGLE+180)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.AMP_TARGET_ANGLE))));
 
     jacob
         .povUp()
