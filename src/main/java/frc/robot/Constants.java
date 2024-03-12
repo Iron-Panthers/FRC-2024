@@ -492,24 +492,27 @@ public final class Constants {
 
   public static final class AutoAlign {
 
-    // These poses have not been verified
-    public static final Pose2d AMP = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
-    public static final Pose2d TOP_MID = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
-    
-    // These poses have been verified
-    public static final Pose2d STAGE = new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(0));
-    public static final Pose2d BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
+    // pose angles
+    public static final int BOTTOM_MID_ANGLE = 148;
+    public static final int STAGE_ANGLE = 0;
+    public static final int TOP_MID_ANGLE = 0;
+    public static final int AMP_ANGLE = 0;
 
+    // These poses have not been verified
+    public static final Pose2d AMP =
+        new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(BOTTOM_MID_ANGLE));
+    public static final Pose2d TOP_MID =
+        new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(TOP_MID_ANGLE));
+
+    // These poses have been verified
+    public static final Pose2d STAGE = new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(STAGE_ANGLE));
+    public static final Pose2d BOTTOM_MID =
+        new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(BOTTOM_MID_ANGLE + 180));
 
     public static final double BOTTOM_MID_TARGET_ANGLE = 23.5;
     public static final double TOP_MID_TARGET_ANGLE = 0;
     public static final double STAGE_TARGET_ANGLE = 0;
     public static final double AMP_TARGET_ANGLE = 0;
-    //pose angles
-    public static final int BOTTOM_MID_ANGLE = 148;
-    public static final int STAGE_ANGLE = 0;
-    public static final int  TOP_MID_ANGLE =  0;
-    public static final int AMP_ANGLE = 0;
     public static final PathConstraints CONSTRAINTS =
         new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
   }

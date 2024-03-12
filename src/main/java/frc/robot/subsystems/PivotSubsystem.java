@@ -74,11 +74,12 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
       pivotTab.add(pidController);
-      debugTarget = pivotTab
-          .add("Debug target degrees", 23.5)
-          .withWidget(BuiltInWidgets.kNumberSlider)
-          .withProperties(Map.of("min", 15, "max", 90))
-          .getEntry();
+      debugTarget =
+          pivotTab
+              .add("Debug target degrees", 23.5)
+              .withWidget(BuiltInWidgets.kNumberSlider)
+              .withProperties(Map.of("min", 15, "max", 90))
+              .getEntry();
     }
   }
 
@@ -171,9 +172,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-   // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
+    // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
 
-   double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
+    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

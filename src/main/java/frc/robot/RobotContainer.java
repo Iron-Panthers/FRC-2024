@@ -404,61 +404,30 @@ public class RobotContainer {
         .onTrue(
             AutoBuilder.pathfindToPose(AutoAlign.BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.BOTTOM_MID))
-                .andThen(
-                    new RotateAngleDriveCommand(
-                        drivebaseSubsystem,
-                        translationXSupplier,
-                        translationYSupplier,
-                        DriverStation.getAlliance().get().equals(Alliance.Red)
-                            ? AutoAlign.BOTTOM_MID_ANGLE+180
-                            : -AutoAlign.BOTTOM_MID_ANGLE+180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.BOTTOM_MID_TARGET_ANGLE))));
-                       //(int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
+                .alongWith(
+                    new PivotAngleCommand(pivotSubsystem, AutoAlign.BOTTOM_MID_TARGET_ANGLE)));
+    // (int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
 
     jacob
         .a()
         .onTrue(
             AutoBuilder.pathfindToPose(AutoAlign.STAGE, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.STAGE))
-                .andThen(
-                    new RotateAngleDriveCommand(
-                        drivebaseSubsystem,
-                        translationXSupplier,
-                        translationYSupplier,
-                        DriverStation.getAlliance().get().equals(Alliance.Red)
-                            ? AutoAlign.STAGE_ANGLE+180
-                            : AutoAlign.STAGE_ANGLE+180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.STAGE_TARGET_ANGLE))));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.STAGE_TARGET_ANGLE)));
 
     jacob
         .leftTrigger()
         .onTrue(
             AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.TOP_MID))
-                 .andThen(
-                    new RotateAngleDriveCommand(
-                        drivebaseSubsystem,
-                        translationXSupplier,
-                        translationYSupplier,
-                        DriverStation.getAlliance().get().equals(Alliance.Red)
-                            ? AutoAlign.TOP_MID_ANGLE+180
-                            : AutoAlign.TOP_MID_ANGLE+180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.TOP_MID_TARGET_ANGLE))));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.TOP_MID_TARGET_ANGLE)));
 
     jacob
         .rightStick()
         .onTrue(
             AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.AMP))
-                 .andThen(
-                    new RotateAngleDriveCommand(
-                        drivebaseSubsystem,
-                        translationXSupplier,
-                        translationYSupplier,
-                        DriverStation.getAlliance().get().equals(Alliance.Red)
-                            ? AutoAlign.AMP_ANGLE+180
-                            : AutoAlign.AMP_ANGLE+180)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.AMP_TARGET_ANGLE))));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.AMP_TARGET_ANGLE)));
 
     jacob
         .povUp()
