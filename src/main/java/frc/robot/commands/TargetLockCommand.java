@@ -6,12 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Drive;
-import frc.robot.Constants.Pivot;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.util.Util;
+import java.util.*;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import java.util.*;
@@ -26,7 +24,7 @@ public class TargetLockCommand extends Command {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
 
-  private final Pose2d targetPoint;
+  private final Translation2d targetPoint;
 
   private int targetAngle;
 

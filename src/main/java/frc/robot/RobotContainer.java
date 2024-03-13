@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutoAlign;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
@@ -103,6 +104,8 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
+
+  private Pose2d desiredPose;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
@@ -205,6 +208,13 @@ public class RobotContainer {
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
+
+    desiredPose = new Pose2d();
+    SmartDashboard.putString(
+        "desired pose",
+        String.format(
+            "(%2f %2f %2f)",
+            desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
@@ -355,14 +365,13 @@ public class RobotContainer {
     //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    anthony.a().onTrue(
-    // new PivotAngleCommand(pivotSubsystem, 56));
-    new RotateAngleDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            0)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+    anthony
+        .a()
+        .onTrue(
+            // new PivotAngleCommand(pivotSubsystem, 56));
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(

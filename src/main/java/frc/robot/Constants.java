@@ -20,6 +20,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -27,12 +28,14 @@ import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.subsystems.IntakeSubsystem.IntakePowers;
@@ -478,5 +481,42 @@ public final class Constants {
       public static final RGBColor TEAL = new RGBColor(0, 255, 255);
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
+  }
+
+  public static final class AutoAlign {
+
+    public static final double FIELD_WIDTH = 16.54; 
+
+    // Blue team:
+    // pose angles
+    public static final int BOTTOM_MID_ANGLE = 148;
+    public static final int STAGE_ANGLE = 0;
+    public static final int TOP_MID_ANGLE = 0;
+    public static final int AMP_ANGLE = 0;
+
+    // These poses have not been verified
+    public static final Pose2d BLUE_AMP = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_TOP_MID = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(0));
+    
+    // These poses have been verified
+    public static final Pose2d BLUE_STAGE = new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(0));
+
+    // Red team:
+    // These poses have not been verified
+    public static final Pose2d RED_AMP = new Pose2d(FIELD_WIDTH - 2.75, 7.31, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_TOP_MID = new Pose2d(FIELD_WIDTH - 5.8, 7.0, Rotation2d.fromDegrees(0));
+    
+    // These poses have been verified
+    public static final Pose2d RED_STAGE = new Pose2d(FIELD_WIDTH - 4.17, 4.74, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_BOTTOM_MID = new Pose2d(FIELD_WIDTH - 5.84, 1.18, Rotation2d.fromDegrees(0));
+
+
+    public static final double BOTTOM_MID_TARGET_ANGLE = 23.5;
+    public static final double TOP_MID_TARGET_ANGLE = 0;
+    public static final double STAGE_TARGET_ANGLE = 0;
+    public static final double AMP_TARGET_ANGLE = 0;
+    public static final PathConstraints CONSTRAINTS =
+        new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
   }
 }

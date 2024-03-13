@@ -10,8 +10,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +21,7 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Pivot;
 import frc.robot.Constants.Pivot.Setpoints;
 import frc.util.Util;
+import java.util.Map;
 import java.util.Optional;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -35,6 +38,8 @@ public class PivotSubsystem extends SubsystemBase {
 
   private boolean inRange;
   private Pose2d pose;
+
+  private GenericEntry debugTarget;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
@@ -69,6 +74,12 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
       pivotTab.add(pidController);
+      debugTarget =
+          pivotTab
+              .add("Debug target degrees", 23.5)
+              .withWidget(BuiltInWidgets.kNumberSlider)
+              .withProperties(Map.of("min", 15, "max", 90))
+              .getEntry();
     }
   }
 
@@ -148,6 +159,8 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
+
     double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
