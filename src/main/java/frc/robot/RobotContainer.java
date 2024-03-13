@@ -402,8 +402,7 @@ public class RobotContainer {
     jacob
         .b()
         .onTrue(
-            AutoBuilder.pathfindToPose(AutoAlign.BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0)
-                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.BOTTOM_MID))
+            AutoBuilder.pathfindToPose(DriverStation.getAlliance().get().equals(Alliance.Red) ? AutoAlign.RED_BOTTOM_MID : AutoAlign.BLUE_BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(
                     new PivotAngleCommand(pivotSubsystem, AutoAlign.BOTTOM_MID_TARGET_ANGLE)));
     // (int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
@@ -411,49 +410,46 @@ public class RobotContainer {
     jacob
         .a()
         .onTrue(
-            AutoBuilder.pathfindToPose(AutoAlign.STAGE, AutoAlign.CONSTRAINTS, 0, 0)
-                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.STAGE))
+            AutoBuilder.pathfindToPose(DriverStation.getAlliance().get().equals(Alliance.Red) ? AutoAlign.RED_STAGE : AutoAlign.BLUE_STAGE, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.STAGE_TARGET_ANGLE)));
 
     jacob
         .leftTrigger()
         .onTrue(
-            AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0)
-                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.TOP_MID))
+            AutoBuilder.pathfindToPose(DriverStation.getAlliance().get().equals(Alliance.Red) ? AutoAlign.RED_TOP_MID : AutoAlign.BLUE_TOP_MID,AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.TOP_MID_TARGET_ANGLE)));
 
     jacob
         .rightStick()
         .onTrue(
-            AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0)
-                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.AMP))
+            AutoBuilder.pathfindToPose(DriverStation.getAlliance().get().equals(Alliance.Red) ? AutoAlign.RED_AMP: AutoAlign.BLUE_AMP, AutoAlign.CONSTRAINTS, 0, 0)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.AMP_TARGET_ANGLE)));
 
-    jacob
-        .povUp()
-        .onTrue(
-            new InstantCommand(
-                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.BOTTOM_MID),
-                drivebaseSubsystem));
+    // jacob
+    //     .povUp()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.RED_BOTTOM_MID),
+    //             drivebaseSubsystem));
 
-    jacob
-        .povDown()
-        .onTrue(
-            new InstantCommand(
-                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.STAGE), drivebaseSubsystem));
+    // jacob
+    //     .povDown()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.STAGE), drivebaseSubsystem));
 
-    jacob
-        .povLeft()
-        .onTrue(
-            new InstantCommand(
-                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.AMP), drivebaseSubsystem));
+    // jacob
+    //     .povLeft()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.AMP), drivebaseSubsystem));
 
-    jacob
-        .povRight()
-        .onTrue(
-            new InstantCommand(
-                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.TOP_MID),
-                drivebaseSubsystem));
+    // jacob
+    //     .povRight()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.TOP_MID),
+    //             drivebaseSubsystem));
   }
 
   /**

@@ -41,6 +41,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   private GenericEntry debugTarget;
 
+  private double pastDebugTarget = 0;
+  private boolean listenToDebug = true;
+
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
   /** Creates a new PivotSubsystem. */
@@ -105,6 +108,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = MathUtil.clamp(degrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE);
+    listenToDebug = false;
   }
 
   private static double rotationsToDegrees(double rotations) {
@@ -172,9 +176,17 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    double currentTarget = debugTarget.getDouble(23.5);
+
+    if(currentTarget != pastDebugTarget){
+      pastDebugTarget = currentTarget;
+      listenToDebug = true;
+    }
+
     // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
 
-    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
+    double pidOutput = pidController.calculate(getCurrentAngle(), listenToDebug ? currentTarget : computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 
