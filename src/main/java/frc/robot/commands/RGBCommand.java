@@ -75,7 +75,7 @@ public class RGBCommand extends Command {
       ||shooterSubsystem.isBeamBreakSensorTriggered())
       && noteInRobotMsg.isEmpty()){ /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
         noteInRobotMsg =
-            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.BLUE,
+            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.ORANGE,
         RGBSubsystem.PatternTypes.PULSE,
         RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));      }
       else if(!(intakeSubsystem.isBeamBreakSensorTriggered()
@@ -88,7 +88,6 @@ public class RGBCommand extends Command {
         //ready to shoot = red
       if (shooterSubsystem.isReadyToShoot() 
         && pivotSubsystem.isAtTargetDegrees()
-        && Math.abs(drivebaseSubsystem.getAngularError()) < 2
         && readyToShootMsg.isEmpty()){
           readyToShootMsg =
             Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
@@ -99,7 +98,7 @@ public class RGBCommand extends Command {
         readyToShootMsg.ifPresent(RGBMessage::expire);
         readyToShootMsg = Optional.empty();
       }
-  }
+   }
 
   // Called once the command ends or is interrupted.
   @Override
