@@ -346,7 +346,7 @@ public final class Constants {
     public static final List<VisionSource> VISION_SOURCES =
         List.of(
             new VisionSource(
-                "frontCam",
+                "leftCam", // left from the robot's POV
                 new Transform3d(
                     new Translation3d(
                         -0.305, // front/back
@@ -358,7 +358,7 @@ public final class Constants {
                         Math.toRadians(30), // angle up/down
                         Math.toRadians(180)))),
             new VisionSource(
-                "backCam",
+                "rightCam", // right from the robot's pov
                 new Transform3d(
                     new Translation3d(
                         -0.305, // front/back
