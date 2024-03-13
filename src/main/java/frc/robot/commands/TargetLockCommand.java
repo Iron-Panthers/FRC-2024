@@ -6,15 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Pivot;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import java.util.*;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import java.util.*;
 
 /**
  * This command takes a drive angle and a target x,y coordinate, and snaps the robot to face the
@@ -30,9 +27,11 @@ public class TargetLockCommand extends Command {
 
   private double targetAngle;
 
-
   /** Creates a new TargetLockCommand. */
-  public TargetLockCommand(DrivebaseSubsystem drivebaseSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier) {
+  public TargetLockCommand(
+      DrivebaseSubsystem drivebaseSubsystem,
+      DoubleSupplier translationXSupplier,
+      DoubleSupplier translationYSupplier) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
     this.translationXSupplier = translationXSupplier;
@@ -43,7 +42,6 @@ public class TargetLockCommand extends Command {
         (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red)
             ? Pivot.RED_SPEAKER_POSE
             : Pivot.BLUE_SPEAKER_POSE;
-
 
     targetAngle = 0;
 
@@ -58,10 +56,10 @@ public class TargetLockCommand extends Command {
   public void execute() {
     targetAngle =
         (double) // may want to change to double for more accuracy (likely unnecessary)
-            -Math.toDegrees(Math.atan2(
-                (targetPoint.getY() - drivebaseSubsystem.getPose().getY()),
-                    ( targetPoint.getX() - drivebaseSubsystem.getPose().getX())
-                  ));
+            -Math.toDegrees(
+                Math.atan2(
+                    (targetPoint.getY() - drivebaseSubsystem.getPose().getY()),
+                    (targetPoint.getX() - drivebaseSubsystem.getPose().getX())));
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 

@@ -345,9 +345,9 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                      -0.305, // front/back
-                      -0.2286, // left/right
-                      -0.2159 // up/down
+                        -0.305, // front/back
+                        -0.2286, // left/right
+                        -0.2159 // up/down
                         ),
                     new Rotation3d(
                         0,
@@ -365,7 +365,7 @@ public final class Constants {
                         0,
                         Math.toRadians(30), // angle up/down
                         Math.toRadians(180)))),
-              new VisionSource(
+            new VisionSource(
                 "backUpCam",
                 new Transform3d(
                     new Translation3d(
@@ -497,7 +497,7 @@ public final class Constants {
 
   public static final class AutoAlign {
 
-    public static final double FIELD_WIDTH = 16.54; 
+    public static final double FIELD_WIDTH = 16.54;
 
     // Blue team:
     // pose angles
@@ -507,22 +507,29 @@ public final class Constants {
     public static final int AMP_ANGLE = 0;
 
     // These poses have not been verified
-    public static final Pose2d BLUE_AMP = new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(-AMP_ANGLE + 180));
-    public static final Pose2d BLUE_TOP_MID = new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(-TOP_MID_ANGLE + 180));
-    
+    public static final Pose2d BLUE_AMP =
+        new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(-AMP_ANGLE + 180));
+    public static final Pose2d BLUE_TOP_MID =
+        new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(-TOP_MID_ANGLE + 180));
+
     // These poses have been verified
-    public static final Pose2d BLUE_STAGE = new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(-STAGE_ANGLE + 180));
-    public static final Pose2d BLUE_BOTTOM_MID = new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(-BOTTOM_MID_ANGLE + 180));
+    public static final Pose2d BLUE_STAGE =
+        new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(-STAGE_ANGLE + 180));
+    public static final Pose2d BLUE_BOTTOM_MID =
+        new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(-BOTTOM_MID_ANGLE + 180));
 
     // Red team:
     // These poses have not been verified
-    public static final Pose2d RED_AMP = new Pose2d(FIELD_WIDTH - 2.75, 7.31, Rotation2d.fromDegrees(-AMP_ANGLE));
-    public static final Pose2d RED_TOP_MID = new Pose2d(FIELD_WIDTH - 5.8, 7.0, Rotation2d.fromDegrees(-TOP_MID_ANGLE));
-    
-    // These poses have been verified
-    public static final Pose2d RED_STAGE = new Pose2d(FIELD_WIDTH - 4.17, 4.74, Rotation2d.fromDegrees(-STAGE_ANGLE));
-    public static final Pose2d RED_BOTTOM_MID = new Pose2d(FIELD_WIDTH - 5.84, 1.18, Rotation2d.fromDegrees(-BOTTOM_MID_ANGLE));
+    public static final Pose2d RED_AMP =
+        new Pose2d(FIELD_WIDTH - 2.75, 7.31, Rotation2d.fromDegrees(-AMP_ANGLE));
+    public static final Pose2d RED_TOP_MID =
+        new Pose2d(FIELD_WIDTH - 5.8, 7.0, Rotation2d.fromDegrees(-TOP_MID_ANGLE));
 
+    // These poses have been verified
+    public static final Pose2d RED_STAGE =
+        new Pose2d(FIELD_WIDTH - 4.17, 4.74, Rotation2d.fromDegrees(-STAGE_ANGLE));
+    public static final Pose2d RED_BOTTOM_MID =
+        new Pose2d(FIELD_WIDTH - 5.84, 1.18, Rotation2d.fromDegrees(-BOTTOM_MID_ANGLE));
 
     public static final double BOTTOM_MID_TARGET_ANGLE = 23.5;
     public static final double TOP_MID_TARGET_ANGLE = 0;

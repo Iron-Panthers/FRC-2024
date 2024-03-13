@@ -107,7 +107,7 @@ public class PivotSubsystem extends SubsystemBase {
     return Util.epsilonEquals(getCurrentAngle(), targetDegrees, Pivot.EPSILON);
   }
 
-  public boolean isReadyToShoot(){
+  public boolean isReadyToShoot() {
     return isAtTargetDegrees() && inRange;
   }
 
@@ -135,13 +135,15 @@ public class PivotSubsystem extends SubsystemBase {
       speakerX = Pivot.BLUE_SPEAKER_POSE.getX();
       speakerY = Pivot.BLUE_SPEAKER_POSE.getY();
     }
-    distance = (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
-        - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
-    targetDegrees = 0.0441608631*Math.pow(distance,4) 
-        - 0.978333166*Math.pow(distance,3) 
-        + 8.181509161*Math.pow(distance,2)
-        -32.48350709*distance
-        +79.32690369;
+    distance =
+        (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
+            - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
+    targetDegrees =
+        0.0441608631 * Math.pow(distance, 4)
+            - 0.978333166 * Math.pow(distance, 3)
+            + 8.181509161 * Math.pow(distance, 2)
+            - 32.48350709 * distance
+            + 79.32690369;
   }
 
   private boolean inAngleRange(double angle) {
@@ -167,7 +169,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     double currentTarget = debugTarget.getDouble(23.5);
 
-    if(currentTarget != pastDebugTarget){
+    if (currentTarget != pastDebugTarget) {
       pastDebugTarget = currentTarget;
       listenToDebug = true;
     }

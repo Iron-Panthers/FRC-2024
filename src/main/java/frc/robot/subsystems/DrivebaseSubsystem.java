@@ -263,8 +263,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 0).withSize(8, 5);
   }
-  public boolean isAtTargetAngle(){
-    return Util.epsilonEquals( getPose().getRotation().getDegrees(), targetAngle, Setpoints.EPSILON);
+
+  public boolean isAtTargetAngle() {
+    return Util.epsilonEquals(getPose().getRotation().getDegrees(), targetAngle, Setpoints.EPSILON);
   }
   /** Return the current pose estimation of the robot */
   public Pose2d getPose() {

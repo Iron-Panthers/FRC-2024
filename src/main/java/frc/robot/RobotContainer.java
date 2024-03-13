@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AutoAlign;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
@@ -263,8 +262,6 @@ public class RobotContainer {
           jacob.getHID().setRumble(RumbleType.kRightRumble, power);
         });
 
-   
-
     anthony
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
@@ -301,16 +298,19 @@ public class RobotContainer {
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    jacob.y().whileTrue(
-        new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
-        .alongWith(new PivotTargetLockCommand(pivotSubsystem,drivebaseSubsystem)));
+    jacob
+        .y()
+        .whileTrue(
+            new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
+                .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
 
-    //anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
+    // anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
     anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 55));
 
-    //anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier, Setpoints.SPEAKER));
+    // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
+    // translationYSupplier, Setpoints.SPEAKER));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
