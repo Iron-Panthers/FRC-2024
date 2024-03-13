@@ -97,9 +97,9 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMode = ShooterMode.IDLE;
 
     var rollerConfigs = new Slot0Configs();
-    rollerConfigs.kS = 0.05; // Add 0.05 V output to overcome static friction
-    rollerConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    rollerConfigs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    rollerConfigs.kS = 0.23; // Add 0.05 V output to overcome static friction
+    rollerConfigs.kV = 0.24; // A velocity target of 1 rps results in 0.12 V output
+    rollerConfigs.kP = 0.2; // An error of 1 rps results in 0.11 V output
     rollerConfigs.kI = 0; // no output for integrated error
     rollerConfigs.kD = 0; // no output for error derivative
 
@@ -178,7 +178,7 @@ public class ShooterSubsystem extends SubsystemBase {
       // In debug use all of the debug values for our mode
       d_AmpRollerRatio = ampRollerRatioEntry.getDouble(1);
       d_ShooterSpeed = shooterSpeedEntry.getDouble(0);
-      rollerMotorBottom.setControl(velocityVoltageRequest.withVelocity(d_AmpRollerRatio));
+      rollerMotorBottom.setControl(velocityVoltageRequest.withVelocity(d_ShooterSpeed));
       rollerMotorTop.setControl(
           velocityVoltageRequest.withVelocity(d_ShooterSpeed * d_AmpRollerRatio));
     } else {
@@ -190,7 +190,6 @@ public class ShooterSubsystem extends SubsystemBase {
               shooterMode.shooterSpeeds.roller() * shooterMode.shooterSpeeds.rollerRatio()));
     }
 
-    acceleratorMotor.setControl(
-        velocityVoltageRequest.withVelocity(shooterMode.shooterSpeeds.accelerator()));
+    acceleratorMotor.set(shooterMode.shooterSpeeds.accelerator());
   }
 }
