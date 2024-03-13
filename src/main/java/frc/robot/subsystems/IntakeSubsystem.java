@@ -66,6 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
       tab.addDouble(
           "Serializer motor voltage", () -> serializerMotor.getMotorVoltage().getValueAsDouble());
       tab.addString("Current Mode", () -> intakeMode.toString());
+      tab.addBoolean("Intake Sensor", this :: isBeamBreakSensorTriggered);
     }
   }
 

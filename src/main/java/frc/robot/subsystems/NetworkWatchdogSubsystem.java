@@ -118,7 +118,7 @@ public class NetworkWatchdogSubsystem extends SubsystemBase {
   private boolean pingAttemptStep() {
     if (!canPingAll()) return false;
     System.out.println("[network watchdog] Network is up.");
-    showColor(Lights.Colors.MINT, MessagePriority.H_NETWORK_HEALTHY);
+    showColor(Lights.Colors.MINT, MessagePriority.I_NETWORK_HEALTHY);
     sleep(NetworkWatchdog.HEALTHY_CHECK_INTERVAL_MS);
     return true;
   }
