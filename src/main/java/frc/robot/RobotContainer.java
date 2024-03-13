@@ -405,13 +405,61 @@ public class RobotContainer {
                 anthony::getRightX,
                 anthony.rightBumper()));
 
-    anthony
+    // TODO: change the button bindings on all of these
+    jacob
+        .b()
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.BOTTOM_MID, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.BOTTOM_MID))
+                .alongWith(
+                    new PivotAngleCommand(pivotSubsystem, AutoAlign.BOTTOM_MID_TARGET_ANGLE)));
+    // (int) AutoAlign.BOTTOM_MID.getRotation().getDegrees())));
+
+    jacob
+        .a()
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.STAGE, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.STAGE))
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.STAGE_TARGET_ANGLE)));
+
+    jacob
+        .leftTrigger()
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.TOP_MID, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.TOP_MID))
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.TOP_MID_TARGET_ANGLE)));
+
+    jacob
+        .rightStick()
+        .onTrue(
+            AutoBuilder.pathfindToPose(AutoAlign.AMP, AutoAlign.CONSTRAINTS, 0, 0)
+                .alongWith(new InstantCommand(() -> desiredPose = AutoAlign.AMP))
+                .alongWith(new PivotAngleCommand(pivotSubsystem, AutoAlign.AMP_TARGET_ANGLE)));
+
+    jacob
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.BOTTOM_MID),
+                drivebaseSubsystem));
+
+    jacob
         .povDown()
         .onTrue(
             new InstantCommand(
-                () ->
-                    drivebaseSubsystem.resetOdometryToPose(
-                        new Pose2d(new Translation2d(1, 1), new Rotation2d(Math.toRadians(180)))),
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.STAGE), drivebaseSubsystem));
+
+    jacob
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.AMP), drivebaseSubsystem));
+
+    jacob
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> drivebaseSubsystem.resetOdometryToPose(AutoAlign.TOP_MID),
                 drivebaseSubsystem));
   }
 

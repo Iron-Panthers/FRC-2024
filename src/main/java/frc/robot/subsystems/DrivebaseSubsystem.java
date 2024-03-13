@@ -424,6 +424,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
     this.robotPose =
         swervePoseEstimator.update(getConsistentGyroscopeRotation(), getSwerveModulePositions());
 
+    visionSubsystem.setRobotPose(this.getPose());
+
     VisionMeasurement measurement;
     while ((measurement = visionSubsystem.drainVisionMeasurement()) != null) {
       swervePoseEstimator.addVisionMeasurement(
