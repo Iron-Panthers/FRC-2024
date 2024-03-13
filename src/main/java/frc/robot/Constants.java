@@ -356,7 +356,7 @@ public final class Constants {
                     new Rotation3d(
                         0,
                         Math.toRadians(30), // angle up/down
-                        Math.toRadians(180)))),
+                        Math.toRadians(180)))), // angle left/right
             new VisionSource(
                 "rightCam", // right from the robot's pov
                 new Transform3d(
@@ -368,7 +368,7 @@ public final class Constants {
                     new Rotation3d(
                         0,
                         Math.toRadians(30), // angle up/down
-                        Math.toRadians(180)))));
+                        Math.toRadians(180))))); // angle left/right
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
