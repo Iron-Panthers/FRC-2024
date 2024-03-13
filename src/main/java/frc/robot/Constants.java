@@ -277,7 +277,7 @@ public final class Constants {
     public static final class Ports {
       public static final int PIVOT_MOTOR_PORT = 18;
       public static final int CANCODER_PORT = 28;
-      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+      public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 40;
     }
 
     public static final class MotorConfigs {

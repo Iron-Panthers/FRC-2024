@@ -409,6 +409,14 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return mode;
   }
 
+    /**
+   * gets the angle error between the target angle and drive base angle
+   *
+   * @return the angle's error
+   */
+  public double getAngularError(){
+    return -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
+  }
   /**
    * Angles the swerve modules in a cross shape, to make the robot hard to push. This function sets
    * the state machine to defense mode, so it only needs to be called once
@@ -442,8 +450,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   // called in drive to angle mode
   private void driveAnglePeriodic() {
-    double angularDifference =
-        -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
+    double angularDifference = getAngularError();
 
     double rotationValue = rotController.calculate(angularDifference);
 

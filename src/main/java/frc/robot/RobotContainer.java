@@ -38,6 +38,7 @@ import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
+import frc.robot.commands.RGBCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
@@ -195,6 +197,16 @@ public class RobotContainer {
             translationYSupplier,
             // anthony.rightBumper(),
             anthony.leftBumper()));
+
+    rgbSubsystem.setDefaultCommand(
+        new RGBCommand(
+            shooterSubsystem,
+            intakeSubsystem,
+            rgbSubsystem,
+            pivotSubsystem,
+            drivebaseSubsystem
+        )
+    );
 
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
@@ -404,6 +416,8 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
+
+
   }
 
   /**

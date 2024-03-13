@@ -11,6 +11,7 @@ import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Lights;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,12 +34,13 @@ public class RGBSubsystem extends SubsystemBase {
   public enum MessagePriority {
     A_CRITICAL_NETWORK_FAILURE,
     B_MISSING_CAN_DEVICE,
-    C_INTAKE_STATE_CHANGE,
-    D_PATHING_STATUS,
-    E_DRIVER_CONTROLLED_COLOR,
-    F_NODE_SELECTION_COLOR,
-    G_MISSING_PHOTONVISION_CLIENTS,
-    H_NETWORK_HEALTHY,
+    C_TWO_NOTE_WARNING,
+    D_READY_TO_SHOOT,
+    F_NOTE_IN_ROBOT,
+    E_ACCELERATOR_NOTE,
+    G_NODE_SELECTION_COLOR,
+    H_MISSING_PHOTONVISION_CLIENTS,
+    I_NETWORK_HEALTHY,
   }
 
   private enum CurrentAnimationTypes {
@@ -168,7 +170,7 @@ public class RGBSubsystem extends SubsystemBase {
     lastAppliedColor = Optional.of(color);
   }
 
-  private void showMessage(RGBMessage message) {
+  public void showMessage(RGBMessage message) {
     switch (message.pattern) {
       case PULSE -> showPulseColor(message.color);
       case BOUNCE -> showBounceColor(message.color);
@@ -211,9 +213,9 @@ public class RGBSubsystem extends SubsystemBase {
     }
 
     if (!isMessageDisplayed
-        && !(lastAppliedAnimation.isPresent()
-            && lastAppliedAnimation.get() == CurrentAnimationTypes.RAINBOW)) {
-      showRainbow();
+    && !(lastAppliedAnimation.isPresent()
+    && lastAppliedAnimation.get() == CurrentAnimationTypes.RAINBOW)) {
+    showRainbow();
     }
   }
 }
