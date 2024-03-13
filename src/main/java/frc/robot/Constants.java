@@ -184,7 +184,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.41748046875 // comp bot offset
-                : 0.0595703125; // practice bot offset
+                : 0.070556640625; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -195,7 +195,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? -0.3920898437 // comp bot offset
-                : 0.262451171875; // practice bot offset
+                : 0.27734375; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -206,7 +206,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.22216796875 // comp bot offset
-                : -0.20825195312; // practice bot offset
+                : -0.2265625; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -217,7 +217,7 @@ public final class Constants {
         public static final double STEER_OFFSET =
             IS_COMP_BOT
                 ? 0.31127929687 // comp bot offset
-                : -0.3564453125 + 180; // practice bot offset
+                : -0.3798828125; // practice bot offset
       }
     }
 
@@ -349,20 +349,20 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0, // front/back
-                        0, // left/right
-                        0 // up/down
+                        -0.305, // front/back
+                        -0.2286, // left/right
+                        -0.2159 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(0), // angle up/down
-                        0))),
+                        Math.toRadians(30), // angle up/down
+                        Math.toRadians(180)))),
             new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
                         -0.305, // front/back
-                        -0.2286, // left/right
+                        0.2286, // left/right
                         -0.2159 // up/down
                         ),
                     new Rotation3d(
