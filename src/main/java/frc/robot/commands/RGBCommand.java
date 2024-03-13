@@ -88,6 +88,7 @@ public class RGBCommand extends Command {
         //ready to shoot = red
       if (shooterSubsystem.isReadyToShoot() 
         && pivotSubsystem.isAtTargetDegrees()
+        && Math.abs(drivebaseSubsystem.getAngularError()) < 2
         && readyToShootMsg.isEmpty()){
           readyToShootMsg =
             Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
