@@ -38,7 +38,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private boolean inRange;
   private Pose2d pose;
-
+  private double distance;
   private GenericEntry debugTarget;
 
   private double pastDebugTarget = 0;
@@ -76,6 +76,7 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
+      pivotTab.addDouble("Distance", () -> distance);
       pivotTab.add(pidController);
       debugTarget =
           pivotTab
@@ -134,12 +135,12 @@ public class PivotSubsystem extends SubsystemBase {
       speakerX = Pivot.BLUE_SPEAKER_POSE.getX();
       speakerY = Pivot.BLUE_SPEAKER_POSE.getY();
     }
-    double d = (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
+    distance = (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
         - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
-    targetDegrees = 0.0441608631*Math.pow(d,4) 
-        - 0.978333166*Math.pow(d,3) 
-        + 8.181509161*Math.pow(d,2)
-        -32.48350709*d
+    targetDegrees = 0.0441608631*Math.pow(distance,4) 
+        - 0.978333166*Math.pow(distance,3) 
+        + 8.181509161*Math.pow(distance,2)
+        -32.48350709*distance
         +79.32690369;
   }
 
@@ -173,7 +174,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
 
-    double pidOutput = pidController.calculate(getCurrentAngle(), listenToDebug ? currentTarget : computeTargetDegrees());
+    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

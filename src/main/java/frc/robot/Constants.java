@@ -325,10 +325,10 @@ public final class Constants {
     public static final double PIVOT_CANCODER_OFFSET = -0.610840 + (0.395264 - 0.363525);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
-    public static final double CENTER_OF_ROBOT_TO_BUMPER = 16.75;
+    public static final double CENTER_OF_ROBOT_TO_BUMPER = 0.41275;
 
-    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 5.5, null);
-    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 6, null);
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 6, null);
 
     public static final double GRAVITY = 9.80665; // meters per second
 
