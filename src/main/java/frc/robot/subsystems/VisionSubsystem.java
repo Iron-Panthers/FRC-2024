@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -42,6 +44,8 @@ public class VisionSubsystem {
           .withSize(2, 3);
 
   private final ShuffleboardTab cameraTab = Shuffleboard.getTab("Vision");
+
+  private Pose2d currentRobotPose = new Pose2d();
 
   private class DuplicateTracker {
     private double lastTimeStamp;
@@ -99,7 +103,8 @@ public class VisionSubsystem {
               // properly or smthn? idk
               camera,
               visionSource.robotToCamera());
-      estimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+      estimator.setMultiTagFallbackStrategy(
+          PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
       cameraStatusList.addBoolean(visionSource.name(), camera::isConnected);
       cameraEstimators.add(new CameraEstimator(camera, estimator, new DuplicateTracker()));
     }
@@ -176,11 +181,12 @@ public class VisionSubsystem {
   public static record TagCountDeviation(
       UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
     private Matrix<N3, N1> computeDeviation(double averageDistance) {
-      return Matrix.mat(Nat.N3(), Nat.N1())
-          .fill(
-              xParams.computeUnitDeviation(averageDistance),
-              yParams.computeUnitDeviation(averageDistance),
-              thetaParams.computeUnitDeviation(averageDistance));
+      return MatBuilder.fill(
+          Nat.N3(),
+          Nat.N1(),
+          xParams.computeUnitDeviation(averageDistance),
+          yParams.computeUnitDeviation(averageDistance),
+          thetaParams.computeUnitDeviation(averageDistance));
     }
 
     public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
@@ -208,6 +214,10 @@ public class VisionSubsystem {
     return !possibleCombination;
   }
 
+  public void setRobotPose(Pose2d pose) {
+    this.currentRobotPose = pose;
+  }
+
   public VisionMeasurement drainVisionMeasurement() {
     return visionMeasurements.poll();
   }
@@ -219,6 +229,7 @@ public class VisionSubsystem {
       // determine if result should be ignored
       if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
 
+      cameraEstimator.estimator().setReferencePose(currentRobotPose); // FIXME good god why
       var optEstimation = cameraEstimator.estimator().update(frame);
       if (optEstimation.isEmpty()) continue;
       var estimation = optEstimation.get();
