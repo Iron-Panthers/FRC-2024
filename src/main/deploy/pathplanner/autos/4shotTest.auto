@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.1161186924143758,
+      "y": 6.675380607398383
+    },
+    "rotation": 56.93
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -19,28 +25,35 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pose1intake1far"
+                  "pathName": "Pose1intake2"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "race",
           "data": {
-            "waitTime": 3.0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleDriveBase0Degrees"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
           }
         },
         {
@@ -50,7 +63,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pose1shoot1far"
+                  "pathName": "Pose1intake3"
                 }
               }
             ]

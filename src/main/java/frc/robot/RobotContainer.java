@@ -179,6 +179,8 @@ public class RobotContainer {
                     drivebaseSubsystem.resetOdometryToPose(
                         new Pose2d(new Translation2d(15.5, 2.5), Rotation2d.fromDegrees(180))),
                 drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "AngleDriveBase0Degrees", new RotateAngleDriveCommand(drivebaseSubsystem, translationXSupplier, translationXSupplier, 0));
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
