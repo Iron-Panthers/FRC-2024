@@ -322,7 +322,7 @@ public final class Constants {
 
     public static final int EPSILON = 2;
 
-    public static final double PIVOT_CANCODER_OFFSET = -0.610840 + (0.395264 - 0.363525);
+    public static final double PIVOT_CANCODER_OFFSET = -0.625977 + (0.070139 - 0.031250);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
     public static final double CENTER_OF_ROBOT_TO_BUMPER = 0.41275;

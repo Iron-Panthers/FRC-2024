@@ -55,7 +55,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
-import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
@@ -200,13 +199,7 @@ public class RobotContainer {
 
     rgbSubsystem.setDefaultCommand(
         new RGBCommand(
-            shooterSubsystem,
-            intakeSubsystem,
-            rgbSubsystem,
-            pivotSubsystem,
-            drivebaseSubsystem
-        )
-    );
+            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem));
 
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
@@ -416,8 +409,6 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
-
-
   }
 
   /**

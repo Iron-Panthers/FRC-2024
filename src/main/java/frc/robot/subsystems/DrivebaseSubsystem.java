@@ -409,12 +409,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return mode;
   }
 
-    /**
+  /**
    * gets the angle error between the target angle and drive base angle
    *
    * @return the angle's error
    */
-  public double getAngularError(){
+  public double getAngularError() {
     return -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
   }
   /**
