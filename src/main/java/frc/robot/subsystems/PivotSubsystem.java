@@ -146,24 +146,6 @@ public class PivotSubsystem extends SubsystemBase {
             + 79.32690369;
   }
 
-  private boolean inAngleRange(double angle) {
-    return angle < Setpoints.MAXIMUM_ANGLE && angle > Setpoints.MINIMUM_ANGLE;
-  }
-
-  private boolean currentOrTargetAngleIsUnsafe() {
-    return !inAngleRange(getCurrentAngle()) || !inAngleRange(targetDegrees);
-  }
-
-  private double computeTargetDegrees() {
-    if (currentOrTargetAngleIsUnsafe()) {
-      if (getCurrentAngle() < 45) {
-        return Setpoints.MINIMUM_SAFE_THRESHOLD;
-      }
-      return Setpoints.MAXIMUM_SAFE_THRESHOLD;
-    }
-    return targetDegrees;
-  }
-
   @Override
   public void periodic() {
 
@@ -174,9 +156,7 @@ public class PivotSubsystem extends SubsystemBase {
       listenToDebug = true;
     }
 
-    // double pidOutput = pidController.calculate(getCurrentAngle(), debugTarget.getDouble(23.5));
-
-    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
+    double pidOutput = pidController.calculate(getCurrentAngle(), MathUtil.clamp(targetDegrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE));
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

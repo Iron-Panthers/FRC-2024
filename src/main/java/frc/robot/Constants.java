@@ -163,9 +163,9 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
+            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.3).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
+            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.4).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
@@ -311,8 +311,8 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-      public static final int MINIMUM_ANGLE = 10;
-      public static final int MAXIMUM_ANGLE = 85;
+      public static final int MINIMUM_ANGLE = 15;
+      public static final int MAXIMUM_ANGLE = 125;
 
       public static final int MINIMUM_SAFE_THRESHOLD = 15;
       public static final int MAXIMUM_SAFE_THRESHOLD = 80;
