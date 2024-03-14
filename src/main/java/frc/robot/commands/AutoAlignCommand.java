@@ -4,36 +4,29 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.PivotSubsystem;
 
-public class PivotTargetLockCommand extends Command {
-  /** Creates a new ShooterCommand. */
-  PivotSubsystem pivotSubsystem;
-
+public class AutoAlignCommand extends Command {
   DrivebaseSubsystem drivebaseSubsystem;
-
-  public PivotTargetLockCommand(
-      PivotSubsystem pivotSubsystem, DrivebaseSubsystem drivebaseSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.pivotSubsystem = pivotSubsystem;
+  /** Creates a new AutoAlignCommand. */
+  public AutoAlignCommand(
+      DrivebaseSubsystem drivebaseSubsystem, AutoBuilder autoBuilder, Pose2d targetPose) {
     this.drivebaseSubsystem = drivebaseSubsystem;
-    addRequirements(pivotSubsystem);
+    addRequirements(drivebaseSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    drivebaseSubsystem.setDefenseMode();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    pivotSubsystem.calculatePivotTargetDegrees(
-        drivebaseSubsystem.getPose(),
-        drivebaseSubsystem.getChassisSpeeds().vxMetersPerSecond,
-        drivebaseSubsystem.getChassisSpeeds().vyMetersPerSecond);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -42,7 +35,6 @@ public class PivotTargetLockCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return shooterSubsystem.isDone();
     return false;
   }
 }

@@ -38,6 +38,11 @@ public class PivotSubsystem extends SubsystemBase {
 
   private boolean inRange;
   private Pose2d pose;
+  private double distance;
+  private GenericEntry debugTarget;
+
+  private double pastDebugTarget = 0;
+  private boolean listenToDebug = true;
 
   // DEBUG
   private GenericEntry targetDegreesEntry;
@@ -76,17 +81,13 @@ public class PivotSubsystem extends SubsystemBase {
           .withWidget(BuiltInWidgets.kVoltageView);
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
+      pivotTab.addDouble("Distance", () -> distance);
       pivotTab.add(pidController);
-      targetDegreesEntry =
+      debugTarget =
           pivotTab
-              .add("DEBUG Target Degrees", 45) // this::getTargetDegrees)
+              .add("Debug target degrees", 23.5)
               .withWidget(BuiltInWidgets.kNumberSlider)
               .withProperties(Map.of("min", 15, "max", 90))
-              .getEntry();
-      useDebugControls =
-          pivotTab
-              .add("Use Debug Controls", false)
-              .withWidget(BuiltInWidgets.kToggleSwitch)
               .getEntry();
     }
   }
@@ -111,8 +112,13 @@ public class PivotSubsystem extends SubsystemBase {
     return Util.epsilonEquals(getCurrentAngle(), targetDegrees, Pivot.EPSILON);
   }
 
+  public boolean isReadyToShoot() {
+    return isAtTargetDegrees() && inRange;
+  }
+
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = MathUtil.clamp(degrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE);
+    listenToDebug = false;
   }
 
   private static double rotationsToDegrees(double rotations) {
@@ -121,12 +127,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
-    double g = Pivot.GRAVITY;
     double x = pose.getX();
     double y = pose.getY();
     double speakerX;
     double speakerY;
-    calculatedTargetDegrees = getCurrentAngle();
     Optional<Alliance> color = DriverStation.getAlliance();
 
     if (color.isPresent() && color.get() == Alliance.Red) {
@@ -136,38 +140,31 @@ public class PivotSubsystem extends SubsystemBase {
       speakerX = Pivot.BLUE_SPEAKER_POSE.getX();
       speakerY = Pivot.BLUE_SPEAKER_POSE.getY();
     }
-    double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
 
-    double d = distanceToSpeaker - Pivot.PIVOT_TO_ROBO_CENTER_LENGTH;
-    double h = Pivot.SPEAKER_HEIGHT - Pivot.PIVOT_TO_ROBO_CENTER_HEIGHT;
-
-    // difference between distance to speaker now and after 1 second to find v to speaker
-    double velocityToSpeaker =
-        distanceToSpeaker
-            - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
-
-    double v = Pivot.NOTE_SPEED + velocityToSpeaker;
-
-    double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
-
-    if (interiorMath > 0) {
-      calculatedTargetDegrees =
-          180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-      targetDegrees = calculatedTargetDegrees;
-      inRange = true;
-    } else {
-      inRange = false;
-    }
+    distance =
+        (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
+            - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
+    targetDegrees =
+        0.0441608631 * Math.pow(distance, 4)
+            - 0.978333166 * Math.pow(distance, 3)
+            + 8.181509161 * Math.pow(distance, 2)
+            - 32.48350709 * distance
+            + 79.32690369;
   }
 
   @Override
   public void periodic() {
+    double currentTarget = debugTarget.getDouble(23.5);
 
-    if (useDebugControls.getBoolean(false)) {
-      targetDegrees = targetDegreesEntry.getDouble(targetDegrees);
+    if (currentTarget != pastDebugTarget) {
+      pastDebugTarget = currentTarget;
+      listenToDebug = true;
     }
 
-    double pidOutput = pidController.calculate(getCurrentAngle(), targetDegrees);
+    double pidOutput =
+        pidController.calculate(
+            getCurrentAngle(),
+            MathUtil.clamp(targetDegrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE));
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

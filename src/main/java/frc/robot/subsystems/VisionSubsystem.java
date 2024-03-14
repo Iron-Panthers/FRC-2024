@@ -10,6 +10,7 @@ import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.PoseEstimator;
 import frc.robot.Constants.Vision;
@@ -41,6 +43,10 @@ public class VisionSubsystem {
           .withPosition(11, 0)
           .withSize(2, 3);
 
+  private final ShuffleboardTab cameraTab = Shuffleboard.getTab("Vision");
+
+  private Pose2d currentRobotPose = new Pose2d();
+
   private class DuplicateTracker {
     private double lastTimeStamp;
 
@@ -60,8 +66,23 @@ public class VisionSubsystem {
 
   private double lastDetection = 0;
 
+  private double tagX;
+  private double tagY;
+  private double tagZ;
+  private double tagRoll;
+  private double tagPitch;
+  private double tagYaw;
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
+
+    cameraTab.addDouble("x to target", () -> tagX);
+    cameraTab.addDouble("y to target", () -> tagY);
+    cameraTab.addDouble("z to target", () -> tagZ);
+    cameraTab.addDouble("roll to target", () -> Math.toDegrees(tagRoll));
+    cameraTab.addDouble("pitch to target", () -> Math.toDegrees(tagPitch));
+    cameraTab.addDouble("yaw to target", () -> Math.toDegrees(tagYaw));
+
     // loading the 2024 field arrangement
     try {
       fieldLayout =
@@ -82,7 +103,8 @@ public class VisionSubsystem {
               // properly or smthn? idk
               camera,
               visionSource.robotToCamera());
-      estimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+      estimator.setMultiTagFallbackStrategy(
+          PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
       cameraStatusList.addBoolean(visionSource.name(), camera::isConnected);
       cameraEstimators.add(new CameraEstimator(camera, estimator, new DuplicateTracker()));
     }
@@ -192,6 +214,10 @@ public class VisionSubsystem {
     return !possibleCombination;
   }
 
+  public void setRobotPose(Pose2d pose) {
+    this.currentRobotPose = pose;
+  }
+
   public VisionMeasurement drainVisionMeasurement() {
     return visionMeasurements.poll();
   }
@@ -203,6 +229,7 @@ public class VisionSubsystem {
       // determine if result should be ignored
       if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
 
+      cameraEstimator.estimator().setReferencePose(currentRobotPose); // FIXME good god why
       var optEstimation = cameraEstimator.estimator().update(frame);
       if (optEstimation.isEmpty()) continue;
       var estimation = optEstimation.get();
@@ -216,6 +243,12 @@ public class VisionSubsystem {
         var t3d = target.getBestCameraToTarget();
         sumDistance +=
             Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+        tagX = t3d.getX();
+        tagY = t3d.getY();
+        tagZ = t3d.getZ();
+        tagRoll = t3d.getRotation().getX();
+        tagPitch = t3d.getRotation().getY();
+        tagYaw = t3d.getRotation().getZ();
       }
       double avgDistance = sumDistance / estimation.targetsUsed.size();
 

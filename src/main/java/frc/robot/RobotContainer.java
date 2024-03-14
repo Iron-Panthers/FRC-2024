@@ -38,6 +38,7 @@ import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
 import frc.robot.commands.PivotTargetLockCommand;
+import frc.robot.commands.RGBCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
@@ -46,6 +47,7 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.TargetLockCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -103,6 +105,8 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
+
+  private Pose2d desiredPose;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
@@ -195,6 +199,10 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
+    rgbSubsystem.setDefaultCommand(
+        new RGBCommand(
+            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem));
+
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
@@ -206,6 +214,13 @@ public class RobotContainer {
     SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
     SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
     SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
+
+    desiredPose = new Pose2d();
+    SmartDashboard.putString(
+        "desired pose",
+        String.format(
+            "(%2f %2f %2f)",
+            desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
@@ -289,12 +304,19 @@ public class RobotContainer {
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
-    jacob.y().onTrue(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+    jacob
+        .y()
+        .whileTrue(
+            new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
+                .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
 
-    anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
+    // anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
     anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
     anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
     anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 55));
+
+    // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
+    // translationYSupplier, Setpoints.SPEAKER));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
