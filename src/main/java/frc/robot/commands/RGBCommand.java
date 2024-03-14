@@ -4,16 +4,15 @@
 
 package frc.robot.commands;
 
-import java.util.Optional;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.RGBSubsystem.RGBMessage;
+import frc.robot.subsystems.ShooterSubsystem;
+import java.util.Optional;
 
 public class RGBCommand extends Command {
   private ShooterSubsystem shooterSubsystem;
@@ -21,15 +20,13 @@ public class RGBCommand extends Command {
   private RGBSubsystem rgbSubsystem;
   private PivotSubsystem pivotSubsystem;
   private DrivebaseSubsystem drivebaseSubsystem;
-  private Optional <RGBMessage> noteInRobotMsg;
-  private Optional <RGBMessage> readyToShootMsg;
-  private Optional <RGBMessage> twoNoteMsg;
-
-  
+  private Optional<RGBMessage> noteInRobotMsg;
+  private Optional<RGBMessage> readyToShootMsg;
+  private Optional<RGBMessage> twoNoteMsg;
 
   /** Creates a new RGBCommand. */
-  
-  public RGBCommand(ShooterSubsystem shooterSubsystem,
+  public RGBCommand(
+      ShooterSubsystem shooterSubsystem,
       IntakeSubsystem intakeSubsystem,
       RGBSubsystem rgbSubsystem,
       PivotSubsystem pivotSubsystem,
@@ -44,7 +41,6 @@ public class RGBCommand extends Command {
     twoNoteMsg = Optional.empty();
     readyToShootMsg = Optional.empty();
     noteInRobotMsg = Optional.empty();
-
   }
 
   // Called when the command is initially scheduled.
@@ -54,52 +50,56 @@ public class RGBCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-            //two note = yellow
+    // two note = yellow
 
-      if (shooterSubsystem.isBeamBreakSensorTriggered() 
-      && intakeSubsystem.isBeamBreakSensorTriggered() 
-      && twoNoteMsg.isEmpty()){
-        twoNoteMsg =
-            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.YELLOW,
-        RGBSubsystem.PatternTypes.PULSE,
-        RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING));      }
-      else if (!(shooterSubsystem.isBeamBreakSensorTriggered() 
-      && intakeSubsystem.isBeamBreakSensorTriggered())){
-        twoNoteMsg.ifPresent(RGBMessage::expire);
-        twoNoteMsg = Optional.empty();
-      }
-      
-    
-        //serializer = blue
-      if ((intakeSubsystem.isBeamBreakSensorTriggered()
-      ||shooterSubsystem.isBeamBreakSensorTriggered())
-      && noteInRobotMsg.isEmpty()){ /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
-        noteInRobotMsg =
-            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.ORANGE,
-        RGBSubsystem.PatternTypes.PULSE,
-        RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));      }
-      else if(!(intakeSubsystem.isBeamBreakSensorTriggered()
-      ||shooterSubsystem.isBeamBreakSensorTriggered())){
-        noteInRobotMsg.ifPresent(RGBMessage::expire);
-        noteInRobotMsg = Optional.empty();
-      }
+    if (shooterSubsystem.isBeamBreakSensorTriggered()
+        && intakeSubsystem.isBeamBreakSensorTriggered()
+        && twoNoteMsg.isEmpty()) {
+      twoNoteMsg =
+          Optional.of(
+              rgbSubsystem.showMessage(
+                  Constants.Lights.Colors.YELLOW,
+                  RGBSubsystem.PatternTypes.PULSE,
+                  RGBSubsystem.MessagePriority.C_TWO_NOTE_WARNING));
+    } else if (!(shooterSubsystem.isBeamBreakSensorTriggered()
+        && intakeSubsystem.isBeamBreakSensorTriggered())) {
+      twoNoteMsg.ifPresent(RGBMessage::expire);
+      twoNoteMsg = Optional.empty();
+    }
 
+    // serializer = blue
+    if ((intakeSubsystem.isBeamBreakSensorTriggered()
+            || shooterSubsystem.isBeamBreakSensorTriggered())
+        && noteInRobotMsg.isEmpty()) {
+      /*|| shooterSubsystem.isBeamBreakSensorTriggered()*/
+      noteInRobotMsg =
+          Optional.of(
+              rgbSubsystem.showMessage(
+                  Constants.Lights.Colors.ORANGE,
+                  RGBSubsystem.PatternTypes.PULSE,
+                  RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));
+    } else if (!(intakeSubsystem.isBeamBreakSensorTriggered()
+        || shooterSubsystem.isBeamBreakSensorTriggered())) {
+      noteInRobotMsg.ifPresent(RGBMessage::expire);
+      noteInRobotMsg = Optional.empty();
+    }
 
-        //ready to shoot = red
-      if (shooterSubsystem.isReadyToShoot() 
+    // ready to shoot = red
+    if (shooterSubsystem.isReadyToShoot()
         && pivotSubsystem.isAtTargetDegrees()
         && Math.abs(drivebaseSubsystem.getAngularError()) < 2
-        && readyToShootMsg.isEmpty()){
-          readyToShootMsg =
-            Optional.of(rgbSubsystem.showMessage(Constants.Lights.Colors.RED,
-        RGBSubsystem.PatternTypes.PULSE,
-        RGBSubsystem.MessagePriority.D_READY_TO_SHOOT));      }
-      else if (!(shooterSubsystem.isReadyToShoot() 
-        && pivotSubsystem.isAtTargetDegrees())){
-        readyToShootMsg.ifPresent(RGBMessage::expire);
-        readyToShootMsg = Optional.empty();
-      }
-   }
+        && readyToShootMsg.isEmpty()) {
+      readyToShootMsg =
+          Optional.of(
+              rgbSubsystem.showMessage(
+                  Constants.Lights.Colors.RED,
+                  RGBSubsystem.PatternTypes.PULSE,
+                  RGBSubsystem.MessagePriority.D_READY_TO_SHOOT));
+    } else if (!(shooterSubsystem.isReadyToShoot() && pivotSubsystem.isAtTargetDegrees())) {
+      readyToShootMsg.ifPresent(RGBMessage::expire);
+      readyToShootMsg = Optional.empty();
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
