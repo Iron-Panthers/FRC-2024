@@ -54,7 +54,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
-import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
@@ -197,13 +196,7 @@ public class RobotContainer {
 
     rgbSubsystem.setDefaultCommand(
         new RGBCommand(
-            shooterSubsystem,
-            intakeSubsystem,
-            rgbSubsystem,
-            pivotSubsystem,
-            drivebaseSubsystem
-        )
-    );
+            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem));
 
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
@@ -360,14 +353,13 @@ public class RobotContainer {
     //             drivebaseSubsystem));
 
     // SPEAKER FROM SUBWOOFER
-    anthony.a().onTrue(
-    // new PivotAngleCommand(pivotSubsystem, 56));
-    new RotateAngleDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            0)
-        .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+    anthony
+        .a()
+        .onTrue(
+            // new PivotAngleCommand(pivotSubsystem, 56));
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
 
     DoubleSupplier rotation =
         exponential(
@@ -400,8 +392,6 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
-
-
   }
 
   /**

@@ -55,4 +55,4 @@ public class IntakeCommand extends Command {
   public boolean isFinished() {
     return shooterSubsystem.isBeamBreakSensorTriggered();
   }
-} 
+}
