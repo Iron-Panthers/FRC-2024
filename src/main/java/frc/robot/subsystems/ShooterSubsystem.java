@@ -157,6 +157,20 @@ public class ShooterSubsystem extends SubsystemBase {
     this.shooterMode = shooterMode;
   }
 
+  public void advanceToShootMode() {
+    switch (shooterMode) {
+      case RAMP_AMP_FRONT:
+        shooterMode = ShooterMode.SHOOT_AMP_FORWARD;
+        break;
+      case RAMP_AMP_BACK:
+        shooterMode = ShooterMode.SHOOT_AMP_BACK;
+        break;
+      case RAMP_SPEAKER:
+      default:
+        shooterMode = ShooterMode.SHOOT_SPEAKER;
+    }
+  }
+
   @Override
   public void periodic() {
     if (useDebugControls.getBoolean(false)) {
