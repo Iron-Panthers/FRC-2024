@@ -267,7 +267,7 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers RAMP_AMP_BACK =
           new ShooterSubsystem.ShooterPowers(11.6, 0.76, 0.5);
       public static final ShooterSubsystem.ShooterPowers RAMP_AMP_FRONT =
-          new ShooterSubsystem.ShooterPowers(11.6, 0.76, 0.5);
+          new ShooterSubsystem.ShooterPowers(11.6, 1.32, 0.5);
       public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
           new ShooterSubsystem.ShooterPowers(76, 1, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
