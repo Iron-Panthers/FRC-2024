@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 
-public class ShootAmp extends Command {
+public class ShootAmpCommand extends Command {
   private ShooterSubsystem shooterSubsystem;
 
   /** Creates a new ShootAmp. */
-  public ShootAmp(ShooterSubsystem shooterSubsystem) {
+  public ShootAmpCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(shooterSubsystem);
