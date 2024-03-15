@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -22,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private DigitalInput noteSensor;
 
   private ShooterMode shooterMode;
+
+  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0).withSlot(0);
 
   private final ShuffleboardTab shooterTab = Shuffleboard.getTab("Shooter");
 
@@ -108,7 +111,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    rollerMotorTop.set(shooterMode.shooterPowers.roller());
+    rollerMotorTop.setControl(
+        velocityVoltageRequest.withVelocity(shooterMode.shooterPowers.roller()));
     acceleratorMotor.set(shooterMode.shooterPowers.accelerator());
   }
 }

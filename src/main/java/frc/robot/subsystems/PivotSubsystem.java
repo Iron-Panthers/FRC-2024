@@ -139,14 +139,13 @@ public class PivotSubsystem extends SubsystemBase {
         (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
             - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
     targetDegrees =
-        - 0.00506 * Math.pow(distance,6)
-        + 0.14497 * Math.pow(distance,5)
-        - 1.613015 * Math.pow(distance, 4)
-        + 8.545943 * Math.pow(distance, 3)
-        - 19.992769 * Math.pow(distance, 2)
-        + 5.447036 * distance
-        + 65.276596;
-
+        -0.00506 * Math.pow(distance, 6)
+            + 0.14497 * Math.pow(distance, 5)
+            - 1.613015 * Math.pow(distance, 4)
+            + 8.545943 * Math.pow(distance, 3)
+            - 19.992769 * Math.pow(distance, 2)
+            + 5.447036 * distance
+            + 65.276596;
   }
 
   @Override
@@ -159,7 +158,10 @@ public class PivotSubsystem extends SubsystemBase {
       listenToDebug = true;
     }
 
-    double pidOutput = pidController.calculate(getCurrentAngle(), MathUtil.clamp(targetDegrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE));
+    double pidOutput =
+        pidController.calculate(
+            getCurrentAngle(),
+            MathUtil.clamp(targetDegrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE));
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

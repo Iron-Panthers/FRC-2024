@@ -259,16 +259,19 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(.8, .15);
+          new ShooterSubsystem.ShooterPowers(76, .15);
       public static final ShooterSubsystem.ShooterPowers IDLE =
           new ShooterSubsystem.ShooterPowers(0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMPING =
-          new ShooterSubsystem.ShooterPowers(.8, 0);
+          new ShooterSubsystem.ShooterPowers(76, 0);
       public static final ShooterSubsystem.ShooterPowers SHOOTING =
-          new ShooterSubsystem.ShooterPowers(.8, .5);
+          new ShooterSubsystem.ShooterPowers(76, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
           new ShooterSubsystem.ShooterPowers(0, 0);
     }
+
+    public static final Slot0Configs ROLLER_PID_CONFIG =
+        new Slot0Configs().withKP(0.2).withKS(0.23).withKV(0.24);
 
     public static final double SHOOTER_VELOCITY_THRESHOLD = 30;
   }
