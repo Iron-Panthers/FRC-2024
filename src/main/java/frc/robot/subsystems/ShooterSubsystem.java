@@ -108,6 +108,7 @@ public class ShooterSubsystem extends SubsystemBase {
           "Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
       shooterTab.addDouble(
           "Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
+      shooterTab.addString("mode", () -> shooterMode.toString());
 
       ampRollerRatioEntry =
           shooterTab

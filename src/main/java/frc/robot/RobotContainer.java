@@ -351,18 +351,18 @@ public class RobotContainer {
                         : Setpoints.SPEAKER_DEGREES)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
 
-    // AMP
-    anthony
-        .x()
+/*    // AMP
+    jacob
+        .b()
         .onTrue(
             new RotateAngleDriveCommand(
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 50)) // FIXME idk
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 52)) // FIXME idk
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_BACK)));
-
+*/
     jacob
         .a()
         .onTrue(
@@ -371,7 +371,7 @@ public class RobotContainer {
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 110)) // FIXME idk
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_FRONT)));
 
     // SPEAKER FROM SUBWOOFER
