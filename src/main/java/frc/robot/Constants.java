@@ -259,19 +259,19 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(76, .15);
+          new ShooterSubsystem.ShooterPowers(76, 1, .15);
       public static final ShooterSubsystem.ShooterPowers IDLE =
-          new ShooterSubsystem.ShooterPowers(0, 0);
+          new ShooterSubsystem.ShooterPowers(0, 0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMP_SPEAKER =
-          new ShooterSubsystem.ShooterPowers(76, 0);
+          new ShooterSubsystem.ShooterPowers(76, 1, 0);
       public static final ShooterSubsystem.ShooterPowers RAMP_AMP =
-          new ShooterSubsystem.ShooterPowers(12, 0, 0.76);
+          new ShooterSubsystem.ShooterPowers(11.6, 0.76, 0.5);
       public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
-          new ShooterSubsystem.ShooterPowers(76, .5);
+          new ShooterSubsystem.ShooterPowers(76, 1, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
-          new ShooterSubsystem.ShooterPowers(0, 0);
+          new ShooterSubsystem.ShooterPowers(0, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP =
-          new ShooterSubsystem.ShooterPowers(12, 0, 0.76);
+          new ShooterSubsystem.ShooterPowers(11.6, 0.76, .5);
 
     }
 
