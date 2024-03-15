@@ -24,7 +24,7 @@ public class ShootAmp extends Command {
     if (shooterSubsystem.getMode().equals(ShooterMode.RAMP_AMP_BACK)) {
       shooterSubsystem.setShooterMode(ShooterMode.SHOOT_AMP_BACK);
     } else {
-      shooterSubsystem.setShooterMode(ShooterMode.SHOTO_AMP_FORWARD);
+      shooterSubsystem.setShooterMode(ShooterMode.SHOOT_AMP_FORWARD);
     }
   }
 
