@@ -4,13 +4,10 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
-
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -19,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Shooter;
+import java.util.Map;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX rollerMotorBottom;
@@ -45,7 +43,10 @@ public class ShooterSubsystem extends SubsystemBase {
     INTAKE(Shooter.Modes.INTAKE),
     IDLE(Shooter.Modes.IDLE),
     RAMP_SPEAKER(Shooter.Modes.RAMP_SPEAKER),
-    SHOOT_SPEAKER(Shooter.Modes.SHOOT_SPEAKER);
+    RAMP_AMP_BACK(Shooter.Modes.RAMP_AMP_BACK),
+    SHOOT_SPEAKER(Shooter.Modes.SHOOT_SPEAKER),
+    SHOOT_AMP_BACK(Shooter.Modes.SHOOT_AMP_BACK), 
+    SHOTO_AMP_FORWARD(Shooter.Modes.SHOOT_AMP_FORWARD);
 
     public final ShooterPowers shooterPowers;
 
@@ -130,6 +131,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  public ShooterMode getMode() {
+    return shooterMode;
+  }
+
   public boolean isShooterUpToSpeed() {
     return rollerMotorBottom.getVelocity().getValueAsDouble() >= Shooter.SHOOTER_VELOCITY_THRESHOLD
         && rollerMotorTop.getVelocity().getValueAsDouble() >= Shooter.SHOOTER_VELOCITY_THRESHOLD;
@@ -168,7 +173,7 @@ public class ShooterSubsystem extends SubsystemBase {
           velocityVoltageRequest.withVelocity(
               shooterMode.shooterPowers.roller() * shooterMode.shooterPowers.topToBottomRatio()));
     }
-    
+
     acceleratorMotor.set(shooterMode.shooterPowers.accelerator());
   }
 }

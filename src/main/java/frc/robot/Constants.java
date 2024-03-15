@@ -264,15 +264,16 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(0, 0, 0);
       public static final ShooterSubsystem.ShooterPowers RAMP_SPEAKER =
           new ShooterSubsystem.ShooterPowers(76, 1, 0);
-      public static final ShooterSubsystem.ShooterPowers RAMP_AMP =
+      public static final ShooterSubsystem.ShooterPowers RAMP_AMP_BACK =
           new ShooterSubsystem.ShooterPowers(11.6, 0.76, 0.5);
       public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
           new ShooterSubsystem.ShooterPowers(76, 1, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
           new ShooterSubsystem.ShooterPowers(0, 1, 0);
-      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP =
+      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_BACK =
           new ShooterSubsystem.ShooterPowers(11.6, 0.76, .5);
-
+      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_FORWARD =
+          new ShooterSubsystem.ShooterPowers(11.6, 1.32, .5);
     }
 
     public static final Slot0Configs ROLLER_PID_CONFIG =
