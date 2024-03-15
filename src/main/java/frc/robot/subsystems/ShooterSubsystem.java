@@ -4,11 +4,16 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +29,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private ShooterMode shooterMode;
 
+  // DEBUG
+  private double d_AmpRollerRatio = .068d;
+  private GenericEntry ampRollerRatioEntry;
+
+  private double d_ShooterSpeed = .5d;
+  private GenericEntry shooterSpeedEntry;
+  private GenericEntry useDebugControls;
+
+  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0).withSlot(0);
+
+  private final ShuffleboardTab shooterTab = Shuffleboard.getTab("Shooter");
+
+  // VELOCITY PID
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0).withSlot(0);
 
   private final ShuffleboardTab shooterTab = Shuffleboard.getTab("Shooter");
@@ -31,8 +49,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public enum ShooterMode {
     INTAKE(Shooter.Modes.INTAKE),
     IDLE(Shooter.Modes.IDLE),
-    RAMPING(Shooter.Modes.RAMPING),
-    SHOOTING(Shooter.Modes.SHOOTING);
+    RAMPING(Shooter.Modes.RAMP_AMP),
+    SHOOTING(Shooter.Modes.SHOOT_SPEAKER);
 
     public final ShooterPowers shooterPowers;
 
@@ -77,14 +95,42 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       shooterTab.addBoolean("Sensor Input", this::isBeamBreakSensorTriggered);
-      shooterTab.addDouble(
-          "Top Roller Velocity", () -> rollerMotorTop.getVelocity().getValueAsDouble());
-      shooterTab.addDouble(
-          "Bottom Roller Velocity", () -> rollerMotorBottom.getVelocity().getValueAsDouble());
+      shooterTab
+          .addDouble(
+              "Top Roller Velocity (RPS)", () -> rollerMotorTop.getVelocity().getValueAsDouble())
+          .withWidget(BuiltInWidgets.kGraph)
+          .withSize(2, 1);
+      shooterTab
+          .addDouble(
+              "Bottom Roller Velocity (RPS)",
+              () -> rollerMotorBottom.getVelocity().getValueAsDouble())
+          .withWidget(BuiltInWidgets.kGraph)
+          .withSize(2, 1);
       shooterTab.addDouble(
           "Top roller amps", () -> rollerMotorTop.getSupplyCurrent().getValueAsDouble());
       shooterTab.addDouble(
           "Bottom roller amps", () -> rollerMotorBottom.getSupplyCurrent().getValueAsDouble());
+
+      ampRollerRatioEntry =
+          shooterTab
+              .add("DEBUG Amp Top to Bottom Roller Ratio", 1)
+              .withWidget(BuiltInWidgets.kNumberSlider)
+              .withProperties(Map.of("min", 0, "max", 1))
+              .withSize(3, 1)
+              .getEntry();
+      shooterSpeedEntry =
+          shooterTab
+              .add("DEBUG Shooter Velocity", .5)
+              .withWidget(BuiltInWidgets.kNumberSlider)
+              .withProperties(Map.of("min", 0, "max", 90))
+              .withSize(3, 1)
+              .getEntry();
+      useDebugControls =
+          shooterTab
+              .add("Use Debug Controls", false)
+              .withWidget(BuiltInWidgets.kToggleSwitch)
+              .withSize(2, 1)
+              .getEntry();
     }
   }
 
@@ -111,8 +157,20 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    rollerMotorTop.setControl(
-        velocityVoltageRequest.withVelocity(shooterMode.shooterPowers.roller()));
-    acceleratorMotor.set(shooterMode.shooterPowers.accelerator());
+    if (useDebugControls.getBoolean(false)) {
+      // In debug use all of the debug values for our mode
+      d_AmpRollerRatio = ampRollerRatioEntry.getDouble(1);
+      d_ShooterSpeed = shooterSpeedEntry.getDouble(0);
+      rollerMotorBottom.setControl(velocityVoltageRequest.withVelocity(d_ShooterSpeed));
+      rollerMotorTop.setControl(
+          velocityVoltageRequest.withVelocity(d_ShooterSpeed * d_AmpRollerRatio));
+    } else {
+      // Otherwise just use our current mode for the values
+      rollerMotorBottom.setControl(
+          velocityVoltageRequest.withVelocity(shooterMode.shooterSpeeds.roller()));
+      rollerMotorTop.setControl(
+          velocityVoltageRequest.withVelocity(
+              shooterMode.shooterSpeeds.roller() * shooterMode.shooterSpeeds.rollerRatio()));
+    }
   }
 }
