@@ -44,9 +44,10 @@ public class ShooterSubsystem extends SubsystemBase {
     IDLE(Shooter.Modes.IDLE),
     RAMP_SPEAKER(Shooter.Modes.RAMP_SPEAKER),
     RAMP_AMP_BACK(Shooter.Modes.RAMP_AMP_BACK),
+    RAMP_AMP_FRONT(Shooter.Modes.RAMP_AMP_FRONT),
     SHOOT_SPEAKER(Shooter.Modes.SHOOT_SPEAKER),
-    SHOOT_AMP_BACK(Shooter.Modes.SHOOT_AMP_BACK), 
-    SHOTO_AMP_FORWARD(Shooter.Modes.SHOOT_AMP_FORWARD);
+    SHOOT_AMP_BACK(Shooter.Modes.SHOOT_AMP_BACK),
+    SHOOT_AMP_FORWARD(Shooter.Modes.SHOOT_AMP_FORWARD);
 
     public final ShooterPowers shooterPowers;
 
