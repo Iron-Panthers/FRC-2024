@@ -361,7 +361,19 @@ public final class Constants {
                 "rightCam", // right from the robot's pov
                 new Transform3d(
                     new Translation3d(
-                        -0.305, // front/back
+                        -0.2796, // front/back
+                        -0.2286, // left/right
+                        -0.2159 // up/down
+                        ),
+                    new Rotation3d(
+                        0,
+                        Math.toRadians(30), // angle up/down
+                        Math.toRadians(180)))),
+            new VisionSource(
+                "backUpCam",
+                new Transform3d(
+                    new Translation3d(
+                        -0.2796 + 0.0254, // front/back
                         0.2286, // left/right
                         -0.2159 // up/down
                         ),
