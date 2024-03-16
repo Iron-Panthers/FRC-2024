@@ -92,8 +92,15 @@ public class DrivebaseSubsystem extends SubsystemBase {
     DEFENSE
   }
 
+  public enum AutoRotationOverride {
+    PATHPLANNER,
+    OVERRIDE;
+  }
+
   /** The current mode */
   private Modes mode = Modes.DRIVE;
+
+  private AutoRotationOverride autoRotationOverrideMode = AutoRotationOverride.PATHPLANNER;
 
   private Field2d field = new Field2d();
 
@@ -378,9 +385,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
     return swerveDrivetrain.getPigeon2().getRate();
   }
 
-  public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-    this.chassisSpeeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getDriverGyroscopeRotation());
+  public void driveAutonomousAngle(double targetAngle) {
+    if (mode != Modes.DRIVE_ANGLE || autoRotationOverrideMode != AutoRotationOverride.OVERRIDE) {
+      rotController.reset();
+    }
+    this.autoRotationOverrideMode = AutoRotationOverride.OVERRIDE;
+    this.targetAngle = targetAngle;
   }
 
   /**
@@ -417,6 +427,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public double getAngularError() {
     return -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
   }
+
+  public void setAutoRotOverride(AutoRotationOverride overrideMode) {
+    this.autoRotationOverrideMode = overrideMode;
+  }
+
   /**
    * Angles the swerve modules in a cross shape, to make the robot hard to push. This function sets
    * the state machine to defense mode, so it only needs to be called once
@@ -459,6 +474,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     // this value makes our unit-less [-1, 1] into [-max angular, max angular]
     double omegaRadiansPerSecond = rotationValue * MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+    if (autoRotationOverrideMode == AutoRotationOverride.OVERRIDE) {
+      chassisSpeeds.omegaRadiansPerSecond = omegaRadiansPerSecond;
+      drivePeriodic();
+      return;
+    }
 
     // initialize chassis speeds but add our desired angle
     chassisSpeeds =
@@ -509,8 +530,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
               swervePoseEstimator.getEstimatedPosition().getRotation().getDegrees()));
     }
 
-    /* Write outputs, corresponding to our current Mode of operation */
-    updateModules(currentMode);
+    if (autoRotationOverrideMode == AutoRotationOverride.OVERRIDE) {
+      driveAnglePeriodic();
+    } else {
+      /* Write outputs, corresponding to our current Mode of operation */
+      updateModules(currentMode);
+    }
 
     /* Update odometry */
     odometryPeriodic();
