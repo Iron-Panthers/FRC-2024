@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Pivot;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -55,11 +56,12 @@ public class TargetLockCommand extends Command {
   @Override
   public void execute() {
     targetAngle =
-        (double) // may want to change to double for more accuracy (likely unnecessary)
-            -Math.toDegrees(
-                Math.atan2(
-                    (targetPoint.getY() - drivebaseSubsystem.getPose().getY()),
-                    (targetPoint.getX() - drivebaseSubsystem.getPose().getX())));
+        (double)
+                -Math.toDegrees(
+                    Math.atan2(
+                        (targetPoint.getY() - drivebaseSubsystem.getPose().getY()),
+                        (targetPoint.getX() - drivebaseSubsystem.getPose().getX())))
+            + (DriverStation.getAlliance().get() == Alliance.Blue ? 180 : 0);
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
 
