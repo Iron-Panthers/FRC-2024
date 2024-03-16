@@ -363,17 +363,17 @@ public class RobotContainer {
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 52)) // FIXME idk
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_BACK)));
 
-/*    jacob
-        .a()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
-                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_FRONT)));
-*/
+    /*    jacob
+            .a()
+            .onTrue(
+                new RotateAngleDriveCommand(
+                        drivebaseSubsystem,
+                        translationXSupplier,
+                        translationYSupplier,
+                        DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
+                    .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
+                    .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_FRONT)));
+    */
     // SPEAKER FROM SUBWOOFER
     anthony
         .a()
