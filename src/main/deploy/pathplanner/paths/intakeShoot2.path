@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 2.88,
-        "y": 6.867392196322855
+        "y": 6.977281565182599
       },
       "prevControl": {
         "x": 2.88,
-        "y": 6.620812323383964
+        "y": 6.730701692243708
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,7 +40,7 @@
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 90.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "4notepose2",
