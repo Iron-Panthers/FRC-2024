@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AccelNoteCommand;
 import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
@@ -300,7 +301,7 @@ public class RobotContainer {
     anthony
         .rightBumper()
         .onTrue(
-            new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_SPEAKER)
+            new AccelNoteCommand(shooterSubsystem)
                 .andThen(new ShootCommand(shooterSubsystem))
                 .andThen(
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
@@ -315,11 +316,6 @@ public class RobotContainer {
         .whileTrue(
             new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
                 .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
-
-    // anthony.povUp().onTrue(new PivotAngleCommand(pivotSubsystem, 30));
-    anthony.povLeft().onTrue(new PivotAngleCommand(pivotSubsystem, 60));
-    anthony.povRight().onTrue(new PivotAngleCommand(pivotSubsystem, 75));
-    anthony.povDown().onTrue(new PivotAngleCommand(pivotSubsystem, 55));
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
