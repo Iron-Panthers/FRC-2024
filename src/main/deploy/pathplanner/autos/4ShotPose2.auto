@@ -24,7 +24,7 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -62,25 +62,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "intakeShoot"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeCommand"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AngleAt1"
-                      }
-                    }
-                  ]
                 }
               }
             ]

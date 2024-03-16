@@ -134,7 +134,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
     NamedCommands.registerCommand("AngleAt3", new PivotAngleCommand(pivotSubsystem, 32));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
-    NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 24));
+    NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 22.5));
     NamedCommands.registerCommand(
         "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand(
