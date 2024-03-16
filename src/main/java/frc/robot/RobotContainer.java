@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.autonomous.HeadingAngle;
 import frc.robot.autonomous.HeadingTargetLock;
 import frc.robot.commands.AccelNoteCommand;
 import frc.robot.commands.AdvancedIntakeCommand;
@@ -136,8 +137,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAt3", new PivotAngleCommand(pivotSubsystem, 32));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 22.5));
-    NamedCommands.registerCommand("Heading4Note1", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -90));
-    NamedCommands.registerCommand("Heading4Note2", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -17));
+    NamedCommands.registerCommand("Heading4Note1", new HeadingAngle(drivebaseSubsystem, -90));
+    NamedCommands.registerCommand(
+        "Heading4Note2", new HeadingAngle(drivebaseSubsystem, -17));
     NamedCommands.registerCommand(
         "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand(

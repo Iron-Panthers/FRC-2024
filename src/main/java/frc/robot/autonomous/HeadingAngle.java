@@ -1,8 +1,10 @@
 package frc.robot.autonomous;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Drive;
 import frc.robot.subsystems.DrivebaseSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem.AutoRotationOverride;
+import frc.util.Util;
 
 public class HeadingAngle extends Command {
   private DrivebaseSubsystem drivebaseSubsystem;
@@ -26,7 +28,10 @@ public class HeadingAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    // use in race condition w/ path/timer
-    return false;
+    return Util.epsilonZero(
+            Util.relativeAngularDifference(
+                drivebaseSubsystem.getDriverGyroscopeRotation().times(-1), targetAngle),
+            Drive.ANGULAR_ERROR)
+        && Util.epsilonEquals(drivebaseSubsystem.getRotVelocity(), 0, 10);
   }
 }
