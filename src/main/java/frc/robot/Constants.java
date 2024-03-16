@@ -373,7 +373,7 @@ public final class Constants {
                 "backUpCam",
                 new Transform3d(
                     new Translation3d(
-                        -0.2796 + 0.0254, // front/back
+                        -0.2796, // front/back
                         0.2286, // left/right
                         -0.2159 // up/down
                         ),
