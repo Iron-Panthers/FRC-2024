@@ -34,6 +34,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MaintainShooterCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
@@ -130,7 +131,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
     NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AngleAt3", new PivotAngleCommand(pivotSubsystem, 32));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
+    NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 24));
+    NamedCommands.registerCommand(
+        "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
     NamedCommands.registerCommand(

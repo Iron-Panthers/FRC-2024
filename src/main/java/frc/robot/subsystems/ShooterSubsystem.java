@@ -47,7 +47,8 @@ public class ShooterSubsystem extends SubsystemBase {
     RAMP_AMP_FRONT(Shooter.Modes.RAMP_AMP_FRONT),
     SHOOT_SPEAKER(Shooter.Modes.SHOOT_SPEAKER),
     SHOOT_AMP_BACK(Shooter.Modes.SHOOT_AMP_BACK),
-    SHOOT_AMP_FORWARD(Shooter.Modes.SHOOT_AMP_FORWARD);
+    SHOOT_AMP_FORWARD(Shooter.Modes.SHOOT_AMP_FORWARD),
+    MAINTAIN_VELOCITY(Shooter.Modes.MAINTAIN_VELOCITY);
 
     public final ShooterPowers shooterPowers;
 
