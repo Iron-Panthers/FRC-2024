@@ -128,7 +128,7 @@ public class RobotContainer {
         new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_SPEAKER));
     NamedCommands.registerCommand("SetShooterToRamping", new SetRampModeCommand(shooterSubsystem));
     NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
-    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand(
