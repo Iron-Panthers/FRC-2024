@@ -48,7 +48,6 @@ import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
-import frc.robot.commands.SpeakerLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.TargetLockCommand;
@@ -143,8 +142,7 @@ public class RobotContainer {
         "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
-    NamedCommands.registerCommand(
-        "HeadingLock", new HeadingTargetLock(drivebaseSubsystem));
+    NamedCommands.registerCommand("HeadingLock", new HeadingTargetLock(drivebaseSubsystem));
     NamedCommands.registerCommand(
         "recenterPose1",
         DriverStation.getAlliance().get().equals(Alliance.Blue)
