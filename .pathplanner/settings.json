@@ -3,13 +3,10 @@
   "robotLength": 0.85,
   "holonomicMode": true,
   "pathFolders": [
-    "Ethan's Paths",
-    "Pose3",
-    "Pose1",
-    "Pose2"
+    "4notepose2"
   ],
   "autoFolders": [
-    "Ethan's Autos"
+    "New Folder"
   ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,
