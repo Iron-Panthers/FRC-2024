@@ -4,24 +4,24 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
+import frc.robot.subsystems.DrivebaseSubsystem;
 
-public class SetRampModeCommand extends Command {
-  private ShooterSubsystem shooterSubsystem;
-  /** Creates a new SetRampModeCommand. */
-  public SetRampModeCommand(ShooterSubsystem shooterSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.shooterSubsystem = shooterSubsystem;
-
-    addRequirements(shooterSubsystem);
+public class AutoAlignCommand extends Command {
+  DrivebaseSubsystem drivebaseSubsystem;
+  /** Creates a new AutoAlignCommand. */
+  public AutoAlignCommand(
+      DrivebaseSubsystem drivebaseSubsystem, AutoBuilder autoBuilder, Pose2d targetPose) {
+    this.drivebaseSubsystem = drivebaseSubsystem;
+    addRequirements(drivebaseSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.RAMP_SPEAKER);
+    drivebaseSubsystem.setDefenseMode();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

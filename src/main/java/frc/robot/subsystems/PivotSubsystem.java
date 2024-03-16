@@ -10,8 +10,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +21,7 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Pivot;
 import frc.robot.Constants.Pivot.Setpoints;
 import frc.util.Util;
+import java.util.Map;
 import java.util.Optional;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -35,6 +38,11 @@ public class PivotSubsystem extends SubsystemBase {
 
   private boolean inRange;
   private Pose2d pose;
+  private double distance;
+  private GenericEntry debugTarget;
+
+  private double pastDebugTarget = 0;
+  private boolean listenToDebug = true;
 
   private final ShuffleboardTab pivotTab = Shuffleboard.getTab("Pivot");
 
@@ -68,7 +76,14 @@ public class PivotSubsystem extends SubsystemBase {
       pivotTab.addNumber("Applied Voltage", () -> pivotMotor.getMotorVoltage().getValueAsDouble());
       pivotTab.addDouble("PID Voltage Output", () -> pidVoltageOutput);
       pivotTab.addDouble("Calculated Target Angle", () -> calculatedTargetDegrees);
+      pivotTab.addDouble("Distance", () -> distance);
       pivotTab.add(pidController);
+      debugTarget =
+          pivotTab
+              .add("Debug target degrees", 23.5)
+              .withWidget(BuiltInWidgets.kNumberSlider)
+              .withProperties(Map.of("min", 15, "max", 90))
+              .getEntry();
     }
   }
 
@@ -92,8 +107,13 @@ public class PivotSubsystem extends SubsystemBase {
     return Util.epsilonEquals(getCurrentAngle(), targetDegrees, Pivot.EPSILON);
   }
 
+  public boolean isReadyToShoot() {
+    return isAtTargetDegrees() && inRange;
+  }
+
   public void setTargetDegrees(double degrees) {
     this.targetDegrees = MathUtil.clamp(degrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE);
+    listenToDebug = false;
   }
 
   private static double rotationsToDegrees(double rotations) {
@@ -102,12 +122,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void calculatePivotTargetDegrees(Pose2d pose, double xV, double yV) {
     this.pose = pose;
-    double g = Pivot.GRAVITY;
     double x = pose.getX();
     double y = pose.getY();
     double speakerX;
     double speakerY;
-    calculatedTargetDegrees = getCurrentAngle();
     Optional<Alliance> color = DriverStation.getAlliance();
 
     if (color.isPresent() && color.get() == Alliance.Red) {
@@ -117,51 +135,34 @@ public class PivotSubsystem extends SubsystemBase {
       speakerX = Pivot.BLUE_SPEAKER_POSE.getX();
       speakerY = Pivot.BLUE_SPEAKER_POSE.getY();
     }
-    double distanceToSpeaker = Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2));
-
-    double d = distanceToSpeaker - Pivot.PIVOT_TO_ROBO_CENTER_LENGTH;
-    double h = Pivot.SPEAKER_HEIGHT - Pivot.PIVOT_TO_ROBO_CENTER_HEIGHT;
-
-    // difference between distance to speaker now and after 1 second to find v to speaker
-    double velocityToSpeaker =
-        distanceToSpeaker
-            - Math.sqrt((Math.pow((x + xV - speakerX), 2) + Math.pow((y + yV - speakerY), 2)));
-
-    double v = Pivot.NOTE_SPEED + velocityToSpeaker;
-
-    double interiorMath = (v * v * v * v) - g * ((g * d * d) + (2 * h * v * v));
-
-    if (interiorMath > 0) {
-      calculatedTargetDegrees =
-          180 / Math.PI * (Math.atan(((v * v) - Math.sqrt(interiorMath)) / (g * d)));
-      targetDegrees = calculatedTargetDegrees;
-      inRange = true;
-    } else {
-      inRange = false;
-    }
-  }
-
-  private boolean inAngleRange(double angle) {
-    return angle < Setpoints.MAXIMUM_ANGLE && angle > Setpoints.MINIMUM_ANGLE;
-  }
-
-  private boolean currentOrTargetAngleIsUnsafe() {
-    return !inAngleRange(getCurrentAngle()) || !inAngleRange(targetDegrees);
-  }
-
-  private double computeTargetDegrees() {
-    if (currentOrTargetAngleIsUnsafe()) {
-      if (getCurrentAngle() < 45) {
-        return Setpoints.MINIMUM_SAFE_THRESHOLD;
-      }
-      return Setpoints.MAXIMUM_SAFE_THRESHOLD;
-    }
-    return targetDegrees;
+    distance =
+        (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
+            - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
+    targetDegrees =
+        -0.00506 * Math.pow(distance, 6)
+            + 0.14497 * Math.pow(distance, 5)
+            - 1.613015 * Math.pow(distance, 4)
+            + 8.545943 * Math.pow(distance, 3)
+            - 19.992769 * Math.pow(distance, 2)
+            + 5.447036 * distance
+            + 65.276596
+            - 2.9;
   }
 
   @Override
   public void periodic() {
-    double pidOutput = pidController.calculate(getCurrentAngle(), computeTargetDegrees());
+
+    double currentTarget = debugTarget.getDouble(23.5);
+
+    if (currentTarget != pastDebugTarget) {
+      pastDebugTarget = currentTarget;
+      listenToDebug = true;
+    }
+
+    double pidOutput =
+        pidController.calculate(
+            getCurrentAngle(),
+            MathUtil.clamp(targetDegrees, Setpoints.MINIMUM_ANGLE, Setpoints.MAXIMUM_ANGLE));
 
     pidVoltageOutput = MathUtil.clamp(pidOutput + getFeedForward(), -10, 10);
 

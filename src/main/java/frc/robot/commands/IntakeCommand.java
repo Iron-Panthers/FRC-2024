@@ -27,7 +27,7 @@ public class IntakeCommand extends Command {
     this.pivotSubsystem = pivotSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, shooterSubsystem);
+    addRequirements(intakeSubsystem, shooterSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -46,7 +46,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeMode(IntakeSubsystem.Modes.HOLD);
-    shooterSubsystem.setShooterMode(ShooterMode.RAMPING);
+    shooterSubsystem.setShooterMode(ShooterMode.RAMP_SPEAKER);
     shooterSubsystem.haltAccelerator();
   }
 

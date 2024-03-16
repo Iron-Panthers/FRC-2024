@@ -224,7 +224,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         },
         this);
 
-    rotController = new PIDController(0.0115, 0, 0);
+    rotController = new PIDController(0.0179, 0, 0);
     rotController.setSetpoint(0);
     rotController.setTolerance(ANGULAR_ERROR); // degrees error
 
@@ -264,6 +264,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 0).withSize(8, 5);
   }
 
+  public boolean isAtTargetAngle() {
+    return Util.epsilonEquals(getPose().getRotation().getDegrees(), targetAngle, Setpoints.EPSILON);
+  }
   /** Return the current pose estimation of the robot */
   public Pose2d getPose() {
     return robotPose;
@@ -368,7 +371,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     // We need to subtract the offset here so that the robot drives forward based on auto
     // positioning or manual reset
-    return angle.minus(driverGyroOffset);
+    return Util.normalizeDegrees(angle.minus(driverGyroOffset));
   }
 
   public double getRotVelocity() {
@@ -407,6 +410,14 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   /**
+   * gets the angle error between the target angle and drive base angle
+   *
+   * @return the angle's error
+   */
+  public double getAngularError() {
+    return -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
+  }
+  /**
    * Angles the swerve modules in a cross shape, to make the robot hard to push. This function sets
    * the state machine to defense mode, so it only needs to be called once
    */
@@ -421,6 +432,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private void odometryPeriodic() {
     this.robotPose =
         swervePoseEstimator.update(getConsistentGyroscopeRotation(), getSwerveModulePositions());
+
+    visionSubsystem.setRobotPose(this.getPose());
 
     VisionMeasurement measurement;
     while ((measurement = visionSubsystem.drainVisionMeasurement()) != null) {
@@ -437,8 +450,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   // called in drive to angle mode
   private void driveAnglePeriodic() {
-    double angularDifference =
-        -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle);
+    double angularDifference = getAngularError();
 
     double rotationValue = rotController.calculate(angularDifference);
 

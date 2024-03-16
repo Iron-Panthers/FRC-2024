@@ -10,18 +10,20 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 
 public class ShooterRampUpCommand extends Command {
   private ShooterSubsystem shooterSubsystem;
+  private ShooterMode mode;
 
   /** Creates a new ShooterRampUpCommand. */
-  public ShooterRampUpCommand(ShooterSubsystem shooterSubsystem) {
+  public ShooterRampUpCommand(ShooterSubsystem shooterSubsystem, ShooterMode mode) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
+    this.mode = mode;
     addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.RAMPING);
+    shooterSubsystem.setShooterMode(mode);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
