@@ -136,10 +136,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAt3", new PivotAngleCommand(pivotSubsystem, 32));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
     NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 22.5));
-    NamedCommands.registerCommand(
-        "Heading4Note1", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, 90));
-    NamedCommands.registerCommand(
-        "Heading4Note2", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, 17));
+    NamedCommands.registerCommand("Heading4Note1", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -90));
+    NamedCommands.registerCommand("Heading4Note2", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -17));
     NamedCommands.registerCommand(
         "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand(

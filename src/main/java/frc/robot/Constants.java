@@ -111,7 +111,7 @@ public final class Constants {
             * .5;
 
     /** the maximum amount of angular error pid loops will tolerate for rotation */
-    public static final double ANGULAR_ERROR = 1.0;
+    public static final double ANGULAR_ERROR = 5.0;
     /** the minimum magnitude of the right stick for it to be used as a new rotation angle */
     public static final double ROTATE_VECTOR_MAGNITUDE = .7;
 
