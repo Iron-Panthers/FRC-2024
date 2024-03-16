@@ -274,6 +274,8 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
+    jacob.start().onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
+
     // STOP INTAKE-SHOOTER
     jacob
         .x()
