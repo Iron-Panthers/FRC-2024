@@ -349,7 +349,7 @@ public class RobotContainer {
                     DriverStation.getAlliance().get().equals(Alliance.Red)
                         ? -Setpoints.SPEAKER_DEGREES
                         : Setpoints.SPEAKER_DEGREES)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 28)));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 25.1)));
 
     // AMP
     jacob
@@ -381,7 +381,7 @@ public class RobotContainer {
             // new PivotAngleCommand(pivotSubsystem, 56));
             new RotateAngleDriveCommand(
                     drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 56)));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 53.1)));
 
     DoubleSupplier rotation =
         exponential(
