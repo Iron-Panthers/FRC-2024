@@ -63,6 +63,25 @@
                 "data": {
                   "pathName": "intakeShoot"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeCommand"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AngleAt1"
+                      }
+                    }
+                  ]
+                }
               }
             ]
           }
@@ -71,6 +90,12 @@
           "type": "named",
           "data": {
             "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Heading4Note1"
           }
         },
         {
@@ -109,6 +134,12 @@
           "type": "wait",
           "data": {
             "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Heading4Note2"
           }
         },
         {

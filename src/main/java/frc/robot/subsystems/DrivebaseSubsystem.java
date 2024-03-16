@@ -371,7 +371,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     // We need to subtract the offset here so that the robot drives forward based on auto
     // positioning or manual reset
-    return angle.minus(driverGyroOffset);
+    return Util.normalizeDegrees(angle.minus(driverGyroOffset));
   }
 
   public double getRotVelocity() {
