@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "recenterPose2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "IntakeCommand"
           }
         },
@@ -218,7 +212,7 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -226,30 +220,17 @@
                       "data": {
                         "pathName": "shoot3"
                       }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "deadline",
-                "data": {
-                  "commands": [
+                    },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 1.0
+                        "name": "HeadingLock"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "AutoPivotAngle"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AutoDrivebaseAngle"
                       }
                     }
                   ]

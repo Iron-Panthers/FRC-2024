@@ -25,8 +25,6 @@ public class HeadingTargetLock extends Command {
             : Pivot.BLUE_SPEAKER_POSE;
 
     targetAngle = 0;
-
-    addRequirements(drivebaseSubsystem);
   }
 
   @Override
