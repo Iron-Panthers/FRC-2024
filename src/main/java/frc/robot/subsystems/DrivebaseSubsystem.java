@@ -224,7 +224,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         },
         this);
 
-    rotController = new PIDController(0.0115, 0, 0);
+    rotController = new PIDController(0.0179, 0, 0);
     rotController.setSetpoint(0);
     rotController.setTolerance(ANGULAR_ERROR); // degrees error
 
@@ -264,6 +264,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
     Shuffleboard.getTab("DriverView").add(field).withPosition(0, 0).withSize(8, 5);
   }
 
+  public boolean isAtTargetAngle() {
+    return Util.epsilonEquals(getPose().getRotation().getDegrees(), targetAngle, Setpoints.EPSILON);
+  }
   /** Return the current pose estimation of the robot */
   public Pose2d getPose() {
     return robotPose;
@@ -429,6 +432,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private void odometryPeriodic() {
     this.robotPose =
         swervePoseEstimator.update(getConsistentGyroscopeRotation(), getSwerveModulePositions());
+
+    visionSubsystem.setRobotPose(this.getPose());
 
     VisionMeasurement measurement;
     while ((measurement = visionSubsystem.drainVisionMeasurement()) != null) {

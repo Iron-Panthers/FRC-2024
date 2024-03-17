@@ -8,20 +8,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 
-public class SetRampModeCommand extends Command {
+public class ShootAmpCommand extends Command {
   private ShooterSubsystem shooterSubsystem;
-  /** Creates a new SetRampModeCommand. */
-  public SetRampModeCommand(ShooterSubsystem shooterSubsystem) {
+
+  /** Creates a new ShootAmp. */
+  public ShootAmpCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
-
     addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.setShooterMode(ShooterMode.RAMP_SPEAKER);
+    if (shooterSubsystem.getMode().equals(ShooterMode.RAMP_AMP_BACK)) {
+      shooterSubsystem.setShooterMode(ShooterMode.SHOOT_AMP_BACK);
+    } else {
+      shooterSubsystem.setShooterMode(ShooterMode.SHOOT_AMP_FORWARD);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,6 +39,6 @@ public class SetRampModeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !shooterSubsystem.isBeamBreakSensorTriggered();
   }
 }

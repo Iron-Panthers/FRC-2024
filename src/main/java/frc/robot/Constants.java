@@ -20,6 +20,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -27,12 +28,14 @@ import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.subsystems.IntakeSubsystem.IntakePowers;
@@ -160,9 +163,9 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.2).withKV(0.11).withKA(0);
+            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.3).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.32).withKV(0.6).withKA(0);
+            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.4).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
             ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
@@ -222,10 +225,11 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-      public static final Translation2d SPEAKER = new Translation2d(0, 104.64);
+      public static final Translation2d SPEAKER = new Translation2d(0, 5.5);
 
       public static final int SOURCE_DEGREES = 39;
       public static final int SPEAKER_DEGREES = 11;
+      public static final int EPSILON = 3;
     }
   }
 
@@ -255,16 +259,29 @@ public final class Constants {
 
     public static final class Modes {
       public static final ShooterSubsystem.ShooterPowers INTAKE =
-          new ShooterSubsystem.ShooterPowers(.8, .15);
+          new ShooterSubsystem.ShooterPowers(76, 1, .15);
       public static final ShooterSubsystem.ShooterPowers IDLE =
-          new ShooterSubsystem.ShooterPowers(0, 0);
-      public static final ShooterSubsystem.ShooterPowers RAMPING =
-          new ShooterSubsystem.ShooterPowers(.8, 0);
-      public static final ShooterSubsystem.ShooterPowers SHOOTING =
-          new ShooterSubsystem.ShooterPowers(.8, .5);
+          new ShooterSubsystem.ShooterPowers(0, 0, 0);
+      public static final ShooterSubsystem.ShooterPowers RAMP_SPEAKER =
+          new ShooterSubsystem.ShooterPowers(76, 1, 0);
+      public static final ShooterSubsystem.ShooterPowers RAMP_AMP_BACK =
+          new ShooterSubsystem.ShooterPowers(25, 0.4, 0);
+      public static final ShooterSubsystem.ShooterPowers RAMP_AMP_FRONT =
+          new ShooterSubsystem.ShooterPowers(10, 2.5, 0);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_SPEAKER =
+          new ShooterSubsystem.ShooterPowers(76, 1, .5);
       public static final ShooterSubsystem.ShooterPowers TARGET_LOCK =
-          new ShooterSubsystem.ShooterPowers(0, 0);
+          new ShooterSubsystem.ShooterPowers(0, 1, 0);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_BACK =
+          new ShooterSubsystem.ShooterPowers(25, 0.4, .5);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_FORWARD =
+          new ShooterSubsystem.ShooterPowers(10, 2.5, .5);
+      public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
+          new ShooterSubsystem.ShooterPowers(76, 1, 0.5);
     }
+
+    public static final Slot0Configs ROLLER_PID_CONFIG =
+        new Slot0Configs().withKP(0.2).withKS(0.23).withKV(0.24);
 
     public static final double SHOOTER_VELOCITY_THRESHOLD = 30;
   }
@@ -307,8 +324,8 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-      public static final int MINIMUM_ANGLE = 10;
-      public static final int MAXIMUM_ANGLE = 85;
+      public static final int MINIMUM_ANGLE = 15;
+      public static final int MAXIMUM_ANGLE = 125;
 
       public static final int MINIMUM_SAFE_THRESHOLD = 15;
       public static final int MAXIMUM_SAFE_THRESHOLD = 80;
@@ -321,20 +338,12 @@ public final class Constants {
     public static final double PIVOT_CANCODER_OFFSET = -0.625977 + (0.070139 - 0.031250);
     public static final double PIVOT_GEAR_RATIO =
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
+    public static final double CENTER_OF_ROBOT_TO_BUMPER = 0.41275;
 
-    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16, 5.5, null);
-    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 5.5, null);
-    public static final double PIVOT_TO_ROBO_CENTER_LENGTH = 0.127; // meters
-    public static final double PIVOT_TO_ROBO_CENTER_HEIGHT = 0.37465; // meters
-    public static final double RESTING_SHOOTER_HEIGHT = 0.4445; // meters
-    public static final double NOTE_OFFSET_FROM_PIVOT_CENTER = 0.6849364; // meters
-    public static final double PIVOT_TO_ENTRANCE_OFFSET = 0.0635;
-
-    public static final double SPEAKER_HEIGHT = 2; // meters
-    public static final double X_DISTANCE = 4; // meters
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 5.5, null);
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0, 5.5, null);
 
     public static final double GRAVITY = 9.80665; // meters per second
-    public static final double NOTE_SPEED = 12; // FIXME placeholder, m/s
 
     public static final double GRAVITY_VOLTAGE = 0.4;
     public static final double PIVOT_MAX_VOLTAGE = 3.5;
@@ -349,26 +358,38 @@ public final class Constants {
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
-                        0.3737864, // front/back
-                        0, // left/right
-                        0.5137658 // up/down
+                        -0.305, // front/back
+                        -0.2286, // left/right
+                        -0.2159 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(35), // angle up/down
-                        0))),
+                        Math.toRadians(30), // angle up/down
+                        Math.toRadians(180)))),
             new VisionSource(
                 "backCam",
                 new Transform3d(
                     new Translation3d(
-                        0.3556, // front/back
-                        0.127, // left/right
-                        0.635 // up/down
+                        -0.2796, // front/back
+                        -0.2286, // left/right
+                        -0.2159 // up/down
                         ),
                     new Rotation3d(
                         0,
-                        Math.toRadians(215), // angle up/down
-                        0))));
+                        Math.toRadians(30), // angle up/down
+                        Math.toRadians(180)))),
+            new VisionSource(
+                "backUpCam",
+                new Transform3d(
+                    new Translation3d(
+                        -0.2796, // front/back
+                        0.2286, // left/right
+                        -0.2159 // up/down
+                        ),
+                    new Rotation3d(
+                        0,
+                        Math.toRadians(30), // angle up/down
+                        Math.toRadians(180)))));
 
     public static final int THREAD_SLEEP_DURATION_MS = 5;
   }
@@ -485,5 +506,49 @@ public final class Constants {
       public static final RGBColor TEAL = new RGBColor(0, 255, 255);
       public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
+  }
+
+  public static final class AutoAlign {
+
+    public static final double FIELD_WIDTH = 16.54;
+
+    // Blue team:
+    // pose angles
+    public static final int BOTTOM_MID_ANGLE = 148;
+    public static final int STAGE_ANGLE = 0;
+    public static final int TOP_MID_ANGLE = 0;
+    public static final int AMP_ANGLE = 0;
+
+    // These poses have not been verified
+    public static final Pose2d BLUE_AMP =
+        new Pose2d(2.75, 7.31, Rotation2d.fromDegrees(-AMP_ANGLE + 180));
+    public static final Pose2d BLUE_TOP_MID =
+        new Pose2d(5.8, 7.0, Rotation2d.fromDegrees(-TOP_MID_ANGLE + 180));
+
+    // These poses have been verified
+    public static final Pose2d BLUE_STAGE =
+        new Pose2d(4.17, 4.74, Rotation2d.fromDegrees(-STAGE_ANGLE + 180));
+    public static final Pose2d BLUE_BOTTOM_MID =
+        new Pose2d(5.84, 1.18, Rotation2d.fromDegrees(-BOTTOM_MID_ANGLE + 180));
+
+    // Red team:
+    // These poses have not been verified
+    public static final Pose2d RED_AMP =
+        new Pose2d(FIELD_WIDTH - 2.75, 7.31, Rotation2d.fromDegrees(-AMP_ANGLE));
+    public static final Pose2d RED_TOP_MID =
+        new Pose2d(FIELD_WIDTH - 5.8, 7.0, Rotation2d.fromDegrees(-TOP_MID_ANGLE));
+
+    // These poses have been verified
+    public static final Pose2d RED_STAGE =
+        new Pose2d(FIELD_WIDTH - 4.17, 4.74, Rotation2d.fromDegrees(-STAGE_ANGLE));
+    public static final Pose2d RED_BOTTOM_MID =
+        new Pose2d(FIELD_WIDTH - 5.84, 1.18, Rotation2d.fromDegrees(-BOTTOM_MID_ANGLE));
+
+    public static final double BOTTOM_MID_TARGET_ANGLE = 23.5;
+    public static final double TOP_MID_TARGET_ANGLE = 0;
+    public static final double STAGE_TARGET_ANGLE = 0;
+    public static final double AMP_TARGET_ANGLE = 0;
+    public static final PathConstraints CONSTRAINTS =
+        new PathConstraints(3, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
   }
 }
