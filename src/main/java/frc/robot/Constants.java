@@ -276,6 +276,8 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(25, 0.4, .5);
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_FORWARD =
           new ShooterSubsystem.ShooterPowers(10, 2.5, .5);
+      public static final ShooterSubsystem.ShooterPowers MAINTAIN_VELOCITY =
+          new ShooterSubsystem.ShooterPowers(40, 1, 0);
       public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
           new ShooterSubsystem.ShooterPowers(76, 1, 0.5);
       public static final ShooterSubsystem.ShooterPowers MAINTAIN_VELOCITY =

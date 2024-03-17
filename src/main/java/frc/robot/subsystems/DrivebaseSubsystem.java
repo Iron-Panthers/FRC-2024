@@ -318,11 +318,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
             .minus(
                 swervePoseEstimator
                     .getEstimatedPosition()
-                    .getRotation()
-                    .plus(
-                        DriverStation.getAlliance().get() == Alliance.Blue
-                            ? new Rotation2d()
-                            : Rotation2d.fromDegrees(180)));
+                    .getRotation());
   }
 
   /**
