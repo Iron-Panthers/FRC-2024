@@ -224,13 +224,26 @@
                     {
                       "type": "named",
                       "data": {
+                        "name": "AutoPivotAngle"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
                         "name": "HeadingLock"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "AutoPivotAngle"
+                        "waitTime": 0.75
                       }
                     }
                   ]
