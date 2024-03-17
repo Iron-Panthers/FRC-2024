@@ -111,7 +111,7 @@ public final class Constants {
             * .5;
 
     /** the maximum amount of angular error pid loops will tolerate for rotation */
-    public static final double ANGULAR_ERROR = 5.0;
+    public static final double ANGULAR_ERROR = 1.0;
     /** the minimum magnitude of the right stick for it to be used as a new rotation angle */
     public static final double ROTATE_VECTOR_MAGNITUDE = .7;
 
@@ -342,8 +342,8 @@ public final class Constants {
         (60 / 8) * (60 / 16) * (72 / 15); // FIXME placeholder values
     public static final double CENTER_OF_ROBOT_TO_BUMPER = 0.41275;
 
-    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 5.5, null);
-    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0, 5.5, null);
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(16.45, 6, null);
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(0.2, 6, null);
 
     public static final double GRAVITY = 9.80665; // meters per second
 
