@@ -315,10 +315,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public void smartZeroGyroscope() {
     driverGyroOffset =
         getConsistentGyroscopeRotation()
-            .minus(
-                swervePoseEstimator
-                    .getEstimatedPosition()
-                    .getRotation());
+            .minus(swervePoseEstimator.getEstimatedPosition().getRotation());
   }
 
   /**
