@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.PoseEstimator;
 import frc.robot.Constants.Vision;
@@ -40,6 +43,10 @@ public class VisionSubsystem {
           .withPosition(11, 0)
           .withSize(2, 3);
 
+  private final ShuffleboardTab cameraTab = Shuffleboard.getTab("Vision");
+
+  private Pose2d currentRobotPose = new Pose2d();
+
   private class DuplicateTracker {
     private double lastTimeStamp;
 
@@ -59,12 +66,27 @@ public class VisionSubsystem {
 
   private double lastDetection = 0;
 
+  private double tagX;
+  private double tagY;
+  private double tagZ;
+  private double tagRoll;
+  private double tagPitch;
+  private double tagYaw;
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
-    // loading the 2023 field arrangement
+
+    cameraTab.addDouble("x to target", () -> tagX);
+    cameraTab.addDouble("y to target", () -> tagY);
+    cameraTab.addDouble("z to target", () -> tagZ);
+    cameraTab.addDouble("roll to target", () -> Math.toDegrees(tagRoll));
+    cameraTab.addDouble("pitch to target", () -> Math.toDegrees(tagPitch));
+    cameraTab.addDouble("yaw to target", () -> Math.toDegrees(tagYaw));
+
+    // loading the 2024 field arrangement
     try {
       fieldLayout =
-          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
     } catch (IOException e) {
       System.err.println("Failed to load field layout.");
       e.printStackTrace();
@@ -76,10 +98,13 @@ public class VisionSubsystem {
       var estimator =
           new PhotonPoseEstimator(
               fieldLayout,
-              PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP,
+              PhotonPoseEstimator.PoseStrategy
+                  .MULTI_TAG_PNP_ON_COPROCESSOR, // changed from "MULTI_TAG_PNP", have to config
+              // properly or smthn? idk
               camera,
               visionSource.robotToCamera());
-      estimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+      estimator.setMultiTagFallbackStrategy(
+          PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
       cameraStatusList.addBoolean(visionSource.name(), camera::isConnected);
       cameraEstimators.add(new CameraEstimator(camera, estimator, new DuplicateTracker()));
     }
@@ -156,11 +181,12 @@ public class VisionSubsystem {
   public static record TagCountDeviation(
       UnitDeviationParams xParams, UnitDeviationParams yParams, UnitDeviationParams thetaParams) {
     private Matrix<N3, N1> computeDeviation(double averageDistance) {
-      return Matrix.mat(Nat.N3(), Nat.N1())
-          .fill(
-              xParams.computeUnitDeviation(averageDistance),
-              yParams.computeUnitDeviation(averageDistance),
-              thetaParams.computeUnitDeviation(averageDistance));
+      return MatBuilder.fill(
+          Nat.N3(),
+          Nat.N1(),
+          xParams.computeUnitDeviation(averageDistance),
+          yParams.computeUnitDeviation(averageDistance),
+          thetaParams.computeUnitDeviation(averageDistance));
     }
 
     public TagCountDeviation(UnitDeviationParams xyParams, UnitDeviationParams thetaParams) {
@@ -188,6 +214,10 @@ public class VisionSubsystem {
     return !possibleCombination;
   }
 
+  public void setRobotPose(Pose2d pose) {
+    this.currentRobotPose = pose;
+  }
+
   public VisionMeasurement drainVisionMeasurement() {
     return visionMeasurements.poll();
   }
@@ -199,6 +229,7 @@ public class VisionSubsystem {
       // determine if result should be ignored
       if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
 
+      cameraEstimator.estimator().setReferencePose(currentRobotPose); // FIXME good god why
       var optEstimation = cameraEstimator.estimator().update(frame);
       if (optEstimation.isEmpty()) continue;
       var estimation = optEstimation.get();
@@ -212,6 +243,12 @@ public class VisionSubsystem {
         var t3d = target.getBestCameraToTarget();
         sumDistance +=
             Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+        tagX = t3d.getX();
+        tagY = t3d.getY();
+        tagZ = t3d.getZ();
+        tagRoll = t3d.getRotation().getX();
+        tagPitch = t3d.getRotation().getY();
+        tagYaw = t3d.getRotation().getZ();
       }
       double avgDistance = sumDistance / estimation.targetsUsed.size();
 

@@ -4,9 +4,14 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.server.PathPlannerServer;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,53 +28,42 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
-import frc.robot.Constants.Elevator;
-import frc.robot.autonomous.commands.MobilityAuto;
-import frc.robot.autonomous.commands.N2_Engage;
-import frc.robot.autonomous.commands.N3_1ConePlusMobility;
-import frc.robot.autonomous.commands.N3_1ConePlusMobilityEngage;
-import frc.robot.autonomous.commands.N6_1Cone;
-import frc.robot.autonomous.commands.N6_1ConePlusEngage;
-import frc.robot.autonomous.commands.N9_1ConePlusMobility;
-import frc.robot.autonomous.commands.N9_1ConePlusMobilityEngage;
+import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AccelNoteCommand;
+import frc.robot.commands.AdvancedIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
-import frc.robot.commands.DriveToPlaceCommand;
-import frc.robot.commands.ElevatorManualCommand;
-import frc.robot.commands.ElevatorPositionCommand;
-import frc.robot.commands.EngageCommand;
-import frc.robot.commands.GroundPickupCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
-import frc.robot.commands.HashMapCommand;
-import frc.robot.commands.IntakeModeCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MaintainShooterCommand;
+import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.PivotAngleCommand;
+import frc.robot.commands.PivotManualCommand;
+import frc.robot.commands.PivotTargetLockCommand;
+import frc.robot.commands.RGBCommand;
+import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
-import frc.robot.commands.ScoreCommand;
-import frc.robot.commands.ScoreCommand.ScoreStep;
-import frc.robot.commands.SetZeroModeCommand;
+import frc.robot.commands.SetRampModeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.StopIntakeCommand;
+import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.TargetLockCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeSubsystem.Modes;
 import frc.robot.subsystems.NetworkWatchdogSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterMode;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
-import frc.util.NodeSelectorUtility;
-import frc.util.NodeSelectorUtility.Height;
-import frc.util.NodeSelectorUtility.NodeSelection;
-import frc.util.NodeSelectorUtility.NodeType;
-import frc.util.SharedReference;
 import frc.util.Util;
-import frc.util.pathing.AlliancePose2d;
-import frc.util.pathing.RubenManueverGenerator;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -87,6 +81,12 @@ public class RobotContainer {
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem(visionSubsystem);
 
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+  private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
+
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
   private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
   private final NetworkWatchdogSubsystem networkWatchdogSubsystem =
@@ -94,26 +94,21 @@ public class RobotContainer {
 
   private final CANWatchdogSubsystem canWatchdogSubsystem = new CANWatchdogSubsystem(rgbSubsystem);
 
-  private final RubenManueverGenerator manueverGenerator = new RubenManueverGenerator();
-
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-
-  private final SharedReference<NodeSelection> currentNodeSelection =
-      new SharedReference<>(new NodeSelection(NodeSelectorUtility.defaultNodeStack, Height.HIGH));
-
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);
   /** controller 1 layer */
   private final Layer jacobLayer = new Layer(jacob.rightBumper());
   /** controller 0 */
   private final CommandXboxController anthony = new CommandXboxController(0);
+  /** controller 0 layer */
+  //   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
   /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
+  private final SendableChooser<Command> autoSelector;
 
   private GenericEntry autoDelay;
+
+  private Pose2d desiredPose;
 
   private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
@@ -125,6 +120,84 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // reigster commands for pathplanner
+    NamedCommands.registerCommand(
+        "IntakeCommand", new IntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
+    NamedCommands.registerCommand("ShootCommand", new ShootCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "ShooterRampUpCommand",
+        new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_SPEAKER));
+    NamedCommands.registerCommand("SetShooterToRamping", new SetRampModeCommand(shooterSubsystem));
+    NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
+    NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
+    NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AngleAt3", new PivotAngleCommand(pivotSubsystem, 32));
+    NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
+    NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 22.5));
+    NamedCommands.registerCommand(
+        "Heading4Note1", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -90));
+    NamedCommands.registerCommand(
+        "Heading4Note2", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -17));
+    NamedCommands.registerCommand(
+        "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "AutoPivotAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "AutoDrivebaseAngle", new TargetLockCommand(drivebaseSubsystem, () -> 0, () -> 0));
+    NamedCommands.registerCommand(
+        "recenterPose1",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.12, 6.68), Rotation2d.fromDegrees(56.93))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(-56.93))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose2",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.4, 5.56), Rotation2d.fromDegrees(0))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.2, 5.56), Rotation2d.fromDegrees(180))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose3",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1.12, 4.36), Rotation2d.fromDegrees(-98.90))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.6, 6.68), Rotation2d.fromDegrees(98.90))),
+                drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "recenterPose4",
+        DriverStation.getAlliance().get().equals(Alliance.Blue)
+            ? new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(1, 2.5), Rotation2d.fromDegrees(0))),
+                drivebaseSubsystem)
+            : new InstantCommand(
+                () ->
+                    drivebaseSubsystem.resetOdometryToPose(
+                        new Pose2d(new Translation2d(15.5, 2.5), Rotation2d.fromDegrees(180))),
+                drivebaseSubsystem));
+
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
     // Left stick Y axis -> forward and backwards movement
@@ -138,25 +211,28 @@ public class RobotContainer {
             // anthony.rightBumper(),
             anthony.leftBumper()));
 
-    // // FIXME: This error is here to kind of guide you...
-    // elevatorSubsystem.setDefaultCommand(
-    //     new ArmManualCommand(
-    //         elevatorSubsystem,
-    //         () -> ControllerUtil.deadband(-jacob.getLeftY(), 0.2),
-    //         () -> ControllerUtil.deadband(jacob.getRightY(), 0.2)));
+    rgbSubsystem.setDefaultCommand(
+        new RGBCommand(
+            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem));
 
-    elevatorSubsystem.setDefaultCommand(
-        new ElevatorManualCommand(
-            elevatorSubsystem,
-            () -> ControllerUtil.deadband(jacob.getLeftY() * -0.42, 0.2),
-            () -> ControllerUtil.deadband(jacob.getRightY() * 0.5, 0.2)));
-
-    SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
-    SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
-    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_MODULE_INIT);
+    // pivotSubsystem.setDefaultCommand(
+    //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
     // Configure the button bindings
     configureButtonBindings();
+
+    autoSelector = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
+    SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
+    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
+
+    desiredPose = new Pose2d();
+    SmartDashboard.putString(
+        "desired pose",
+        String.format(
+            "(%2f %2f %2f)",
+            desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
@@ -209,19 +285,114 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    anthony
-        .back()
+    jacob
+        .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    anthony.leftBumper().onTrue(new DefenseModeCommand(drivebaseSubsystem));
+    // STOP INTAKE-SHOOTER
+    jacob
+        .x()
+        .onTrue(
+            new StopShooterCommand(shooterSubsystem)
+                .alongWith(new StopIntakeCommand(intakeSubsystem)));
+    // OUTTAKE
+    jacob.rightBumper().onTrue(new OuttakeCommand(intakeSubsystem));
 
-    anthony.y().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    // INTAKE
+    anthony
+        .leftBumper()
+        .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
 
+    jacob
+        .leftBumper()
+        .onTrue(new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem));
+
+    // SHOOT
+    anthony
+        .rightBumper()
+        .onTrue(
+            new AccelNoteCommand(shooterSubsystem)
+                .andThen(new ShootCommand(shooterSubsystem))
+                .andThen(
+                    new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
+
+    // SHOOT OVERRIDE
+    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
+
+    anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
+    jacob
+        .y()
+        .whileTrue(
+            new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
+                .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
 
-    jacob.leftStick().onTrue(new InstantCommand(() -> {}, elevatorSubsystem));
+    // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
+    // translationYSupplier, Setpoints.SPEAKER));
 
-    jacob.start().onTrue(new SetZeroModeCommand(elevatorSubsystem));
+    DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
+
+    new Trigger(() -> Math.abs(pivotManualRate.getAsDouble()) > 0.07)
+        .onTrue(new PivotManualCommand(pivotSubsystem, pivotManualRate));
+
+    // SOURCE
+    anthony
+        .y()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SOURCE_DEGREES
+                        : Setpoints.SOURCE_DEGREES)
+                .alongWith(
+                    new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
+
+    // SPEAKER FROM STAGE
+    anthony
+        .b()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -Setpoints.SPEAKER_DEGREES
+                        : Setpoints.SPEAKER_DEGREES)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 25.1)));
+
+    // AMP
+    jacob
+        .b()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 52)) // FIXME idk
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_BACK)));
+
+    /*    jacob
+            .a()
+            .onTrue(
+                new RotateAngleDriveCommand(
+                        drivebaseSubsystem,
+                        translationXSupplier,
+                        translationYSupplier,
+                        DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
+                    .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
+                    .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_FRONT)));
+    */
+    // SPEAKER FROM SUBWOOFER
+    anthony
+        .a()
+        .onTrue(
+            // new PivotAngleCommand(pivotSubsystem, 56));
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 53.1)));
 
     DoubleSupplier rotation =
         exponential(
@@ -231,12 +402,7 @@ public class RobotContainer {
             2);
 
     DoubleSupplier rotationVelocity =
-        () ->
-            rotation.getAsDouble()
-                * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                *
-                /** percent of fraction power */
-                (anthony.getHID().getAButton() ? .3 : .8);
+        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
 
     new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
         .whileTrue(
@@ -259,364 +425,13 @@ public class RobotContainer {
                 anthony::getRightY,
                 anthony::getRightX,
                 anthony.rightBumper()));
-
-    // start driving to score
-    anthony
-        .b()
-        .onTrue(
-            new DriveToPlaceCommand(
-                drivebaseSubsystem,
-                manueverGenerator,
-                () -> currentNodeSelection.get().nodeStack().position().get(),
-                translationXSupplier,
-                translationYSupplier,
-                anthony.rightBumper(),
-                Optional.of(rgbSubsystem),
-                Optional.of(anthony.getHID())));
-
-    // anthony.y()
-    //     .onTrue(
-    //         new DriveToPlaceCommand(
-    //             drivebaseSubsystem,
-    //             manueverGenerator,
-    //             (new AlliancePose2d(15.3639 - 1.5, 7.3965, Rotation2d.fromDegrees(0)))::get,
-    //             translationXSupplier,
-    //             translationYSupplier,
-    //             anthony.rightBumper(),
-    //             Optional.of(rgbSubsystem),
-    //             Optional.of(anthony.getHID())));
-
-    anthony
-        .x()
-        .onTrue(
-            new EngageCommand(
-                drivebaseSubsystem, elevatorSubsystem, EngageCommand.EngageDirection.GO_BACKWARD));
-
-    // outtake states
-    jacobLayer
-        .off(jacob.leftTrigger())
-        .onTrue(new IntakeModeCommand(intakeSubsystem, Modes.INTAKE, jacob.leftBumper()));
-
-    jacobLayer
-        .off(jacob.rightTrigger())
-        .onTrue(new IntakeModeCommand(intakeSubsystem, Modes.OUTTAKE));
-
-    jacobLayer.off(jacob.x()).onTrue(new IntakeModeCommand(intakeSubsystem, Modes.OFF));
-    // .onTrue(
-    //     new ElevatorPositionCommand(elevatorSubsystem, Constants.Elevator.Setpoints.STOWED));
-
-    // intake presets
-    // jacobLayer
-    //     .off(jacob.a())
-    //     .onTrue(new ScoreCommand(intakeSubsystem, elevatorSubsystem, Setpoints.GROUND_INTAKE))
-    //     .whileTrue(
-    //         new ForceintakeSubsystemModeCommand(intakeSubsystem,
-    // Modes.INTAKE));
-
-    anthony
-        .povUp()
-        .onTrue(
-            new ElevatorPositionCommand(
-                elevatorSubsystem,
-                () ->
-                    anthony.rightBumper().getAsBoolean()
-                        ? Constants.Elevator.Setpoints.SHELF_INTAKE_CUBE
-                        : Constants.Elevator.Setpoints.SHELF_INTAKE_CONE))
-        .whileTrue(new IntakeModeCommand(intakeSubsystem, Modes.INTAKE, anthony.rightBumper()));
-
-    // reset
-    jacobLayer
-        .off(jacob.y())
-        .onTrue(
-            new ElevatorPositionCommand(
-                elevatorSubsystem, () -> Constants.Elevator.Setpoints.STOWED))
-        .onTrue(new IntakeModeCommand(intakeSubsystem, Modes.OFF));
-
-    anthony
-        .povLeft()
-        .onTrue(
-            new ElevatorPositionCommand(
-                elevatorSubsystem, () -> Constants.Elevator.Setpoints.STOWED))
-        .onTrue(new IntakeModeCommand(intakeSubsystem, Modes.OFF))
-        .onTrue(new SetZeroModeCommand(elevatorSubsystem));
-
-    anthony
-        .povDown()
-        .onTrue(new GroundPickupCommand(intakeSubsystem, elevatorSubsystem, anthony.rightBumper()));
-
-    jacob
-        .a()
-        .onTrue(new GroundPickupCommand(intakeSubsystem, elevatorSubsystem, jacob.leftBumper()));
-
-    jacobLayer
-        .off(jacob.povUp())
-        .onTrue(
-            new IntakeModeCommand(intakeSubsystem, Modes.OUTTAKE)
-                .alongWith(
-                    new ElevatorPositionCommand(
-                        elevatorSubsystem, () -> Constants.Elevator.Setpoints.GROUND_INTAKE_CONE)));
-
-    // jacob.start().onTrue(new ZeroIntakeModeCommand(intakeSubsystem));
-
-    jacobLayer
-        .off(jacob.back())
-        .whileTrue(
-            new IntakeModeCommand(intakeSubsystem, Modes.INTAKE, jacob.leftBumper())
-                .alongWith(
-                    new ElevatorPositionCommand(
-                        elevatorSubsystem,
-                        () ->
-                            jacob.leftBumper().getAsBoolean()
-                                ? Constants.Elevator.Setpoints.SHELF_INTAKE_CUBE
-                                : Constants.Elevator.Setpoints.SHELF_INTAKE_CONE)))
-        .onFalse(
-            new ElevatorPositionCommand(
-                    elevatorSubsystem, () -> Constants.Elevator.Setpoints.STOWED)
-                .alongWith(new IntakeModeCommand(intakeSubsystem, Modes.OFF)));
-
-    // scoring
-    // jacobLayer
-    //     .on(jacob.a())
-    // low
-
-    jacobLayer
-        .on(jacob.a())
-        .onTrue(
-            new InstantCommand(
-                () -> currentNodeSelection.apply(n -> n.withHeight(NodeSelectorUtility.Height.LOW)),
-                elevatorSubsystem));
-
-    jacobLayer
-        .on(jacob.b())
-        .onTrue(
-            new InstantCommand(
-                () -> currentNodeSelection.apply(n -> n.withHeight(NodeSelectorUtility.Height.MID)),
-                elevatorSubsystem));
-
-    jacobLayer
-        .on(jacob.y())
-        .onTrue(
-            new InstantCommand(
-                () ->
-                    currentNodeSelection.apply(n -> n.withHeight(NodeSelectorUtility.Height.HIGH)),
-                elevatorSubsystem));
-
-    var scoreCommandMap = new HashMap<NodeSelectorUtility.ScoreTypeIdentifier, Command>();
-
-    for (var scoreType : Constants.SCORE_STEP_MAP.keySet())
-      scoreCommandMap.put(
-          scoreType,
-          new ScoreCommand(
-              intakeSubsystem,
-              elevatorSubsystem,
-              Constants.SCORE_STEP_MAP.get(scoreType),
-              //   jacob.b()));
-              anthony.povRight()));
-
-    anthony
-        .povRight()
-        // jacob
-        //     .b()
-        .onTrue(
-            new HashMapCommand<>(
-                scoreCommandMap, () -> currentNodeSelection.get().getScoreTypeIdentifier()));
-
-    // anthony
-    //     .povRight()
-    //     .onTrue(
-    //         new HashMapCommand<>(
-    //             scoreCommandMap, () -> currentNodeSelection.get().getScoreTypeIdentifier()));
-
-    jacob.povRight().onTrue(new InstantCommand(() -> currentNodeSelection.apply(n -> n.shift(1))));
-    jacob.povLeft().onTrue(new InstantCommand(() -> currentNodeSelection.apply(n -> n.shift(-1))));
-
-    // control the lights
-    currentNodeSelection.subscribe(
-        nodeSelection ->
-            currentNodeSelection.subscribeOnce(
-                rgbSubsystem.showMessage(
-                        nodeSelection.nodeStack().type() == NodeSelectorUtility.NodeType.CUBE
-                            ? Constants.Lights.Colors.PURPLE
-                            : Constants.Lights.Colors.YELLOW,
-                        RGBSubsystem.PatternTypes.PULSE,
-                        RGBSubsystem.MessagePriority.F_NODE_SELECTION_COLOR)
-                    ::expire));
-
-    // show the current node selection
-    driverView
-        .addString("Node Selection", () -> currentNodeSelection.get().toString())
-        .withPosition(0, 1)
-        .withSize(2, 1);
   }
 
   /**
    * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
    */
   private void setupAutonomousCommands() {
-    if (Config.RUN_PATHPLANNER_SERVER) {
-      PathPlannerServer.startServer(5811);
-    }
-
-    driverView.addString("NOTES", () -> "...win?").withSize(3, 1).withPosition(0, 0);
-
-    final List<ScoreStep> drivingCubeOuttake =
-        List.of(
-            new ScoreStep(new ElevatorState(35.0, Constants.Elevator.MIN_EXTENSION_INCHES))
-                .canWaitHere(),
-            new ScoreStep(Modes.OUTTAKE, true));
-    final boolean[] intakeLow = {false};
-    // FIXME go through each auto and make sure that we dont use a leftover event marker from Simba
-    final Map<String, Command> eventMap =
-        Map.of(
-            "stow elevator",
-            new ElevatorPositionCommand(elevatorSubsystem, () -> Elevator.Setpoints.STOWED),
-            "zero everything",
-            new SetZeroModeCommand(elevatorSubsystem),
-            "intake cone",
-            new ElevatorPositionCommand( // edited so that it works with elevator - chooses between
-                // ground or shelf intake
-                elevatorSubsystem,
-                () ->
-                    intakeLow[0]
-                        ? Elevator.Setpoints.GROUND_INTAKE_CONE
-                        : Elevator.Setpoints.SHELF_INTAKE_CONE),
-            "intake cube",
-            new ElevatorPositionCommand( // edited so that it works with elevator - chooses between
-                // ground or shelf intake
-                elevatorSubsystem,
-                () ->
-                    intakeLow[0]
-                        ? Elevator.Setpoints.GROUND_INTAKE_CUBE
-                        : Elevator.Setpoints.SHELF_INTAKE_CUBE),
-            // squeeze intake isn't relevant to offseason bot - leaving here just in case
-            /*"squeeze intake",
-            new Command() {
-              private double lastTime = Timer.getFPGATimestamp();
-
-              @Override
-              public void initialize() {
-                lastTime = Timer.getFPGATimestamp();
-                intakeLow[0] = true;
-              }
-
-              @Override
-              public boolean isFinished() {
-                return Timer.getFPGATimestamp() - lastTime > 0.5;
-              }
-
-              @Override
-              public void end(boolean interrupted) {
-                intakeLow[0] = false;
-              }
-            },*/
-            "stage outtake",
-            new ScoreCommand(
-                intakeSubsystem, elevatorSubsystem, drivingCubeOuttake.subList(0, 1), 1),
-            "stage outtake high",
-            new ScoreCommand(
-                intakeSubsystem,
-                elevatorSubsystem,
-                Constants.SCORE_STEP_MAP.get(NodeType.CUBE.atHeight(Height.HIGH)).subList(0, 1)),
-            "stage outtake mid",
-            new ScoreCommand(
-                intakeSubsystem,
-                elevatorSubsystem,
-                Constants.SCORE_STEP_MAP.get(NodeType.CUBE.atHeight(Height.MID)).subList(0, 1)),
-
-            // FIXME: How can we get this working again?
-            "outtake",
-            new ScoreCommand(
-                    intakeSubsystem, elevatorSubsystem, drivingCubeOuttake.subList(1, 2), 1)
-                .andThen(
-                    new ElevatorPositionCommand(
-                            elevatorSubsystem, () -> Constants.Elevator.Setpoints.STOWED)
-                        .andThen(new IntakeModeCommand(intakeSubsystem, Modes.OFF))),
-            "armbat preload",
-            new ElevatorPositionCommand(elevatorSubsystem, () -> new ElevatorState(22.5, 0))
-                .andThen(
-                    new ElevatorPositionCommand(
-                        elevatorSubsystem, () -> Constants.Elevator.Setpoints.STOWED)));
-
-    // autoSelector.setDefaultOption(
-    //     "N1 1Cone + 2Cube Low Mobility Engage",
-    //     new N1_1ConePlus2CubeHybridMobilityEngage(
-    //         4.95, 4, eventMap, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    // autoSelector.setDefaultOption(
-    //     "N1 1Cone + 2Cube Low Mobility NO ENGAGE",
-    //     new N1_1ConePlus2CubeHybridMobility(
-    //         4.95, 4, eventMap, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    // autoSelector.setDefaultOption(
-    //     "N9 1Cone + 1Cube + Grab Cube Mobility",
-    //     new N9_1ConePlus2CubeMobility(
-    //         4.95, 3, eventMap, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    autoSelector.addOption(
-        "Just Zero Elevator [DOES NOT CALIBRATE]", new SetZeroModeCommand(elevatorSubsystem));
-
-    autoSelector.addOption(
-        "Near Substation Mobility [APRILTAG]",
-        new MobilityAuto(
-            manueverGenerator,
-            drivebaseSubsystem,
-            intakeSubsystem,
-            elevatorSubsystem,
-            rgbSubsystem,
-            new AlliancePose2d(4.88, 6.05, Rotation2d.fromDegrees(0))));
-
-    autoSelector.addOption(
-        "Far Substation Mobility [APRILTAG]",
-        new MobilityAuto(
-            manueverGenerator,
-            drivebaseSubsystem,
-            intakeSubsystem,
-            elevatorSubsystem,
-            rgbSubsystem,
-            new AlliancePose2d(6, .6, Rotation2d.fromDegrees(0))));
-
-    autoSelector.addOption("N2 Engage", new N2_Engage(5, 3.5, drivebaseSubsystem));
-
-    autoSelector.addOption(
-        "N3 1Cone + Mobility Engage",
-        new N3_1ConePlusMobilityEngage(
-            5, 3.5, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    autoSelector.setDefaultOption(
-        "N3 1Cone + Mobility",
-        new N3_1ConePlusMobility(
-            4.95, 3.5, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    autoSelector.setDefaultOption(
-        "N6 1Cone",
-        new N6_1Cone(intakeSubsystem, elevatorSubsystem));
-        
-                autoSelector.setDefaultOption(
-        "N6 1Cone + Engage",
-        new N6_1ConePlusEngage(5, 3.5, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    autoSelector.addOption(
-        "N9 1Cone + Mobility Engage",
-        new N9_1ConePlusMobilityEngage(
-            5, 3.5, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    autoSelector.addOption(
-        "N9 1Cone + Mobility",
-        new N9_1ConePlusMobility(4.95, 3, intakeSubsystem, elevatorSubsystem, drivebaseSubsystem));
-
-    // autoSelector.addOption(
-    //     "Score High Cone [DOES NOT CALIBRATE]",
-    //     new SetZeroModeCommand(
-    //             elevatorSubsystem) // FIXME pretty sure this shouldn't zero wrist, double check
-    //         // later
-    //         .raceWith(
-    //             new IntakeModeCommand(intakeSubsystem, Modes.INTAKE, () -> false)
-    //                 .andThen(
-    //                     new ScoreCommand(
-    //                         intakeSubsystem,
-    //                         elevatorSubsystem,
-    //                         Constants.SCORE_STEP_MAP.get(
-    //                             NodeSelectorUtility.NodeType.CONE.atHeight(Height.HIGH))))));
+    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(4, 1).withPosition(7, 2);
 
     driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 

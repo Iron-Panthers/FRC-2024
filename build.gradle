@@ -1,6 +1,8 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2024.1.1"
+    id "com.diffplug.spotless" version "6.13.0"
+    id "me.champeau.jmh" version "0.7.2"
 }
 
 java {
@@ -53,6 +55,9 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
+    // lets us read system uptime data
+    implementation group: 'com.github.oshi', name: 'oshi-core', version: '6.4.10'
+
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
 
@@ -68,12 +73,58 @@ dependencies {
     simulationRelease wpi.sim.enableRelease()
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //dunno which of the JUnit things should be kept?
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation "org.mockito:mockito-inline:3.+"
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
+
+    // profiling!
+    testImplementation 'org.openjdk.jmh:jmh-core:1.37'
+    testImplementation 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
+
+    // snapshot testing!
+    testImplementation 'io.github.origin-energy:java-snapshot-testing-junit5:4.+'
+
+    // java-snapshot-testing json serialization
+    testImplementation 'io.github.origin-energy:java-snapshot-testing-plugin-jackson:4.+'
+    testImplementation 'com.fasterxml.jackson.core:jackson-core:2.12.1'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
+
+    // java-snapshot-testing optional support
+    testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.1'
+    testRuntimeOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.1'
+
+    // logger!
+    testImplementation 'org.slf4j:slf4j-simple:2.0.11'
 }
 
 test {
     useJUnitPlatform()
+
+    systemProperty 'java.util.logging.config.file', "${project.projectDir}/src/test/resources/logging-test.properties"
+
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+
+    testLogging {
+        showStandardStreams = true;
+        exceptionFormat = 'full' // show expected and actual for failed tests
+    }
+}
+
+jmh {
+    warmupIterations = 2
+    iterations = 5
+    fork = 1
+}
+
+tasks.create("bmPathfinding") {
+    jmh.includes.add("GraphPathfinderBenchmarks.findOptimalPath")
+    finalizedBy("jmh")
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -94,6 +145,61 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'xml', {
+        target fileTree('.') {
+            include '**/*.xml'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        eclipseWtp('xml')
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+    format "styling", {
+        target fileTree(".vscode") {
+            include "**.json"
+        },
+        fileTree(".wpilib") {
+            include "**.json"
+        },
+        fileTree(".github") {
+            include "**/*.yml"
+        }
+        // prettier("2.5.1")
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+}
 
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {

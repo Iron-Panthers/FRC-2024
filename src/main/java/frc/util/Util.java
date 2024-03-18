@@ -30,6 +30,11 @@ public class Util {
     return (degrees % 360 + 360) % 360;
   }
 
+  public static Rotation2d normalizeDegrees(Rotation2d rotation) {
+    double degrees = (rotation.getDegrees() % 360 + 360) % 360;
+    return Rotation2d.fromDegrees(degrees);
+  }
+
   /**
    * This function finds the degree difference between angles, the shortest path. Useful for pid
    * control of drivebase rotation. Returns a value between -180 and 180 on a 360 reference field.

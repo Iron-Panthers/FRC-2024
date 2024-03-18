@@ -20,13 +20,10 @@ public class AlliancePose2d {
 
   public Pose2d get() {
     var alliance = DriverStation.getAlliance();
-    return switch (alliance) {
+    // FIXME this bad
+    return switch (alliance.get()) {
       case Blue -> bluePose;
       case Red -> redPose;
-      case Invalid -> {
-        System.out.println("Invalid alliance, defaulting to blue");
-        yield bluePose;
-      }
       default -> {
         System.out.printf("Unknown alliance %s, defaulting to blue", alliance);
         yield bluePose;
