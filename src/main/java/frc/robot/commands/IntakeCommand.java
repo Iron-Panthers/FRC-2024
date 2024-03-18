@@ -27,7 +27,7 @@ public class IntakeCommand extends Command {
     this.pivotSubsystem = pivotSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, shooterSubsystem, pivotSubsystem);
+    // addRequirements(intakeSubsystem, shooterSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.

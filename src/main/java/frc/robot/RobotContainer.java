@@ -148,6 +148,7 @@ public class RobotContainer {
         "AutoPivotAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
     NamedCommands.registerCommand(
         "AutoDrivebaseAngle", new TargetLockCommand(drivebaseSubsystem, () -> 0, () -> 0));
+    NamedCommands.registerCommand("AccelNote", new AccelNoteCommand(shooterSubsystem));
     NamedCommands.registerCommand(
         "recenterPose1",
         DriverStation.getAlliance().get().equals(Alliance.Blue)
