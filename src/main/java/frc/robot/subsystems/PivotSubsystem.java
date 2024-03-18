@@ -139,7 +139,7 @@ public class PivotSubsystem extends SubsystemBase {
         (Math.sqrt(Math.pow((x - speakerX), 2) + Math.pow((y - speakerY), 2)))
             - Pivot.CENTER_OF_ROBOT_TO_BUMPER;
     targetDegrees =
-            - 0.00506 * Math.pow(distance, 6)
+        -0.00506 * Math.pow(distance, 6)
             + 0.14497 * Math.pow(distance, 5)
             - 1.613015 * Math.pow(distance, 4)
             + 8.545943 * Math.pow(distance, 3)
