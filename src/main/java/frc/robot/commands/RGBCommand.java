@@ -75,7 +75,7 @@ public class RGBCommand extends Command {
       noteInRobotMsg =
           Optional.of(
               rgbSubsystem.showMessage(
-                  Constants.Lights.Colors.ORANGE,
+                  Constants.Lights.Colors.BLUE,
                   RGBSubsystem.PatternTypes.PULSE,
                   RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));
     } else if (!(intakeSubsystem.isBeamBreakSensorTriggered()

@@ -35,6 +35,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefenseModeCommand;
 import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MaintainShooterCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.PivotAngleCommand;
 import frc.robot.commands.PivotManualCommand;
@@ -131,9 +132,19 @@ public class RobotContainer {
     NamedCommands.registerCommand("AngleAtSpeaker", new PivotAngleCommand(pivotSubsystem, 55));
     NamedCommands.registerCommand("AngleAt1", new PivotAngleCommand(pivotSubsystem, 38));
     NamedCommands.registerCommand("AngleAt2", new PivotAngleCommand(pivotSubsystem, 40));
+    NamedCommands.registerCommand("AngleAt3", new PivotAngleCommand(pivotSubsystem, 32));
     NamedCommands.registerCommand("AngleAtFar", new PivotAngleCommand(pivotSubsystem, 30));
+    NamedCommands.registerCommand("AngleAtCenter1", new PivotAngleCommand(pivotSubsystem, 22.5));
     NamedCommands.registerCommand(
-        "AutoAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+        "Heading4Note1", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -90));
+    NamedCommands.registerCommand(
+        "Heading4Note2", new RotateAngleDriveCommand(drivebaseSubsystem, () -> 0, () -> 0, -17));
+    NamedCommands.registerCommand(
+        "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
+    NamedCommands.registerCommand(
+        "AutoPivotAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
+    NamedCommands.registerCommand(
+        "AutoDrivebaseAngle", new TargetLockCommand(drivebaseSubsystem, () -> 0, () -> 0));
     NamedCommands.registerCommand(
         "recenterPose1",
         DriverStation.getAlliance().get().equals(Alliance.Blue)
@@ -274,7 +285,9 @@ public class RobotContainer {
         .start()
         .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    jacob.start().onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
+    jacob
+        .start()
+        .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
     // STOP INTAKE-SHOOTER
     jacob

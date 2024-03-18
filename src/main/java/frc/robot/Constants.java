@@ -163,7 +163,7 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.3).withKV(0.11).withKA(0);
+            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.32).withKV(0.11).withKA(0);
         public static final Slot0Configs STEER_MOTOR_GAINS =
             new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.4).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
@@ -276,6 +276,8 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(25, 0.4, .5);
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_FORWARD =
           new ShooterSubsystem.ShooterPowers(10, 2.5, .5);
+      public static final ShooterSubsystem.ShooterPowers MAINTAIN_VELOCITY =
+          new ShooterSubsystem.ShooterPowers(40, 1, 0);
       public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
           new ShooterSubsystem.ShooterPowers(76, 1, 0.5);
     }

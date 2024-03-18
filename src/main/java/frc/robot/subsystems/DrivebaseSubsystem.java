@@ -308,14 +308,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public void smartZeroGyroscope() {
     driverGyroOffset =
         getConsistentGyroscopeRotation()
-            .minus(
-                swervePoseEstimator
-                    .getEstimatedPosition()
-                    .getRotation()
-                    .plus(
-                        DriverStation.getAlliance().get() == Alliance.Blue
-                            ? new Rotation2d()
-                            : Rotation2d.fromDegrees(180)));
+            .minus(swervePoseEstimator.getEstimatedPosition().getRotation());
   }
 
   /**
@@ -371,7 +364,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     // We need to subtract the offset here so that the robot drives forward based on auto
     // positioning or manual reset
-    return angle.minus(driverGyroOffset);
+    return Util.normalizeDegrees(angle.minus(driverGyroOffset));
   }
 
   public double getRotVelocity() {
