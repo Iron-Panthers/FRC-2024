@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 8.29,
-        "y": 7.44
+        "x": 8.306850596002077,
+        "y": 7.320350835391936
       },
       "prevControl": {
-        "x": 8.302276339065951,
-        "y": 7.453004286539546
+        "x": 8.319126935068029,
+        "y": 7.333355121931482
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 25.59,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "4notepose2",
   "previewStartingState": {
-    "rotation": 90.0,
+    "rotation": 25.59,
     "velocity": 0
   },
   "useDefaultConstraints": false
