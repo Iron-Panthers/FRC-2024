@@ -8,12 +8,6 @@
         {
           "type": "named",
           "data": {
-            "name": "recenterPose2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "IntakeCommand"
           }
         },
@@ -212,7 +206,7 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -239,11 +233,24 @@
                       "data": {
                         "name": "AutoPivotAngle"
                       }
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoDrivebaseAngle"
+                        "name": "HeadingLock"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.75
                       }
                     }
                   ]
