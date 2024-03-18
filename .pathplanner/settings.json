@@ -3,7 +3,8 @@
   "robotLength": 0.85,
   "holonomicMode": true,
   "pathFolders": [
-    "4notepose2"
+    "4notepose2",
+    "5notepose2"
   ],
   "autoFolders": [
     "New Folder"
