@@ -451,7 +451,7 @@ public final class Constants {
     public static final double DRIVE_TO_POSE_THETA_ERROR_MARGIN_DEGREES = 2;
 
     public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS =
-        List.of(Set.of(1, 2, 3, 4), Set.of(5, 6, 7, 8));
+        List.of(Set.of(3, 4, 5), Set.of(6, 7, 8));
 
     public static final int MAX_FRAME_FIDS = 4;
   }
