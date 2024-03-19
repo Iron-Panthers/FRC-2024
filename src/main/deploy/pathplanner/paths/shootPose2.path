@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7571548712002016,
-        "y": 6.710543833337373
+        "x": 8.302276339065951,
+        "y": 7.320350835391936
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7571548712002043,
-        "y": 6.710543833337373
+        "x": 7.838520453091918,
+        "y": 7.181888515395663
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.65,
-        "y": 7.45
+        "x": 4.194593610426159,
+        "y": 5.824568817279227
       },
       "prevControl": {
-        "x": 6.65,
-        "y": 7.45
+        "x": 4.194593610426159,
+        "y": 5.824568817279227
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,21 +32,18 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.79,
+    "maxAcceleration": 5.79,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": 4.253836436119278,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "Ethan's Paths",
-  "previewStartingState": {
-    "rotation": 59.34933204294715,
-    "velocity": 0
-  },
+  "folder": "Pose2",
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }
