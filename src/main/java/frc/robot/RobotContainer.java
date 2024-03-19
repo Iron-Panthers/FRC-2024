@@ -317,7 +317,9 @@ public class RobotContainer {
                     new AdvancedIntakeCommand(intakeSubsystem, shooterSubsystem, pivotSubsystem)));
 
     // SHOOT OVERRIDE
-    jacob.rightTrigger().onTrue(new ShootCommand(shooterSubsystem));
+    jacob
+        .rightTrigger()
+        .onTrue(new AccelNoteCommand(shooterSubsystem).andThen(new ShootCommand(shooterSubsystem)));
 
     anthony.rightStick().onTrue(new DefenseModeCommand(drivebaseSubsystem));
     anthony.leftStick().onTrue(new HaltDriveCommandsCommand(drivebaseSubsystem));
