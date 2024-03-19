@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "intakeShoot"
+                  "pathName": "intake1Pose2"
                 }
               },
               {
@@ -112,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "intakeShoot2"
+                  "pathName": "intake2Pose2"
                 }
               },
               {
@@ -169,7 +169,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "intake3"
+                  "pathName": "intake3Pose2"
                 }
               },
               {
@@ -218,7 +218,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "shoot3"
+                        "pathName": "shootPose2"
                       }
                     }
                   ]
@@ -261,6 +261,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Pose2",
   "choreoAuto": false
 }

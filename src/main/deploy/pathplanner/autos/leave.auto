@@ -10,12 +10,6 @@
           "data": {
             "pathName": "leave"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "recenterPose4"
-          }
         }
       ]
     }
