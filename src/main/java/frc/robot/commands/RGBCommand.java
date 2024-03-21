@@ -75,8 +75,8 @@ public class RGBCommand extends Command {
       noteInRobotMsg =
           Optional.of(
               rgbSubsystem.showMessage(
-                  Constants.Lights.Colors.BLUE,
-                  RGBSubsystem.PatternTypes.PULSE,
+                  Constants.Lights.Colors.WHITE,
+                  RGBSubsystem.PatternTypes.STROBE,
                   RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));
     } else if (!(intakeSubsystem.isBeamBreakSensorTriggered()
         || shooterSubsystem.isBeamBreakSensorTriggered())) {
@@ -93,7 +93,7 @@ public class RGBCommand extends Command {
           Optional.of(
               rgbSubsystem.showMessage(
                   Constants.Lights.Colors.RED,
-                  RGBSubsystem.PatternTypes.PULSE,
+                  RGBSubsystem.PatternTypes.STROBE,
                   RGBSubsystem.MessagePriority.D_READY_TO_SHOOT));
     } else if (!(shooterSubsystem.isReadyToShoot() && pivotSubsystem.isAtTargetDegrees())) {
       readyToShootMsg.ifPresent(RGBMessage::expire);

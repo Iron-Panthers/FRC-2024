@@ -353,7 +353,7 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -35 : 35)
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 
