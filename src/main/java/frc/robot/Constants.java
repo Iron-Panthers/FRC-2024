@@ -241,7 +241,7 @@ public final class Constants {
     }
 
     public static final class Modes {
-      public static final IntakePowers INTAKE = new IntakePowers(.95, .5);
+      public static final IntakePowers INTAKE = new IntakePowers(.95, .75);
       public static final IntakePowers HOLD = new IntakePowers(0, 0d);
       public static final IntakePowers REVERSE = new IntakePowers(-.5, -.5);
     }
