@@ -345,17 +345,22 @@ public class RobotContainer {
                 .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
     jacob
         .a()
-        .whileTrue(
-            new ShuttleLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
+        .onTrue(new RotateAngleDriveCommand(drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red)
+                        ? -35 
+                        : 35)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
-    DoubleSupplier variableVelocityRate = () -> modifyAxis(-jacob.getRightY());
 
-    new Trigger(() -> Math.abs(variableVelocityRate.getAsDouble()) > 0.07)
-        .onTrue(new VariableShooterCommand(shooterSubsystem, variableVelocityRate));
+    // DoubleSupplier variableVelocityRate = () -> modifyAxis(-jacob.getRightY());
+
+    // new Trigger(() -> Math.abs(variableVelocityRate.getAsDouble()) > 0.07)
+    //     .onTrue(new VariableShooterCommand(shooterSubsystem, variableVelocityRate));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
