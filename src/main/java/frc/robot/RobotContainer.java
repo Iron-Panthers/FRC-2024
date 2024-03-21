@@ -48,6 +48,7 @@ import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
+import frc.robot.commands.ShuttleLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.TargetLockCommand;
@@ -337,6 +338,12 @@ public class RobotContainer {
         .whileTrue(
             new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
                 .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
+    jacob
+        .a()
+        .whileTrue(
+            new ShuttleLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
