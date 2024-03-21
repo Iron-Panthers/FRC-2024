@@ -35,6 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private GenericEntry shooterSpeedEntry;
   private GenericEntry useDebugControls;
 
+  public double variableVelocity = Shooter.Modes.VARIABLE_VELOCITY.roller();
+
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0).withSlot(0);
 
   private final ShuffleboardTab shooterTab = Shuffleboard.getTab("Shooter");
@@ -50,7 +52,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SHOOT_AMP_FORWARD(Shooter.Modes.SHOOT_AMP_FORWARD),
     MAINTAIN_VELOCITY(Shooter.Modes.MAINTAIN_VELOCITY),
     SHUTTLE(Shooter.Modes.SHUTTLE),
-    ACCEL_SECURE(Shooter.Modes.ACCEL_SECURE);
+    SHOOT_SHUTTLE(Shooter.Modes.SHOOT_SHUTTLE),
+    ACCEL_SECURE(Shooter.Modes.ACCEL_SECURE),
+    VARIABLE_VELOCITY(Shooter.Modes.VARIABLE_VELOCITY),
+    SHOOT_VAR(Shooter.Modes.SHOOT_VAR);
 
     public final ShooterPowers shooterPowers;
 
@@ -161,6 +166,11 @@ public class ShooterSubsystem extends SubsystemBase {
     this.shooterMode = shooterMode;
   }
 
+  public void setVariableVelocity(double velocity) {
+    if (shooterMode != ShooterMode.VARIABLE_VELOCITY) shooterMode = ShooterMode.VARIABLE_VELOCITY;
+    this.variableVelocity = velocity;
+  }
+
   public void advanceToShootMode() {
     switch (shooterMode) {
       case RAMP_AMP_FRONT:
@@ -168,6 +178,12 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case RAMP_AMP_BACK:
         shooterMode = ShooterMode.SHOOT_AMP_BACK;
+        break;
+      case SHUTTLE:
+        shooterMode = ShooterMode.SHOOT_SHUTTLE;
+        break;
+      case VARIABLE_VELOCITY:
+        shooterMode = ShooterMode.SHOOT_VAR;
         break;
       case RAMP_SPEAKER:
       default:
@@ -184,6 +200,10 @@ public class ShooterSubsystem extends SubsystemBase {
       rollerMotorBottom.setControl(velocityVoltageRequest.withVelocity(d_ShooterSpeed));
       rollerMotorTop.setControl(
           velocityVoltageRequest.withVelocity(d_ShooterSpeed * d_topToBottomRatio));
+    } else if (shooterMode == ShooterMode.VARIABLE_VELOCITY
+        || shooterMode == ShooterMode.SHOOT_VAR) {
+      rollerMotorBottom.setControl(velocityVoltageRequest.withVelocity(variableVelocity));
+      rollerMotorTop.setControl(velocityVoltageRequest.withVelocity(variableVelocity));
     } else {
       // Otherwise just use our current mode for the values
       rollerMotorBottom.setControl(

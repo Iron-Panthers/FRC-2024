@@ -280,8 +280,14 @@ public final class Constants {
           new ShooterSubsystem.ShooterPowers(40, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHUTTLE =
           new ShooterSubsystem.ShooterPowers(30, 1, 0);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_SHUTTLE =
+          new ShooterSubsystem.ShooterPowers(30, 1, 0.5);
       public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
           new ShooterSubsystem.ShooterPowers(76, 1, 0.5);
+      public static final ShooterSubsystem.ShooterPowers VARIABLE_VELOCITY =
+          new ShooterSubsystem.ShooterPowers(30, 1, 0);
+      public static final ShooterSubsystem.ShooterPowers SHOOT_VAR =
+          new ShooterSubsystem.ShooterPowers(30, 1, 0.5);
     }
 
     public static final Slot0Configs ROLLER_PID_CONFIG =

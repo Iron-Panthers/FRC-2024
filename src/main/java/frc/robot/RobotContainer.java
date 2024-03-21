@@ -52,6 +52,7 @@ import frc.robot.commands.ShuttleLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.TargetLockCommand;
+import frc.robot.commands.VariableShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -236,6 +237,11 @@ public class RobotContainer {
             "(%2f %2f %2f)",
             desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
+    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
+      driverView.addDouble("Shoot Var Velocity", () -> shooterSubsystem.variableVelocity);
+      driverView.addString("ShooterMode", () -> shooterSubsystem.getMode().toString());
+    }
+
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
   }
@@ -282,7 +288,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     // vibrate jacob controller when in layer
     jacobLayer.whenChanged(
         (enabled) -> {
@@ -347,6 +352,10 @@ public class RobotContainer {
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
+    DoubleSupplier variableVelocityRate = () -> modifyAxis(-jacob.getRightY());
+
+    new Trigger(() -> Math.abs(variableVelocityRate.getAsDouble()) > 0.07)
+        .onTrue(new VariableShooterCommand(shooterSubsystem, variableVelocityRate));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
