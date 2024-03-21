@@ -38,12 +38,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shootAndLeavePose3"
+            "pathName": "shootAndLeave"
           }
         }
       ]
     }
   },
-  "folder": "Pose3",
+  "folder": null,
   "choreoAuto": false
 }

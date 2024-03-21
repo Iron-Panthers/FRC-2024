@@ -146,7 +146,7 @@ public class PivotSubsystem extends SubsystemBase {
             - 21.517994 * Math.pow(distance, 2)
             + 6.8762 * distance
             + 64.78029
-            - 3;
+            - 2.7;
   }
 
   @Override

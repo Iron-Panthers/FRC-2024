@@ -3,17 +3,13 @@
   "robotLength": 0.85,
   "holonomicMode": true,
   "pathFolders": [
-    "Pose3",
-    "Pose1",
-    "Pose2"
+    "4notepose2"
   ],
   "autoFolders": [
-    "Pose3",
-    "Pose1",
-    "Pose2"
+    "New Folder"
   ],
-  "defaultMaxVel": 5.79,
-  "defaultMaxAccel": 5.79,
+  "defaultMaxVel": 1.0,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5
