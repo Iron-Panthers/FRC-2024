@@ -241,7 +241,7 @@ public class RobotContainer {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       driverView.addDouble("Shoot Var Velocity", () -> shooterSubsystem.variableVelocity);
       driverView.addString("ShooterMode", () -> shooterSubsystem.getMode().toString());
-      driverView.addDouble("Pivot Angle Error", () -> pivotSubsystem.getAngularError());
+      driverView.addDouble("Pivot Angle Error", () -> pivotSubsystem.getCurrentError());
       driverView.addDouble("Drivebase Angle Error", () -> drivebaseSubsystem.getAngularError()); 
     }
 
@@ -353,7 +353,7 @@ public class RobotContainer {
                     drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -35 : 35)
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 

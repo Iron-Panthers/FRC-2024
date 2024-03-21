@@ -279,7 +279,7 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers MAINTAIN_VELOCITY =
           new ShooterSubsystem.ShooterPowers(40, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHUTTLE =
-          new ShooterSubsystem.ShooterPowers(21, 1, 0);
+          new ShooterSubsystem.ShooterPowers(30, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHOOT_SHUTTLE =
           new ShooterSubsystem.ShooterPowers(30, 1, 0.5);
       public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
@@ -462,7 +462,7 @@ public final class Constants {
     public static final double DRIVE_TO_POSE_THETA_ERROR_MARGIN_DEGREES = 2;
 
     public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS =
-        List.of(Set.of(3, 4, 5), Set.of(6, 7, 8));
+        List.of(Set.of(1, 2, 3, 4, 5), Set.of(6, 7, 8, 9, 10));
 
     public static final int MAX_FRAME_FIDS = 4;
   }
