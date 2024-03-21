@@ -235,6 +235,11 @@ public class RobotContainer {
             "(%2f %2f %2f)",
             desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
+    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
+      driverView.addDouble("Shoot Var Velocity", () -> shooterSubsystem.variableVelocity);
+      driverView.addString("ShooterMode", () -> shooterSubsystem.getMode().toString());
+    }
+
     // Create and put autonomous selector to dashboard
     setupAutonomousCommands();
   }
@@ -281,7 +286,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     // vibrate jacob controller when in layer
     jacobLayer.whenChanged(
         (enabled) -> {
@@ -337,9 +341,24 @@ public class RobotContainer {
         .whileTrue(
             new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
                 .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
+    jacob
+        .a()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -35 : 35)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
+
+    // DoubleSupplier variableVelocityRate = () -> modifyAxis(-jacob.getRightY());
+
+    // new Trigger(() -> Math.abs(variableVelocityRate.getAsDouble()) > 0.07)
+    //     .onTrue(new VariableShooterCommand(shooterSubsystem, variableVelocityRate));
 
     DoubleSupplier pivotManualRate = () -> modifyAxis(-jacob.getLeftY());
 
