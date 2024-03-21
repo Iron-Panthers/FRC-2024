@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -247,6 +248,14 @@ public class RobotContainer {
   public void containerTeleopInit() {
     // runs when teleop happens
     CommandScheduler.getInstance().schedule(new VibrateHIDCommand(jacob.getHID(), 5, .5));
+    // vibrate controller at 27 seconds left
+    CommandScheduler.getInstance()
+        .schedule(
+            new WaitCommand(108)
+                .andThen(
+                    new ParallelCommandGroup(
+                        new VibrateHIDCommand(anthony.getHID(), 3, 0.4),
+                        new VibrateHIDCommand(jacob.getHID(), 3, 0.4))));
   }
 
   /**
