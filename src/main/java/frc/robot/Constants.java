@@ -186,7 +186,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.4326171875 // comp bot offset
+                ? 0.41943359375 // comp bot offset
                 : 0.0595703125; // practice bot offset
       }
 
@@ -197,7 +197,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? -0.416259765625 // comp bot offset
+                ? -0.39990234375 // comp bot offset
                 : 0.262451171875; // practice bot offset
       }
 
@@ -208,7 +208,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.224365234375 // comp bot offset
+                ? 0.225341796875 // comp bot offset
                 : -0.20825195312; // practice bot offset
       }
 
@@ -219,7 +219,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.31298828125 // comp bot offset
+                ? 0.3076171875 // comp bot offset
                 : -0.3564453125 + 180; // practice bot offset
       }
     }
@@ -451,7 +451,7 @@ public final class Constants {
     public static final double DRIVE_TO_POSE_THETA_ERROR_MARGIN_DEGREES = 2;
 
     public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS =
-        List.of(Set.of(1, 2, 3, 4), Set.of(5, 6, 7, 8));
+        List.of(Set.of(3, 4, 5), Set.of(6, 7, 8));
 
     public static final int MAX_FRAME_FIDS = 4;
   }
