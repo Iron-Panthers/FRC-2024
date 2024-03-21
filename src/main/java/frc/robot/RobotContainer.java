@@ -241,6 +241,8 @@ public class RobotContainer {
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       driverView.addDouble("Shoot Var Velocity", () -> shooterSubsystem.variableVelocity);
       driverView.addString("ShooterMode", () -> shooterSubsystem.getMode().toString());
+      driverView.addDouble("Pivot Angle Error", () -> pivotSubsystem.getAngularError());
+      driverView.addDouble("Drivebase Angle Error", () -> drivebaseSubsystem.getAngularError()); 
     }
 
     // Create and put autonomous selector to dashboard
