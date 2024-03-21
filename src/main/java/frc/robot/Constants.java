@@ -279,7 +279,7 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers MAINTAIN_VELOCITY =
           new ShooterSubsystem.ShooterPowers(40, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHUTTLE =
-          new ShooterSubsystem.ShooterPowers(50, 1, 0);
+          new ShooterSubsystem.ShooterPowers(30, 1, 0);
       public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
           new ShooterSubsystem.ShooterPowers(76, 1, 0.5);
     }
