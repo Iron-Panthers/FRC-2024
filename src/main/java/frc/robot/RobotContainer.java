@@ -48,11 +48,9 @@ import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.SetRampModeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterRampUpCommand;
-import frc.robot.commands.ShuttleLockCommand;
 import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.TargetLockCommand;
-import frc.robot.commands.VariableShooterCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.CANWatchdogSubsystem;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -345,12 +343,12 @@ public class RobotContainer {
                 .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
     jacob
         .a()
-        .onTrue(new RotateAngleDriveCommand(drivebaseSubsystem,
+        .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
                     translationXSupplier,
                     translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red)
-                        ? -35 
-                        : 35)
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -35 : 35)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 
