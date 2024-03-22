@@ -6,15 +6,21 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "leave"
+            "name": "recenterPose4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "recenterPose4"
+            "name": "ZeroOrigin"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leave"
           }
         }
       ]
