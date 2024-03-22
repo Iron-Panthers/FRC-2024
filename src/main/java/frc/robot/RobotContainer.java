@@ -365,7 +365,7 @@ public class RobotContainer {
         .a()
         .onTrue(
             new PivotAngleCommand(pivotSubsystem, 15)
-                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_SPEAKER)));
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
@@ -446,8 +446,7 @@ public class RobotContainer {
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -50 : 50)
-                .alongWith(
-                    new PivotAngleCommand(pivotSubsystem, 53.1)));
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 53.1)));
 
     DoubleSupplier rotation =
         exponential(
