@@ -311,6 +311,10 @@ public class DrivebaseSubsystem extends SubsystemBase {
     driverGyroOffset = getConsistentGyroscopeRotation();
   }
 
+  public void zeroGyroscopeOffset(double offsetDegrees) {
+    driverGyroOffset = getConsistentGyroscopeRotation().plus(Rotation2d.fromDegrees(offsetDegrees));
+  }
+
   /** Aligns gyro heading with pose estimation */
   public void smartZeroGyroscope() {
     driverGyroOffset =

@@ -150,6 +150,20 @@ public class RobotContainer {
         "AutoDrivebaseAngle", new TargetLockCommand(drivebaseSubsystem, () -> 0, () -> 0));
     NamedCommands.registerCommand("AccelNote", new AccelNoteCommand(shooterSubsystem));
     NamedCommands.registerCommand(
+        "ZeroOrigin", new InstantCommand(() -> drivebaseSubsystem.zeroGyroscope()));
+    NamedCommands.registerCommand(
+        "ZeroSubwoofer1",
+        new InstantCommand(
+            () ->
+                drivebaseSubsystem.zeroGyroscopeOffset(
+                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 60 : -60)));
+    NamedCommands.registerCommand(
+        "ZeroSubwoofer3",
+        new InstantCommand(
+            () ->
+                drivebaseSubsystem.zeroGyroscopeOffset(
+                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? -60 : 60)));
+    NamedCommands.registerCommand(
         "recenterPose1",
         DriverStation.getAlliance().get().equals(Alliance.Blue)
             ? new InstantCommand(
@@ -242,7 +256,7 @@ public class RobotContainer {
       driverView.addDouble("Shoot Var Velocity", () -> shooterSubsystem.variableVelocity);
       driverView.addString("ShooterMode", () -> shooterSubsystem.getMode().toString());
       driverView.addDouble("Pivot Angle Error", () -> pivotSubsystem.getCurrentError());
-      driverView.addDouble("Drivebase Angle Error", () -> drivebaseSubsystem.getAngularError()); 
+      driverView.addDouble("Drivebase Angle Error", () -> drivebaseSubsystem.getAngularError());
     }
 
     // Create and put autonomous selector to dashboard
