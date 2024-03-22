@@ -156,13 +156,13 @@ public class RobotContainer {
         new InstantCommand(
             () ->
                 drivebaseSubsystem.zeroGyroscopeOffset(
-                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 60 : -60)));
+                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? -60 : 60)));
     NamedCommands.registerCommand(
         "ZeroSubwoofer3",
         new InstantCommand(
             () ->
                 drivebaseSubsystem.zeroGyroscopeOffset(
-                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? -60 : 60)));
+                    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 60 : -60)));
     NamedCommands.registerCommand(
         "recenterPose1",
         DriverStation.getAlliance().get().equals(Alliance.Blue)
@@ -360,6 +360,7 @@ public class RobotContainer {
         .whileTrue(
             new TargetLockCommand(drivebaseSubsystem, translationXSupplier, translationYSupplier)
                 .alongWith(new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem)));
+
     jacob
         .a()
         .onTrue(
@@ -433,10 +434,20 @@ public class RobotContainer {
     anthony
         .a()
         .onTrue(
-            // new PivotAngleCommand(pivotSubsystem, 56));
             new RotateAngleDriveCommand(
                     drivebaseSubsystem, translationXSupplier, translationYSupplier, 0)
                 .alongWith(new PivotAngleCommand(pivotSubsystem, 53.1)));
+
+    anthony
+        .x()
+        .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -50 : 50)
+                .alongWith(
+                    new PivotAngleCommand(pivotSubsystem, 53.1)));
 
     DoubleSupplier rotation =
         exponential(
