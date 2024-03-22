@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.autonomous.HeadingAngle;
 import frc.robot.autonomous.HeadingTargetLock;
 import frc.robot.commands.AccelNoteCommand;
 import frc.robot.commands.AdvancedIntakeCommand;
@@ -144,6 +145,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "MaintainShooterVelocity", new MaintainShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand("HeadingLock", new HeadingTargetLock(drivebaseSubsystem));
+    NamedCommands.registerCommand("LockForward", new HeadingAngle(drivebaseSubsystem, 0));
     NamedCommands.registerCommand(
         "AutoPivotAngle", new PivotTargetLockCommand(pivotSubsystem, drivebaseSubsystem));
     NamedCommands.registerCommand(
@@ -231,7 +233,12 @@ public class RobotContainer {
 
     rgbSubsystem.setDefaultCommand(
         new RGBCommand(
-            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem, visionSubsystem));
+            shooterSubsystem,
+            intakeSubsystem,
+            rgbSubsystem,
+            pivotSubsystem,
+            drivebaseSubsystem,
+            visionSubsystem));
 
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
