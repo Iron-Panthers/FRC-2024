@@ -12,6 +12,7 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import java.util.Optional;
 
 public class RGBCommand extends Command {
@@ -20,6 +21,7 @@ public class RGBCommand extends Command {
   private RGBSubsystem rgbSubsystem;
   private PivotSubsystem pivotSubsystem;
   private DrivebaseSubsystem drivebaseSubsystem;
+  private VisionSubsystem visionSubsystem; 
   private Optional<RGBMessage> noteInRobotMsg;
   private Optional<RGBMessage> readyToShootMsg;
   private Optional<RGBMessage> twoNoteMsg;
@@ -88,7 +90,8 @@ public class RGBCommand extends Command {
     if (shooterSubsystem.isReadyToShoot()
         && pivotSubsystem.isAtTargetDegrees()
         && Math.abs(drivebaseSubsystem.getAngularError()) < 2
-        && readyToShootMsg.isEmpty()) {
+        && readyToShootMsg.isEmpty() 
+        && visionSubsystem.getCanSeeSpeakerTags()){
       readyToShootMsg =
           Optional.of(
               rgbSubsystem.showMessage(

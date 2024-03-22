@@ -66,6 +66,9 @@ public class VisionSubsystem {
 
   private double lastDetection = 0;
 
+  private boolean canSeeSpeakerTags; 
+
+
   private double tagX;
   private double tagY;
   private double tagZ;
@@ -222,9 +225,22 @@ public class VisionSubsystem {
     return visionMeasurements.poll();
   }
 
+  public void updateCanSeeSpeakerTags(PhotonPipelineResult frame){
+      List<Integer> ids = frame.targets.stream().map(t -> t.getFiducialId()).toList();
+      for (Set<Integer> speakerTags : PoseEstimator.SPEAKER_TAGS) {
+        canSeeSpeakerTags = speakerTags.containsAll(ids);
+      }
+  }
+
+  public boolean getCanSeeSpeakerTags(){
+    return canSeeSpeakerTags; 
+  }
+
   private void findVisionMeasurements() {
     for (CameraEstimator cameraEstimator : cameraEstimators) {
       PhotonPipelineResult frame = cameraEstimator.camera().getLatestResult();
+
+      updateCanSeeSpeakerTags(frame); 
 
       // determine if result should be ignored
       if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;
