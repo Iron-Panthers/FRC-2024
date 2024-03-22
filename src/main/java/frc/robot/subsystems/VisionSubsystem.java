@@ -227,7 +227,7 @@ public class VisionSubsystem {
 
   public void updateCanSeeSpeakerTags(PhotonPipelineResult frame){
       List<Integer> ids = frame.targets.stream().map(t -> t.getFiducialId()).toList();
-      for (Set<Integer> speakerTags : PoseEstimator.SPEAKER_TAGS) {
+      for (Set<Integer> speakerTags : PoseEstimator.SPEAKER_FIDS) {
         canSeeSpeakerTags = speakerTags.containsAll(ids);
       }
   }
