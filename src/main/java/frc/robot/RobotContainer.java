@@ -363,8 +363,8 @@ public class RobotContainer {
     jacob
         .a()
         .onTrue(
-            new PivotAngleCommand(pivotSubsystem, 15))
-            .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE));
+            new PivotAngleCommand(pivotSubsystem, 15)
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
 
     // anthony.y().whileTrue(new TargetLockCommand(drivebaseSubsystem, translationXSupplier,
     // translationYSupplier, Setpoints.SPEAKER));
