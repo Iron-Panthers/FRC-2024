@@ -364,6 +364,17 @@ public class RobotContainer {
     jacob
         .a()
         .onTrue(
+            new RotateAngleDriveCommand(
+                    drivebaseSubsystem,
+                    translationXSupplier,
+                    translationYSupplier,
+                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40)
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 60))
+                .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.SHUTTLE)));
+
+    jacob
+        .povDown()
+        .onTrue(
             new PivotAngleCommand(pivotSubsystem, 15)
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_SPEAKER)));
 
