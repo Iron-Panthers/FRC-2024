@@ -149,9 +149,8 @@ public class PivotSubsystem extends SubsystemBase {
             - 2.7;
   }
 
-  public double getAngularError()
-  {
-    return targetDegrees - getCurrentAngle(); 
+  public double getAngularError() {
+    return targetDegrees - getCurrentAngle();
   }
 
   @Override

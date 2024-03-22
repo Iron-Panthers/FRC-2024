@@ -21,7 +21,7 @@ public class RGBCommand extends Command {
   private RGBSubsystem rgbSubsystem;
   private PivotSubsystem pivotSubsystem;
   private DrivebaseSubsystem drivebaseSubsystem;
-  private VisionSubsystem visionSubsystem; 
+  private VisionSubsystem visionSubsystem;
   private Optional<RGBMessage> noteInRobotMsg;
   private Optional<RGBMessage> readyToShootMsg;
   private Optional<RGBMessage> twoNoteMsg;
@@ -32,7 +32,8 @@ public class RGBCommand extends Command {
       IntakeSubsystem intakeSubsystem,
       RGBSubsystem rgbSubsystem,
       PivotSubsystem pivotSubsystem,
-      DrivebaseSubsystem drivebaseSubsystem) {
+      DrivebaseSubsystem drivebaseSubsystem,
+      VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.\
     addRequirements(rgbSubsystem);
     this.shooterSubsystem = shooterSubsystem;
@@ -40,6 +41,7 @@ public class RGBCommand extends Command {
     this.rgbSubsystem = rgbSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.drivebaseSubsystem = drivebaseSubsystem;
+    this.visionSubsystem = visionSubsystem;
     twoNoteMsg = Optional.empty();
     readyToShootMsg = Optional.empty();
     noteInRobotMsg = Optional.empty();
@@ -90,8 +92,8 @@ public class RGBCommand extends Command {
     if (shooterSubsystem.isReadyToShoot()
         && pivotSubsystem.isAtTargetDegrees()
         && Math.abs(drivebaseSubsystem.getAngularError()) < 2
-        && readyToShootMsg.isEmpty() 
-        && visionSubsystem.getCanSeeSpeakerTags()){
+        && readyToShootMsg.isEmpty()
+        && visionSubsystem.getCanSeeSpeakerTags()) {
       readyToShootMsg =
           Optional.of(
               rgbSubsystem.showMessage(

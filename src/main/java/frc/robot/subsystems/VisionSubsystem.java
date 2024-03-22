@@ -66,8 +66,7 @@ public class VisionSubsystem {
 
   private double lastDetection = 0;
 
-  private boolean canSeeSpeakerTags; 
-
+  private boolean canSeeSpeakerTags;
 
   private double tagX;
   private double tagY;
@@ -225,22 +224,22 @@ public class VisionSubsystem {
     return visionMeasurements.poll();
   }
 
-  public void updateCanSeeSpeakerTags(PhotonPipelineResult frame){
-      List<Integer> ids = frame.targets.stream().map(t -> t.getFiducialId()).toList();
-      for (Set<Integer> speakerTags : PoseEstimator.SPEAKER_FIDS) {
-        canSeeSpeakerTags = speakerTags.containsAll(ids);
-      }
+  public void updateCanSeeSpeakerTags(PhotonPipelineResult frame) {
+    List<Integer> ids = frame.targets.stream().map(t -> t.getFiducialId()).toList();
+    for (Set<Integer> speakerTags : PoseEstimator.SPEAKER_FIDS) {
+      canSeeSpeakerTags = speakerTags.containsAll(ids);
+    }
   }
 
-  public boolean getCanSeeSpeakerTags(){
-    return canSeeSpeakerTags; 
+  public boolean getCanSeeSpeakerTags() {
+    return canSeeSpeakerTags;
   }
 
   private void findVisionMeasurements() {
     for (CameraEstimator cameraEstimator : cameraEstimators) {
       PhotonPipelineResult frame = cameraEstimator.camera().getLatestResult();
 
-      updateCanSeeSpeakerTags(frame); 
+      updateCanSeeSpeakerTags(frame);
 
       // determine if result should be ignored
       if (cameraEstimator.duplicateTracker().isDuplicate(frame) || ignoreFrame(frame)) continue;

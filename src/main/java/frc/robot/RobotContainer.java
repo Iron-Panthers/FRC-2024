@@ -231,7 +231,7 @@ public class RobotContainer {
 
     rgbSubsystem.setDefaultCommand(
         new RGBCommand(
-            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem));
+            shooterSubsystem, intakeSubsystem, rgbSubsystem, pivotSubsystem, drivebaseSubsystem, visionSubsystem));
 
     // pivotSubsystem.setDefaultCommand(
     //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));

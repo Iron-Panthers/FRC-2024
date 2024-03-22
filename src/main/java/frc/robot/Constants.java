@@ -219,7 +219,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.3076171875 // comp bot offset
+                ? 0.316650390625 // comp bot offset
                 : -0.3564453125 + 180; // practice bot offset
       }
     }
@@ -367,7 +367,7 @@ public final class Constants {
 
     public static final List<VisionSource> VISION_SOURCES =
         List.of(
-            new VisionSource(
+            /*new VisionSource(
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
@@ -390,7 +390,7 @@ public final class Constants {
                     new Rotation3d(
                         0,
                         Math.toRadians(30), // angle up/down
-                        Math.toRadians(180)))),
+                        Math.toRadians(180)))),*/
             new VisionSource(
                 "backUpCam",
                 new Transform3d(
@@ -464,7 +464,7 @@ public final class Constants {
     public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS =
         List.of(Set.of(1, 2, 3, 4, 5), Set.of(6, 7, 8, 9, 10));
 
-    public static final List<Set<Integer>> SPEAKER_FIDS = List.of(Set.of(3,4), Set.of(7, 8));
+    public static final List<Set<Integer>> SPEAKER_FIDS = List.of(Set.of(3, 4), Set.of(7, 8));
 
     public static final int MAX_FRAME_FIDS = 4;
   }
