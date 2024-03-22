@@ -49,13 +49,52 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "parallel",
                 "data": {
-                  "pathName": "Pose3intake1"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pose3intake1"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "race",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "MaintainShooterVelocity"
+                                  }
+                                },
+                                {
+                                  "type": "wait",
+                                  "data": {
+                                    "waitTime": 1.25
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeCommand"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -63,41 +102,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "race",
+                      "type": "wait",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "MaintainShooterVelocity"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 1.25
-                            }
-                          }
-                        ]
+                        "waitTime": 2.0
                       }
                     },
                     {
-                      "type": "race",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "IntakeCommand"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 4.0
-                            }
-                          }
-                        ]
+                        "name": "LockForward"
                       }
                     }
                   ]
@@ -167,22 +180,9 @@
                 }
               },
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeCommand"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    }
-                  ]
+                  "name": "IntakeCommand"
                 }
               }
             ]
