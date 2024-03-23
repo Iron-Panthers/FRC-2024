@@ -434,7 +434,7 @@ public class RobotContainer {
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90)
-                .alongWith(new PivotAngleCommand(pivotSubsystem, 52)) // FIXME idk
+                .alongWith(new PivotAngleCommand(pivotSubsystem, 50)) // FIXME idk
                 .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_BACK)));
 
     /*    jacob
