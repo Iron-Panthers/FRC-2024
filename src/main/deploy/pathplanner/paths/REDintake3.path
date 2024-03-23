@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.8772076128223056,
+        "y": 6.7
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.9000788975029277,
+        "y": 6.677128715319378
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.306850596002077,
+        "y": 7.3
+      },
+      "prevControl": {
+        "x": 8.319126935068029,
+        "y": 7.313004286539545
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.79,
+    "maxAcceleration": 5.79,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 25.59,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Red 4NotePose2",
+  "previewStartingState": {
+    "rotation": 25.59,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
