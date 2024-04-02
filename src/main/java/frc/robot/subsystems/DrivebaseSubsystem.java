@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Drive.*;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -211,9 +210,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
             swerveDrivetrain.getModule(3)
           };
 
-      for(SwerveModule swerveModule : swerveModules) {
+      for (SwerveModule swerveModule : swerveModules) {
         // disables all unspecified CAN signals, OK because api does for us
-        ParentDevice.optimizeBusUtilizationForAll(swerveModule.getDriveMotor(), swerveModule.getSteerMotor(), swerveModule.getCANcoder());       }
+        ParentDevice.optimizeBusUtilizationForAll(
+            swerveModule.getDriveMotor(), swerveModule.getSteerMotor(), swerveModule.getCANcoder());
+      }
     } else {
       swerveDrivetrain = null;
     }
