@@ -12,6 +12,7 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import java.util.Optional;
 
 public class RGBCommand extends Command {
@@ -20,6 +21,7 @@ public class RGBCommand extends Command {
   private RGBSubsystem rgbSubsystem;
   private PivotSubsystem pivotSubsystem;
   private DrivebaseSubsystem drivebaseSubsystem;
+  private VisionSubsystem visionSubsystem;
   private Optional<RGBMessage> noteInRobotMsg;
   private Optional<RGBMessage> readyToShootMsg;
   private Optional<RGBMessage> twoNoteMsg;
@@ -30,7 +32,8 @@ public class RGBCommand extends Command {
       IntakeSubsystem intakeSubsystem,
       RGBSubsystem rgbSubsystem,
       PivotSubsystem pivotSubsystem,
-      DrivebaseSubsystem drivebaseSubsystem) {
+      DrivebaseSubsystem drivebaseSubsystem,
+      VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.\
     addRequirements(rgbSubsystem);
     this.shooterSubsystem = shooterSubsystem;
@@ -38,6 +41,7 @@ public class RGBCommand extends Command {
     this.rgbSubsystem = rgbSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.drivebaseSubsystem = drivebaseSubsystem;
+    this.visionSubsystem = visionSubsystem;
     twoNoteMsg = Optional.empty();
     readyToShootMsg = Optional.empty();
     noteInRobotMsg = Optional.empty();
@@ -75,8 +79,8 @@ public class RGBCommand extends Command {
       noteInRobotMsg =
           Optional.of(
               rgbSubsystem.showMessage(
-                  Constants.Lights.Colors.BLUE,
-                  RGBSubsystem.PatternTypes.PULSE,
+                  Constants.Lights.Colors.WHITE,
+                  RGBSubsystem.PatternTypes.STROBE,
                   RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));
     } else if (!(intakeSubsystem.isBeamBreakSensorTriggered()
         || shooterSubsystem.isBeamBreakSensorTriggered())) {
@@ -88,12 +92,13 @@ public class RGBCommand extends Command {
     if (shooterSubsystem.isReadyToShoot()
         && pivotSubsystem.isAtTargetDegrees()
         && Math.abs(drivebaseSubsystem.getAngularError()) < 2
-        && readyToShootMsg.isEmpty()) {
+        && readyToShootMsg.isEmpty()
+        && visionSubsystem.getCanSeeSpeakerTags()) {
       readyToShootMsg =
           Optional.of(
               rgbSubsystem.showMessage(
                   Constants.Lights.Colors.RED,
-                  RGBSubsystem.PatternTypes.PULSE,
+                  RGBSubsystem.PatternTypes.STROBE,
                   RGBSubsystem.MessagePriority.D_READY_TO_SHOOT));
     } else if (!(shooterSubsystem.isReadyToShoot() && pivotSubsystem.isAtTargetDegrees())) {
       readyToShootMsg.ifPresent(RGBMessage::expire);

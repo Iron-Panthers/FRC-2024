@@ -18,6 +18,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "ZeroSubwoofer1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "ShooterRampUpCommand"
                 }
               },

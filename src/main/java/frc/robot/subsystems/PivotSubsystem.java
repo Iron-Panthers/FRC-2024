@@ -91,7 +91,7 @@ public class PivotSubsystem extends SubsystemBase {
     return Math.cos(Math.toRadians(getCurrentAngle())) * Pivot.GRAVITY_VOLTAGE;
   }
 
-  private double getCurrentError() {
+  public double getCurrentError() {
     return targetDegrees - getCurrentAngle();
   }
 
@@ -147,6 +147,10 @@ public class PivotSubsystem extends SubsystemBase {
             + 6.8762 * distance
             + 64.78029
             - 2.7;
+  }
+
+  public double getAngularError() {
+    return targetDegrees - getCurrentAngle();
   }
 
   @Override

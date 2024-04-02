@@ -8,7 +8,7 @@
         {
           "type": "named",
           "data": {
-            "name": "recenterPose2"
+            "name": "ZeroOrigin"
           }
         },
         {
@@ -59,13 +59,19 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
                         "name": "IntakeCommand"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
                       }
                     }
                   ]
@@ -81,7 +87,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.4
                 }
               },
               {
@@ -116,13 +122,19 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
                         "name": "IntakeCommand"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 3.0
                       }
                     }
                   ]
@@ -138,7 +150,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.4
                 }
               },
               {
@@ -167,12 +179,6 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "intake3"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -189,7 +195,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.25
+                              "waitTime": 1.3
                             }
                           }
                         ]
@@ -203,12 +209,81 @@
                     }
                   ]
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "intake3x2"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "shoot3x2"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoPivotAngle"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoDrivebaseAngle"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AccelNote"
+                      }
+                    },
+                    {
+                      "type": "race",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "ShootCommand"
+                            }
+                          },
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.5
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
               }
             ]
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -218,32 +293,50 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "shoot3"
+                        "pathName": "intake4x2"
                       }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "deadline",
-                "data": {
-                  "commands": [
+                    },
                     {
-                      "type": "wait",
+                      "type": "path",
                       "data": {
-                        "waitTime": 2.0
+                        "pathName": "shoot4x2"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoPivotAngle"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AutoDrivebaseAngle"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoPivotAngle"
+                        "name": "AccelNote"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoDrivebaseAngle"
+                        "name": "ShootCommand"
                       }
                     }
                   ]
@@ -252,7 +345,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootCommand"
+                  "name": "IntakeCommand"
                 }
               }
             ]

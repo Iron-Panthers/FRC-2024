@@ -219,7 +219,7 @@ public final class Constants {
 
         public static final double STEER_OFFSET =
             IS_COMP_BOT
-                ? 0.3076171875 // comp bot offset
+                ? 0.316650390625 // comp bot offset
                 : -0.3564453125 + 180; // practice bot offset
       }
     }
@@ -241,7 +241,7 @@ public final class Constants {
     }
 
     public static final class Modes {
-      public static final IntakePowers INTAKE = new IntakePowers(.95, .5);
+      public static final IntakePowers INTAKE = new IntakePowers(.95, .75);
       public static final IntakePowers HOLD = new IntakePowers(0, 0d);
       public static final IntakePowers REVERSE = new IntakePowers(-.5, -.5);
     }
@@ -275,11 +275,11 @@ public final class Constants {
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_BACK =
           new ShooterSubsystem.ShooterPowers(25, 0.4, .5);
       public static final ShooterSubsystem.ShooterPowers SHOOT_AMP_FORWARD =
-          new ShooterSubsystem.ShooterPowers(10, 2.5, .5);
+          new ShooterSubsystem.ShooterPowers(8, 2.5, .5);
       public static final ShooterSubsystem.ShooterPowers MAINTAIN_VELOCITY =
           new ShooterSubsystem.ShooterPowers(40, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHUTTLE =
-          new ShooterSubsystem.ShooterPowers(21, 1, 0);
+          new ShooterSubsystem.ShooterPowers(30, 1, 0);
       public static final ShooterSubsystem.ShooterPowers SHOOT_SHUTTLE =
           new ShooterSubsystem.ShooterPowers(30, 1, 0.5);
       public static final ShooterSubsystem.ShooterPowers ACCEL_SECURE =
@@ -367,7 +367,7 @@ public final class Constants {
 
     public static final List<VisionSource> VISION_SOURCES =
         List.of(
-            new VisionSource(
+            /*new VisionSource(
                 "frontCam",
                 new Transform3d(
                     new Translation3d(
@@ -390,7 +390,7 @@ public final class Constants {
                     new Rotation3d(
                         0,
                         Math.toRadians(30), // angle up/down
-                        Math.toRadians(180)))),
+                        Math.toRadians(180)))),*/
             new VisionSource(
                 "backUpCam",
                 new Transform3d(
@@ -462,7 +462,9 @@ public final class Constants {
     public static final double DRIVE_TO_POSE_THETA_ERROR_MARGIN_DEGREES = 2;
 
     public static final List<Set<Integer>> POSSIBLE_FRAME_FID_COMBOS =
-        List.of(Set.of(3, 4, 5), Set.of(6, 7, 8));
+        List.of(Set.of(1, 2, 3, 4, 5), Set.of(6, 7, 8, 9, 10));
+
+    public static final List<Set<Integer>> SPEAKER_FIDS = List.of(Set.of(3, 4), Set.of(7, 8));
 
     public static final int MAX_FRAME_FIDS = 4;
   }
