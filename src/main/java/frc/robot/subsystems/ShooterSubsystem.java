@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.networktables.GenericEntry;
@@ -86,6 +88,9 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotorTop.clearStickyFaults();
     acceleratorMotor.clearStickyFaults();
     rollerMotorBottom.clearStickyFaults();
+
+    ParentDevice.optimizeBusUtilizationForAll(rollerMotorTop, rollerMotorBottom); // disables all CAN status signals
+    BaseStatusSignal.setUpdateFrequencyForAll(100, rollerMotorTop.getVelocity(), rollerMotorBottom.getVelocity()); // specifies which CAN signal to enable
 
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 
