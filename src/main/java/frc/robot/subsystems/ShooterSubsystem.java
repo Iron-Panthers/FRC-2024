@@ -89,8 +89,12 @@ public class ShooterSubsystem extends SubsystemBase {
     acceleratorMotor.clearStickyFaults();
     rollerMotorBottom.clearStickyFaults();
 
-    ParentDevice.optimizeBusUtilizationForAll(rollerMotorTop, rollerMotorBottom); // disables all CAN status signals
-    BaseStatusSignal.setUpdateFrequencyForAll(100, rollerMotorTop.getVelocity(), rollerMotorBottom.getVelocity()); // specifies which CAN signal to enable
+    ParentDevice.optimizeBusUtilizationForAll(
+        rollerMotorTop, rollerMotorBottom); // disables all CAN status signals
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        100,
+        rollerMotorTop.getVelocity(),
+        rollerMotorBottom.getVelocity()); // specifies which CAN signal to enable
 
     rollerMotorBottom.setControl(new Follower(rollerMotorTop.getDeviceID(), false));
 

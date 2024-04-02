@@ -57,7 +57,8 @@ public class PivotSubsystem extends SubsystemBase {
     pivotMotor.setInverted(true);
     pivotMotor.clearStickyFaults();
     pivotMotor.set(0);
-    pivotMotor.optimizeBusUtilization(); // disable all CAN signals, OK because relies on encoder anyways
+    pivotMotor
+        .optimizeBusUtilization(); // disable all CAN signals, OK because relies on encoder anyways
 
     pivotMotor.setNeutralMode(NeutralModeValue.Brake);
 
